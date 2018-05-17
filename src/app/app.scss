@@ -1,0 +1,124 @@
+// http://ionicframework.com/docs/theming/
+
+
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.
+
+.smenu-custom {
+    background: color($colors, primary, base) !important;
+    height: 150px;
+    padding-left: 30px;
+    font-size: 18px;
+    color: white;
+    margin-bottom: 10px;
+}
+.ess-pointer {
+    cursor: pointer;
+    padding-left: 10px;
+    padding-top: 20px;
+    font-size: 20px;
+}
+.error{
+    color:red;
+    margin-left: 15px;
+}
+.item-md h2{
+    color: white;
+}
+.bg-color{
+    background: color($colors, primary, base) !important;
+}
+.item-md p{
+    color: white;
+}
+ion-label, ion-option, ion-datetime, ion-item, ion-select, ion-input, .alert-radio-label{
+    font-size: 18px !important;
+    color:black !important;
+}
+
+.noRecords{
+    text-align: center;
+    margin-top: 35vh !important;
+    color: color($colors, lblack, base) !important;
+}
+
+.timeList{
+    border: thin solid;
+    margin-bottom: 1rem;
+}
+
+.alert-md .alert-checkbox-label{
+  white-space: initial;
+}
+.forgot{
+  color: blue
+}
+.text-color{
+  color: red;
+  margin-top: -5px;
+  text-align: right;
+}
+.alert-md .alert-button .button-inner{
+  color: color($colors, lok, base) !important;
+}
+.login-button{
+  margin-top: 25px;
+  height: 45px;
+  font-size: 20px;
+  background: color($colors, lbutton, base);
+  text-transform: none;
+}
+
+.form-page-header{
+    text-align: center;
+    margin: 2rem 0 4rem 0 !important;
+}
+
+.sps-exclusive-bf-header{
+    background: #556d5f;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.sps-mother-related-header{
+    color: white;
+    font-size: 1.7rem;
+}
+
+.sps-mother-related-header ion-col{
+    background: #556d5f;
+}
+
+.sps-exlcusive-bf-contents{
+    border-bottom: solid thin #556d5f;
+}
+
+.sps-content-color-red{
+    background: rgb(209, 63, 67)
+}
+
+.sps-content-color-green{
+    background: rgb(34, 179, 105)
+}
+
+.sps-content-color-yellow{
+    background: rgb(241, 149, 55)
+}
+[scrollbar-y-auto] .scroll-content {
+  overflow-y: auto !important;
+}
+.alert-md .alert-message{
+  overflow-y: auto !important;
+}
+

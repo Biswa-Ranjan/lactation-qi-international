@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding scrollbar-y-auto>
+  <p text-right>Logged in: {{user.firstName}} {{user.lastName}}</p>
+  <div class="main-content">
+  <ion-row>
+    <ion-col (click)="goToAddNewPatient()" class="gap">
+      <div class="bg-grey">Add Patient</div>
+    </ion-col>
+    <ion-col (click)="registeredPatientPage()" class="gap">
+      <div class="bg-grey">Registered Patient</div>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col (click)="singlePatientSummaryPage()" class="gap">
+      <div class="bg-grey">Single Patient Summary</div>
+    </ion-col>
+    <ion-col [navPush]="pppPage" class="gap">
+      <div class="bg-grey">Poorly Performing Patients</div>
+    </ion-col>
+  </ion-row>
+</div>
+
+</ion-content>

@@ -1,0 +1,22 @@
+<!--
+  @author - Naseem Akhtar
+  @since - 0.0.1
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Log breastfeeding post-discharge</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding scrollbar-y-auto>
+  <h3 class="form-page-header">Baby ID - {{babyCode}}</h3>
+  <ion-card *ngFor="let item of menu">
+    <ion-card-content (click)='goToPostDischargeForm(item.id)'>
+      <ion-row>
+        <ion-col>
+          <div>{{item.name}}</div>
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,29 @@
+<ion-menu [content]="content">
+  <ion-header color="primary">
+  </ion-header>
+
+  <ion-content class="bg-color">
+
+    <ion-item class="menu-header" class="smenu-custom">
+      <!-- <ion-avatar class="menu-avatar">
+        <ion-img src="/assets/imgs/icon_svg.svg" class="icon-size"></ion-img>
+      </ion-avatar> -->
+      <h2 padding-top>{{user.firstName}} {{user.lastName}}</h2>
+      <h2>{{user.email}}</h2>
+    </ion-item>
+    <ion-list>
+      <ion-item no-lines class="bg-color">
+        <p menuToggle (click)="prepareForSync()" class="ess-pointer">Sync</p>
+        <br>
+        <p menuToggle (click)="export()" class="ess-pointer">Export</p>
+        <br>
+        <p menuToggle (click)="logout()" class="ess-pointer">Logout</p>
+        <br>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

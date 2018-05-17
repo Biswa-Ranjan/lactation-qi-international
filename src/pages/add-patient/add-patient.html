@@ -1,0 +1,190 @@
+<!--
+  Generated template for the AddPatientPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar hideBackButton color="primary">
+    <ion-buttons left>
+      <button ion-button (click)="customBackBUtton()">
+        <ion-icon class="customIcon" name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>{{headerTitle}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <p class="text-color">All * fields are mandatory</p>
+  <form [formGroup]="patientForm">
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Baby ID
+          <span class="text-color"> *</span>
+        </ion-label>
+        <ion-input type="text" disabled formControlName="baby_id"></ion-input>
+      </ion-item>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Baby ID provided by hospital</ion-label>
+        <ion-input type="text" formControlName="hospital_baby_id"></ion-input>
+      </ion-item>
+      <p class="error" *ngIf="patientForm.controls.hospital_baby_id.invalid  && (patientForm.controls.hospital_baby_id.dirty || patientForm.controls.hospital_baby_id.touched) && resetStatus">
+        Please enter a valid Baby ID provided by hospital
+    </p>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Baby of (mother's name)</ion-label>
+        <ion-input type="text" formControlName="mother_name"></ion-input>
+      </ion-item>
+      <p class="error" *ngIf="patientForm.controls.mother_name.invalid  && (patientForm.controls.mother_name.dirty || patientForm.controls.mother_name.touched) && resetStatus">
+          Please enter a valid name
+      </p>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Mother's Age</ion-label>
+        <ion-input type="tel" (focusout)="validateMotherAge()" maxlength="2" formControlName="mother_age"></ion-input>
+      </ion-item>
+    </div>
+    <div class="form-group" id="ddate">
+      <ion-item>
+        <ion-label color="black" stacked>Delivery date
+          <span class="text-color"> *</span>
+        </ion-label>
+        <ion-input formControlName="delivery_date" [disabled]="forEdit" (click)="deliveryDatePicker('deliveryDate')" (ionFocus)="deliveryDatePicker('deliveryDate')"
+           [readonly]="true"></ion-input>
+        <ion-icon padding-top name="calendar" item-right></ion-icon>
+      </ion-item>
+      <p class="error" *ngIf="patientForm.controls.delivery_date.invalid  && (patientForm.controls.delivery_date.dirty || patientForm.controls.delivery_date.touched) && resetStatus">
+        Please enter the delivery date
+      </p>
+    </div>
+    <div class="form-group" id="dtime">
+      <ion-item>
+        <ion-label color="black" stacked>Delivery time
+          <span class="text-color"> *</span>
+        </ion-label>
+        <ion-input formControlName="delivery_time" [disabled]="forEdit" (click)="timePickerDialog()"  (ionFocus)="timePickerDialog()" [readonly]="true"></ion-input>
+        <ion-icon padding-top name="time" item-right></ion-icon>
+      </ion-item>
+      <p class="error" *ngIf="patientForm.controls.delivery_time.invalid  && (patientForm.controls.delivery_time.dirty || patientForm.controls.delivery_time.touched) && resetStatus">
+        Please enter the delivery time
+      </p>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Delivery Method</ion-label>
+        <ion-select formControlName="delivery_method">
+          <ion-option *ngFor="let item of deliveryMethods" [value]="item.id">{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Baby's weight in grams</ion-label>
+        <ion-input type="tel" (focusout)="validateBabyWeight()" maxlength="4"formControlName="baby_weight"></ion-input>
+      </ion-item>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Gestational age in weeks</ion-label>
+        <ion-input type="tel" (focusout)="validateGestational()" maxlength="2" formControlName="gestational_age"></ion-input>
+      </ion-item>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Mother's prenatal intent to provide milk</ion-label>
+        <ion-select formControlName="intent_provide_milk">
+          <ion-option *ngFor="let item of motherPrenatalMilk" [value]="item.id">{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Parent's knowledge on human milk and lactation</ion-label>
+        <ion-select formControlName="hm_lactation">
+          <ion-option *ngFor="let item of hmLactation" [value]="item.id">{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="form-group">
+      <ion-label color="black" stacked padding-left>Time till first expression in hours</ion-label>
+      <ion-grid>
+        <ion-row>
+          <ion-col width-50>
+            <ion-item>
+              <ion-label>hh:</ion-label>
+              <ion-input type="tel" (keypress)="onlyNumberKey($event)" placeholder="hh" maxlength="2" formControlName="first_exp_time_in_hour"></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col width-50>
+            <ion-item>
+              <ion-label>mm:</ion-label>
+              <ion-input type="tel" (keypress)="onlyNumberKey($event)" placeholder="mm" maxlength="2" formControlName="first_exp_time_in_minute"></ion-input>
+            </ion-item>
+            <p class="error" *ngIf="patientForm.controls.first_exp_time_in_minute.invalid  && (patientForm.controls.first_exp_time_in_minute.dirty || patientForm.controls.first_exp_time_in_minute.touched)">
+                Please enter minute below 60
+              </p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Inpatient/Outpatient</ion-label>
+        <ion-select formControlName="inpatient_outpatient" (ionChange)="outpatientAdmission()">
+          <ion-option *ngFor="let item of inpatientOutpatient" [value]="item.id">{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="form-group" *ngIf="outPatientAdmissionStatus">
+      <ion-item>
+        <ion-label color="black" stacked>Admission date (Outpatients)</ion-label>
+        <ion-input formControlName="admission_date" (click)="datePickerDialog('addmissionDate')" (ionFocus)="datePickerDialog('addmissionDate')"
+          [readonly]="true"></ion-input>
+        <ion-icon name="calendar" item-right></ion-icon>
+      </ion-item>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Baby is admitted to</ion-label>
+        <ion-select formControlName="baby_admitted" (ionChange)="babyAdmitedTo()">
+          <ion-option *ngFor="let item of babyAdmittedTo" [value]="item.id">{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="form-group" *ngIf="babyAdmittedToStatus">
+      <ion-item>
+        <ion-label color="black" stacked>Reason for NICU admission</ion-label>
+        <ion-select formControlName="nicu_admission" multiple="true">
+          <ion-option *ngFor="let item of nicuAdmission" [value]="item.id">{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Discharge date</ion-label>
+        <ion-input formControlName="discharge_date" (click)="datePickerDialog('dischargeDate')" (ionFocus)="datePickerDialog('dischargeDate')"
+          [readonly]="true"></ion-input>
+        <ion-icon padding-top name="calendar" item-right></ion-icon>
+      </ion-item>
+    </div>
+  </form>
+
+  <ion-row padding-top>
+    <ion-col col-6>
+      <button class="login-button" ion-button block (click)="reset()">Reset</button>
+    </ion-col>
+    <ion-col col-6>
+      <button class="login-button" ion-button block (click)="submit()">{{!forEdit ? 'Submit' : 'Update'}}</button>
+    </ion-col>
+  </ion-row>
+
+</ion-content>

@@ -1,0 +1,40 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Lactation</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <div class="logodiv">
+    <ion-img class="logo" width="100" height="100" src="assets/imgs/icon_svg.svg"></ion-img>
+  </div>
+
+
+
+  <ion-item>
+    <ion-label floating>Email</ion-label>
+    <ion-input type="email" [(ngModel)]="loginData.username"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label floating>Password</ion-label>
+    <ion-input type="{{type}}" [(ngModel)]="loginData.password"></ion-input>
+    <button *ngIf="!showPass" ion-button clear color="dark" type="button" item-right (click)="showPassword()"> <ion-icon class="icon-eye" name="md-eye-off"></ion-icon></button>
+    <button *ngIf="showPass" ion-button clear color="dark" type="button" item-right (click)="showPassword()"> <ion-icon class="icon-eye" name="md-eye"></ion-icon></button>
+  </ion-item>
+
+  <button class="login-button" ion-button block (click)="login()">Login</button>
+
+  <div text-center class="text-link-CreatNewAcc"><span (click)="signUp()">Create New Account</span></div>
+  <div text-center class="text-link-forgotPassword"><span (click)="forgotPassword()">Forgot Password ?</span></div>
+  <br/>
+  <br/>
+
+  <div text-center *ngIf="!(appVersionNumber === undefined || appVersionNumber === null)">Version {{appVersionNumber}}</div>
+
+
+</ion-content>

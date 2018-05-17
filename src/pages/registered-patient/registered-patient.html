@@ -1,0 +1,43 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Registered Patient</ion-title>
+    <ion-buttons start>
+      <button class="customOptions" ion-button icon-only (click)="refresh()">
+        <ion-icon name="refresh"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button class="customOptions" ion-button icon-only (click)="sorting()">
+        <ion-icon name="options"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-searchbar placeholder="Search by Baby of, Baby ID, Hospital Baby ID" [(ngModel)]="searchTerm" [formControl]="searchControl" (ionInput)="onSearchInput()"></ion-searchbar>
+  <div *ngIf="searching" class="spinner-container">
+      <ion-spinner></ion-spinner>
+  </div>
+  <h6 padding-right text-right *ngIf="patientList != undefined && patientList.length > 0">Number of records: {{patientList === undefined?0:patientList.length}} </h6>
+  <ion-list text-wrap>
+      <ion-item no-lines *ngFor="let item of patientList; let i = index">
+        <ion-card class="card-outside">
+          <ion-row class="card-inside" (press)="deletePatient(item.babyCode)" (click)="goToBabyDashBoard(item)">
+            <ion-col md-6>
+              <div class="form-group">Baby of: {{(item.babyOf != null && item.babyOf != "")?item.babyOf:"N/A"}}</div>
+              <div>Baby ID: {{item.babyCode}}</div>
+            </ion-col>
+            <ion-col md-6 text-right>
+              <div class="form-group">{{item.deliveryDate}} {{item.deliveryTime}}</div>
+              <div>Hospital Baby ID: {{(item.babyCodeHospital != null && item.babyCodeHospital != "")?item.babyCodeHospital:"N/A"}}</div>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-item>
+  </ion-list>
+  <h4 class="noRecords" *ngIf="patientList === undefined || patientList.length === 0">No record found</h4>
+</ion-content>

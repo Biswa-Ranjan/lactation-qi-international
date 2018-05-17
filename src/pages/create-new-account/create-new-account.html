@@ -1,0 +1,94 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Create New Account</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <p class="text-color">All * fields are mandatory</p>
+  <form [formGroup]="userForm">
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>First Name<span class="text-color"> *</span></ion-label>
+        <ion-input type="text" (keypress)="omit_special_char($event)" formControlName="first_name"></ion-input>
+      </ion-item>
+      <p class="error" *ngIf="userForm.controls.first_name.invalid  && (userForm.controls.first_name.dirty || userForm.controls.first_name.touched)">
+        Please enter First Name
+      </p>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Last Name<span class="text-color"> *</span></ion-label>
+        <ion-input type="text" (keypress)="omit_special_char($event)" formControlName="last_name"></ion-input>
+      </ion-item>
+      <p class="error" *ngIf="userForm.controls.last_name.invalid  && (userForm.controls.last_name.dirty || userForm.controls.last_name.touched)">
+        Please enter Last Name
+      </p>
+    </div>
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Email<span class="text-color"> *</span></ion-label>
+        <ion-input type="email" value="" formControlName="email"></ion-input>
+      </ion-item>
+      <p class="error" *ngIf="userForm.controls.email.invalid  && (userForm.controls.email.dirty || userForm.controls.email.touched)">
+        Please enter valid email address
+      </p>
+    </div>
+
+    <div class="form-group">
+      <ion-item>
+        <ion-label color="black" stacked>Country<span class="text-color"> *</span></ion-label>
+        <ion-select [disabled]="countryStatus" formControlName="country" (ionChange)="countrySelected()" [selectOptions]="selectCountryOptions">
+          <ion-option *ngFor="let country of countries | orderAreaByName" [value]="country.id">{{country.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <p class="error" *ngIf="userForm.controls.country.invalid && (userForm.controls.country.dirty || userForm.controls.country.touched)">
+        Please select a Country
+      </p>
+    </div>
+
+    <div class="form-group">
+      <ion-item (click)="onClickState()">
+        <ion-label color="black" stacked>State<span class="text-color"> *</span></ion-label>
+        <ion-select [disabled]="stateStatus" formControlName="state" (ionChange)="stateSelected()" [selectOptions]="selectStateOptions">
+          <ion-option *ngFor="let state of states | orderAreaByName" [value]="state.id">{{state.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <p class="error" *ngIf="userForm.controls.state.invalid && (userForm.controls.state.dirty || userForm.controls.state.touched)">
+        Please select a State
+      </p>
+    </div>
+
+    <div class="form-group">
+      <ion-item (click)="onClickDistrict()">
+        <ion-label color="black" stacked>District<span class="text-color"> *</span></ion-label>
+        <ion-select [disabled]="districtStatus" formControlName="district" (ionChange)="districtSelected()" [selectOptions]="selectDistrictOptions">
+          <ion-option *ngFor="let district of districts | orderAreaByName" [value]="district.id">{{district.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <p class="error" *ngIf="userForm.controls.district.invalid && (userForm.controls.district.dirty || userForm.controls.district.touched)">
+        Please select a District
+      </p>
+    </div>
+
+    <div class="form-group">
+      <ion-item (click)="onClickInstitution()">
+        <ion-label color="black" stacked>Institution<span class="text-color"> *</span></ion-label>
+        <ion-select [disabled]="institutionStatus" formControlName="institution" (ionChange)="instituteSelected()" [selectOptions]="selectInstituteOptions">
+          <ion-option *ngFor="let institute of institutes | orderAreaByName" [value]="institute.id">{{institute.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <p class="error" *ngIf="userForm.controls.institution.invalid && (userForm.controls.institution.dirty || userForm.controls.institution.touched)">
+        Please select an institution
+      </p>
+    </div>
+  </form>
+
+  <div class="submit-button" text-center>
+    <button class="login-button" ion-button block (click)="submit()">Submit</button>
+  </div>
+
+</ion-content>
