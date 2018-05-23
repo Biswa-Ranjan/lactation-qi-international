@@ -3,11 +3,12 @@ import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { MessageProvider } from '../providers/message/message';
-import { SyncServiceProvider } from '../providers/sync-service/sync-service'
 import { ExportServiceProvider } from '../providers/export-service/export-service';
 import { File } from '@ionic-native/file';
 import { ConstantProvider } from '../providers/constant/constant';
 import { UtilServiceProvider } from '../providers/util-service/util-service';
+import { LactationPlatformImpl } from '../class/LactationPlatformImpl';
+import { LactationProvider } from '../providers/lactation/lactation';
 
 @Component({
   templateUrl: 'app.html'
@@ -32,9 +33,9 @@ export class MyApp {
   }
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
-    private messageProvider: MessageProvider, private syncService: SyncServiceProvider,
+    private messageProvider: MessageProvider,
   private events: Events, private exportService: ExportServiceProvider, private file: File,
-private utilService: UtilServiceProvider) {
+private utilService: UtilServiceProvider, private lactationProvider: LactationProvider) {
     this.initializeApp();
   }
 
@@ -46,6 +47,20 @@ private utilService: UtilServiceProvider) {
       this.splashScreen.hide();
       this.createProjectFolder()
       this.utilService.setUuid()
+
+      //Setting platforms
+      let lactartionPlatform: LactationPlatform = new LactationPlatformImpl()
+
+      if(this.platform.is('mobileweb')){
+        lactartionPlatform.isMobilePWA = true
+      }else if(this.platform.is('core')){
+        lactartionPlatform.isWebPWA = true
+      }else if(this.platform.is('android') && this.platform.is('cordova')){
+        lactartionPlatform.isAndroid = true
+      }
+
+      this.lactationProvider.setPlatform(lactartionPlatform)
+
     });
   }
 
@@ -75,16 +90,6 @@ private utilService: UtilServiceProvider) {
    */
   export(){
     this.exportService.export()
-  }
-
-  /**
-   * This function will be called when a user clicks on the sync button of the side menu.
-   * @author Naseem Akhtar (naseem@sdrc.co.in)
-   *
-   */
-  prepareForSync(){
-    this.messageProvider.showLoader(ConstantProvider.messages.syncingPleaseWait);
-    this.syncService.fetchDataFromDbAndValidateForSync();
   }
 
   /**

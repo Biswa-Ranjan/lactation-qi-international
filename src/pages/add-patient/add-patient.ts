@@ -8,6 +8,7 @@ import { AddNewPatientServiceProvider } from '../../providers/add-new-patient-se
 import { DatePipe } from '@angular/common';
 import { UserServiceProvider } from '../../providers/user-service/user-service';
 import { DatePicker } from '@ionic-native/date-picker';
+import { LactationProvider } from '../../providers/lactation/lactation';
 
 
 /**
@@ -54,6 +55,8 @@ export class AddPatientPage implements OnInit{
   alphaNumeric: RegExp = /^[-_ a-zA-Z0-9]+$/;
   numberRegex: RegExp = /^[0-9]+(\.[0-9]*){0,1}$/;
   hasError: boolean = false;
+  is_web : boolean = false;
+  maxDate: string;
   private uniquePatientId : IUniquePatientId = {
     id: null,
     idNumber: null
@@ -62,8 +65,11 @@ export class AddPatientPage implements OnInit{
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private addNewPatientService: AddNewPatientServiceProvider,private datePipe: DatePipe,
     private messageService: MessageProvider,private datePicker: DatePicker,
-    private userService: UserServiceProvider, private menuCtrl: MenuController) {
+    private userService: UserServiceProvider, private menuCtrl: MenuController,
+    private lactationPlatform: LactationProvider) {
 
+    this.is_web = this.lactationPlatform.getPlatform().isWebPWA
+    this.maxDate=this.datePipe.transform(new Date().valueOf(),"yyyy-MM-dd")
   }
 
   /**
@@ -197,7 +203,6 @@ export class AddPatientPage implements OnInit{
     }, err => {
       this.messageService.showErrorToast(err)
     });
-
     //Getting hmLactation type details
     this.addNewPatientService.getHmAndLactation()
     .subscribe(data =>{
@@ -250,6 +255,8 @@ export class AddPatientPage implements OnInit{
       nicu_admission: new FormControl(null),
       discharge_date: new FormControl(null),
       });
+
+
     }
 
     /**
@@ -529,7 +536,8 @@ export class AddPatientPage implements OnInit{
             mode: 'time',
             is24Hour: true,
             androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
-          }).then(
+          })
+          .then(
             time => {
               this.validateTime(time)
             },
@@ -643,19 +651,36 @@ export class AddPatientPage implements OnInit{
    * @param time
    */
 	validateTime(time){
-      if(this.patientForm.controls.delivery_date.value != "" && this.patientForm.controls.delivery_date.value != null){
-        if(this.patientForm.controls.delivery_date.value === this.datePipe.transform(new Date(),"dd-MM-yyyy") ){
-          if(this.datePipe.transform(time,"HH:mm") > this.datePipe.transform(new Date(),"HH:mm")){
-            this.patientForm.controls.delivery_time.setValue("")
-            this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
-          }else{
-            this.patientForm.controls.delivery_time.setValue(this.datePipe.transform(time,"HH:mm"))
-          }
+    if(this.patientForm.controls.delivery_date.value != "" && this.patientForm.controls.delivery_date.value != null){
+      if(this.patientForm.controls.delivery_date.value === this.datePipe.transform(new Date(),"dd-MM-yyyy") ){
+        if(this.datePipe.transform(time,"HH:mm") > this.datePipe.transform(new Date(),"HH:mm")){
+          this.patientForm.controls.delivery_time.setValue("")
+          this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
         }else{
           this.patientForm.controls.delivery_time.setValue(this.datePipe.transform(time,"HH:mm"))
         }
       }else{
         this.patientForm.controls.delivery_time.setValue(this.datePipe.transform(time,"HH:mm"))
       }
+    }else{
+      this.patientForm.controls.delivery_time.setValue(this.datePipe.transform(time,"HH:mm"))
     }
+  }
+
+  validateDeliveryTime(deliveryTime){
+    if(this.patientForm.controls.delivery_date.value != "" && this.patientForm.controls.delivery_date.value != null){
+      if(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy") === this.datePipe.transform(new Date(),"dd-MM-yyyy") ){
+        if( deliveryTime > this.datePipe.transform(new Date(),"HH:mm")){
+          this.patientForm.controls.delivery_time.setValue("")
+          this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
+        }else{
+          this.patientForm.controls.delivery_time.setValue(deliveryTime)
+        }
+      }else{
+        this.patientForm.controls.delivery_time.setValue(deliveryTime)
+      }
+    }else{
+      this.patientForm.controls.delivery_time.setValue(deliveryTime)
+    }
+  }
 }

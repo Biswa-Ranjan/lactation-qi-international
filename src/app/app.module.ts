@@ -18,7 +18,6 @@ import { AddNewPatientServiceProvider } from '../providers/add-new-patient-servi
 import { FeedDateListServiceProvider } from '../providers/feed-date-list-service/feed-date-list-service';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { AddNewExpressionBfServiceProvider } from '../providers/add-new-expression-bf-service/add-new-expression-bf-service';
-import { SyncServiceProvider } from '../providers/sync-service/sync-service';
 import { SaveExpressionBfProvider } from '../providers/save-expression-bf/save-expression-bf';
 import { RegisteredPatientServiceProvider } from '../providers/registered-patient-service/registered-patient-service';
 import { NewAccountServiceProvider } from '../providers/new-account-service/new-account-service';
@@ -37,6 +36,7 @@ import { UtilServiceProvider } from '../providers/util-service/util-service';
 import { SinglePatientSummaryServiceProvider } from '../providers/single-patient-summary-service/single-patient-summary-service';
 import { PppServiceProvider } from '../providers/ppp-service/ppp-service';
 import { Device } from '@ionic-native/device';
+import { LactationProvider } from '../providers/lactation/lactation';
 
 @NgModule({
   declarations: [
@@ -85,7 +85,6 @@ import { Device } from '@ionic-native/device';
     FeedDateListServiceProvider,
     DatePipe,
     AddNewExpressionBfServiceProvider,
-    SyncServiceProvider,
     BFExpressionDateListProvider,
     SaveExpressionBfProvider,
     UserServiceProvider,
@@ -105,7 +104,8 @@ import { Device } from '@ionic-native/device';
     SinglePatientSummaryServiceProvider,
     DecimalPipe,
     PppServiceProvider,
-    Device
+    Device,
+    LactationProvider
   ]
 })
 export class AppModule {}
