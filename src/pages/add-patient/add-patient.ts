@@ -67,9 +67,6 @@ export class AddPatientPage implements OnInit{
     private messageService: MessageProvider,private datePicker: DatePicker,
     private userService: UserServiceProvider, private menuCtrl: MenuController,
     private lactationPlatform: LactationProvider) {
-
-    this.is_web = this.lactationPlatform.getPlatform().isWebPWA
-    this.maxDate=this.datePipe.transform(new Date().valueOf(),"yyyy-MM-dd")
   }
 
   /**
@@ -162,6 +159,8 @@ export class AddPatientPage implements OnInit{
    * @since 1.0.0
   */
   ngOnInit() {
+    this.is_web = this.lactationPlatform.getPlatform().isWebPWA
+    this.maxDate=this.datePipe.transform(new Date().valueOf(),"yyyy-MM-dd")
     if(!(this.navParams.get('babyCode') == undefined)){
 
       this.headerTitle = "Edit Patient"
@@ -370,6 +369,9 @@ export class AddPatientPage implements OnInit{
       } else {
         if(this.patientForm.controls.delivery_time.value == null)
         document.getElementById('dtime').scrollIntoView({behavior: 'smooth'})
+      }
+      if(this.is_web){
+        this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy"))
       }
       this.outpatientAdmission();
       this.babyAdmitedToCheck();

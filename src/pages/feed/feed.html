@@ -30,7 +30,8 @@
               <ion-label color="black" stacked>Date of feed
                 <span class="text-color"> *</span>
               </ion-label>
-              <ion-input [readonly]="true" [(ngModel)]="feedExpression.dateOfFeed" (ionFocus)="datePickerDialog(feedExpression)" [ngModelOptions]="{standalone: true}"></ion-input>
+              <ion-input *ngIf="!is_web" [readonly]="true" [(ngModel)]="feedExpression.dateOfFeed" (ionFocus)="datePickerDialog(feedExpression)" [ngModelOptions]="{standalone: true}"></ion-input>
+              <ion-datetime *ngIf="is_web" [(ngModel)]="feedExpression.dateOfFeed" [ngModelOptions]="{standalone: true}" displayFormat="DD-MM-YYYY" ></ion-datetime>
               <ion-icon padding-top name="calendar" item-right></ion-icon>
             </ion-item>
 
@@ -40,7 +41,8 @@
               <ion-label color="black" stacked>Time of feed
                 <span class="text-color"> *</span>
               </ion-label>
-              <ion-input [readonly]="true" [(ngModel)]="feedExpression.timeOfFeed" (ionFocus)="timePickerDialog(feedExpression)" [ngModelOptions]="{standalone: true}"></ion-input>
+              <ion-input *ngIf="!is_web"[readonly]="true" [(ngModel)]="feedExpression.timeOfFeed" (ionFocus)="timePickerDialog(feedExpression)" [ngModelOptions]="{standalone: true}"></ion-input>
+              <ion-datetime *ngIf="is_web" [(ngModel)]="feedExpression.timeOfFeed" [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"></ion-datetime>
               <ion-icon padding-top name="time" item-right></ion-icon>
             </ion-item>
 
