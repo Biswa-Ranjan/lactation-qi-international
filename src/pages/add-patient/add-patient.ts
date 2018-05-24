@@ -55,12 +55,22 @@ export class AddPatientPage implements OnInit{
   alphaNumeric: RegExp = /^[-_ a-zA-Z0-9]+$/;
   numberRegex: RegExp = /^[0-9]+(\.[0-9]*){0,1}$/;
   hasError: boolean = false;
-  is_web : boolean = false;
+
+  /**
+   * This property is going to tell us, whether the user is using PWA or android app
+   * @author Jagat
+   * @type {boolean}
+   * @memberof AddPatientPage
+   * @since 2.0.0
+   */
+  isWeb : boolean = false;
   maxDate: string;
   private uniquePatientId : IUniquePatientId = {
     id: null,
     idNumber: null
   }
+
+
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private addNewPatientService: AddNewPatientServiceProvider,private datePipe: DatePipe,
@@ -159,7 +169,7 @@ export class AddPatientPage implements OnInit{
    * @since 1.0.0
   */
   ngOnInit() {
-    this.is_web = this.lactationPlatform.getPlatform().isWebPWA
+    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     this.maxDate=this.datePipe.transform(new Date().valueOf(),"yyyy-MM-dd")
     if(!(this.navParams.get('babyCode') == undefined)){
 
@@ -364,15 +374,18 @@ export class AddPatientPage implements OnInit{
     * @since 0.0.1
     */
     submit(){
+      
       if(this.patientForm.controls.delivery_date.value == null){
         document.getElementById('ddate').scrollIntoView({behavior: 'smooth'})
-      } else {
-        if(this.patientForm.controls.delivery_time.value == null)
+      } else if(this.patientForm.controls.delivery_time.value == null || (this.isWeb && !this.validateWebDeliveryTime())) {        
         document.getElementById('dtime').scrollIntoView({behavior: 'smooth'})
+        return
       }
-      if(this.is_web){
+      
+      if(this.isWeb){
         this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy"))
       }
+
       this.outpatientAdmission();
       this.babyAdmitedToCheck();
       if(this.validateDischargeDate()){
@@ -499,7 +512,6 @@ export class AddPatientPage implements OnInit{
      * @since 1.0.0
      */
     deliveryDatePicker(type: string){
-      console.log("hi")
       if(!this.hasError){
         if(!this.forEdit){
           this.datePicker.show({
@@ -669,12 +681,17 @@ export class AddPatientPage implements OnInit{
     }
   }
 
-  validateDeliveryTime(deliveryTime){
-    if(this.patientForm.controls.delivery_date.value != "" && this.patientForm.controls.delivery_date.value != null){
+  validateWebDeliveryTime(): boolean{
+    
+    let deliveryTime: string = this.patientForm.controls.delivery_time.value
+    let validated: boolean = true
+    if(this.patientForm.controls.delivery_date.value != "" && 
+    this.patientForm.controls.delivery_date.value != null){      
       if(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy") === this.datePipe.transform(new Date(),"dd-MM-yyyy") ){
         if( deliveryTime > this.datePipe.transform(new Date(),"HH:mm")){
-          this.patientForm.controls.delivery_time.setValue("")
+          this.patientForm.controls.delivery_time.setValue("")          
           this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
+          validated = false
         }else{
           this.patientForm.controls.delivery_time.setValue(deliveryTime)
         }
@@ -683,6 +700,8 @@ export class AddPatientPage implements OnInit{
       }
     }else{
       this.patientForm.controls.delivery_time.setValue(deliveryTime)
-    }
+    }  
+    
+    return validated
   }
 }
