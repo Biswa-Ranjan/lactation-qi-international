@@ -105,18 +105,6 @@ export class ConstantProvider {
     logFeedBreastFeed: 66
   }
 
-  /**
-   * This static variable will be used to interact with server for synchronization and other purposes.
-   * @author Naseem Akhtar (naseem@sdrc.co.in)
-   * @since 0.0.1
-   */
-  static serverUrls:any = {
-    SERVER_STATUS: 'http://prod1.sdrc.co.in/lactation/serverStatus',
-    SYNCHRONIZE: 'http://prod1.sdrc.co.in/lactation/sync'
-    // SERVER_STATUS: 'http://192.168.1.247:8080/serverStatus',
-    // SYNCHRONIZE: 'http://192.168.1.247:8080/sync'
-  };
-
   static postDischargeMenu: number = 12;
 
   /**
