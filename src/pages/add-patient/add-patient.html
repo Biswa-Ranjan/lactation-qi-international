@@ -60,7 +60,7 @@
         </ion-label>
         <ion-input *ngIf="!isWeb" formControlName="delivery_date" [disabled]="forEdit" (click)="deliveryDatePicker('deliveryDate')" (ionFocus)="deliveryDatePicker('deliveryDate')"
            [readonly]="true"></ion-input>
-        <ion-datetime *ngIf="isWeb" formControlName="delivery_date" [disabled]="forEdit" displayFormat="DD-MM-YYYY" [max]="maxDate"></ion-datetime>
+        <ion-datetime *ngIf="isWeb" formControlName="delivery_date" [disabled]="forEdit" displayFormat="DD-MM-YYYY" [min]="minDate" [max]="maxDate"></ion-datetime>
         <ion-icon padding-top name="calendar" item-right></ion-icon>
       </ion-item>
       <p class="error" *ngIf="patientForm.controls.delivery_date.invalid  && (patientForm.controls.delivery_date.dirty || patientForm.controls.delivery_date.touched) && resetStatus">
@@ -173,8 +173,9 @@
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Discharge date</ion-label>
-        <ion-input formControlName="discharge_date" (click)="datePickerDialog('dischargeDate')" (ionFocus)="datePickerDialog('dischargeDate')"
+        <ion-input *ngIf="!isWeb"formControlName="discharge_date" (click)="datePickerDialog('dischargeDate')" (ionFocus)="datePickerDialog('dischargeDate')"
           [readonly]="true"></ion-input>
+          <ion-datetime *ngIf="isWeb" formControlName="discharge_date" [disabled]="forEdit" displayFormat="DD-MM-YYYY" [max]="maxDate"></ion-datetime>
         <ion-icon padding-top name="calendar" item-right></ion-icon>
       </ion-item>
     </div>

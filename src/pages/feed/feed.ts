@@ -33,7 +33,7 @@ export class FeedPage {
   dischargeDate: Date;
   defaultSelectedDate: Date;
   onlyNumberRegex: RegExp = /^[0-9]*\.[0-9][0-9]$/;
-  is_web : boolean = false;
+  isWeb : boolean = false;
   minDate: string;
   maxDate: string;
 
@@ -52,7 +52,7 @@ export class FeedPage {
    * 2. Restrict min date and max date for which the feed entries can be made.
    */
   ngOnInit(){
-
+    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     this.dataForFeedEntryPage = this.navParams.get('dataForFeedEntryPage');
     let x = this.dataForFeedEntryPage.deliveryDate.split('-');
     // -1 is done in the second argument, because in new Date(), january is taken a 0.
@@ -94,9 +94,11 @@ export class FeedPage {
       this.messageService.showErrorToast(err)
     });
 
-    this.is_web = this.lactationPlatform.getPlatform().isWebPWA
-    this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
-    this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
+    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
+    if(this.isWeb){
+      this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
+      this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
+    }
   }
 
 /**
@@ -147,8 +149,12 @@ export class FeedPage {
 
   // This method will be called when the user clicks on save of a particular entry.
   saveExpression(feedExpression: IFeed){
-    if(this.is_web)
-    feedExpression.dateOfFeed = this.datePipe.transform(feedExpression.dateOfFeed,"dd-MM-yyyy")
+    if(this.isWeb)
+    if(feedExpression.dateOfFeed.length > 11){
+      feedExpression.dateOfFeed = this.datePipe.transform(feedExpression.dateOfFeed.substring(0,10),"dd-MM-yyyy")
+    }else{
+      feedExpression.dateOfFeed = this.datePipe.transform(feedExpression.dateOfFeed,"dd-MM-yyyy")
+    }
     let newData: boolean = feedExpression.id === null ? true : false
     this.feedExpressionService.saveFeedExpression(feedExpression, this.existingDate, this.existingTime)
       .then(data=> {
@@ -174,6 +180,7 @@ export class FeedPage {
    * open alternatively.
   */
   toggleGroup(group: IFeed) {
+
     this.existingDate = group.dateOfFeed;
     this.existingTime = group.timeOfFeed;
     if (this.isGroupShown(group)) {
@@ -209,6 +216,10 @@ export class FeedPage {
     this.feedExpressionService.findByBabyCodeAndDate(this.dataForFeedEntryPage.babyCode,
       this.dataForFeedEntryPage.selectedDate, this.dataForFeedEntryPage.isNewExpression)
     .then(data=>{
+      if(this.isWeb){
+        (data as IFeed[]).filter(data=>data.dateOfFeed = data.dateOfFeed.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1'));
+        (data as IFeed[]).filter(data=>data.dateOfFeed = String(new Date(data.dateOfFeed).toISOString()));
+      }
       this.feedExpressions = data;
       if(this.feedExpressions.length === 0){
         this.newExpression();

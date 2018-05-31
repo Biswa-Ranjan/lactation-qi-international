@@ -65,6 +65,7 @@ export class AddPatientPage implements OnInit{
    */
   isWeb : boolean = false;
   maxDate: string;
+  minDate: string;
   private uniquePatientId : IUniquePatientId = {
     id: null,
     idNumber: null
@@ -171,6 +172,7 @@ export class AddPatientPage implements OnInit{
   ngOnInit() {
     this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     this.maxDate=this.datePipe.transform(new Date().valueOf(),"yyyy-MM-dd")
+    this.minDate = this.datePipe.transform(new Date(new Date().getFullYear(),(new Date().getMonth()),(new Date().getDate())-89).valueOf(),"yyyy-MM-dd")
     if(!(this.navParams.get('babyCode') == undefined)){
 
       this.headerTitle = "Edit Patient"
@@ -374,17 +376,17 @@ export class AddPatientPage implements OnInit{
     * @since 0.0.1
     */
     submit(){
-      
+
       if(this.patientForm.controls.delivery_date.value == null){
         document.getElementById('ddate').scrollIntoView({behavior: 'smooth'})
-      } else if(this.patientForm.controls.delivery_time.value == null || (this.isWeb && !this.validateWebDeliveryTime())) {        
+      } else if(this.patientForm.controls.delivery_time.value == null || (this.isWeb && !this.validateWebDeliveryTime())) {
         document.getElementById('dtime').scrollIntoView({behavior: 'smooth'})
         return
       }
-      
-      if(this.isWeb){
-        this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy"))
-      }
+
+      // if(this.isWeb){
+      //   this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy"))
+      // }
 
       this.outpatientAdmission();
       this.babyAdmitedToCheck();
@@ -400,17 +402,30 @@ export class AddPatientPage implements OnInit{
         } else {
           this.resetStatus = false;
 
+          if(this.isWeb)
+          {
+            if(this.patientForm.controls.delivery_date.value.length > 11){
+              this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(this.patientForm.controls.delivery_date.value.substring(0,10),"dd-MM-yyyy"))
+            }else{
+              this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy"))
+            }
+            if(this.patientForm.controls.discharge_date.value != null && this.patientForm.controls.discharge_date.value.length > 11){
+              this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(this.patientForm.controls.discharge_date.value.substring(0,10),"dd-MM-yyyy"))
+            }else{
+              this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(this.patientForm.controls.discharge_date.value,"dd-MM-yyyy"))
+            }
+          }
           //Initialize the add new patient object
           this.patient = {
             babyCode: this.uniquePatientId.id,
             babyCodeHospital: this.patientForm.controls.hospital_baby_id.value,
             babyOf: this.patientForm.controls.mother_name.value,
-            mothersAge: parseInt(this.patientForm.controls.mother_age.value),
+            mothersAge: this.patientForm.controls.mother_age.value==null?null:parseInt(this.patientForm.controls.mother_age.value),
             deliveryDate: this.patientForm.controls.delivery_date.value,
             deliveryTime: this.patientForm.controls.delivery_time.value,
             deliveryMethod: this.patientForm.controls.delivery_method.value,
-            babyWeight: parseFloat(this.patientForm.controls.baby_weight.value),
-            gestationalAgeInWeek: parseInt(this.patientForm.controls.gestational_age.value),
+            babyWeight: this.patientForm.controls.baby_weight.value==null?null:parseFloat(this.patientForm.controls.baby_weight.value),
+            gestationalAgeInWeek: this.patientForm.controls.gestational_age.value==null?null:parseInt(this.patientForm.controls.gestational_age.value),
             mothersPrenatalIntent: this.patientForm.controls.intent_provide_milk.value,
             parentsKnowledgeOnHmAndLactation: this.patientForm.controls.hm_lactation.value,
             timeTillFirstExpressionInHour: this.patientForm.controls.first_exp_time_in_hour.value,
@@ -452,6 +467,14 @@ export class AddPatientPage implements OnInit{
      */
     setFetchedDataToUi(){
 
+      if(this.isWeb){
+        this.patient.deliveryDate = this.patient.deliveryDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
+        this.patient.deliveryDate = String(new Date(this.patient.deliveryDate).toISOString())
+        if(this.patient.dischargeDate != null){
+          this.patient.dischargeDate = this.patient.dischargeDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
+          this.patient.dischargeDate = String(new Date(this.patient.dischargeDate).toISOString())
+        }
+      }
       this.patientForm = new FormGroup({
         baby_id: new FormControl(this.patient.babyCode),
         hospital_baby_id: new FormControl(this.patient.babyCodeHospital, [Validators.pattern(this.alphaNumeric), Validators.maxLength(25)]),
@@ -682,14 +705,14 @@ export class AddPatientPage implements OnInit{
   }
 
   validateWebDeliveryTime(): boolean{
-    
+
     let deliveryTime: string = this.patientForm.controls.delivery_time.value
     let validated: boolean = true
-    if(this.patientForm.controls.delivery_date.value != "" && 
-    this.patientForm.controls.delivery_date.value != null){      
+    if(this.patientForm.controls.delivery_date.value != "" &&
+    this.patientForm.controls.delivery_date.value != null){
       if(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy") === this.datePipe.transform(new Date(),"dd-MM-yyyy") ){
         if( deliveryTime > this.datePipe.transform(new Date(),"HH:mm")){
-          this.patientForm.controls.delivery_time.setValue("")          
+          this.patientForm.controls.delivery_time.setValue("")
           this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
           validated = false
         }else{
@@ -700,8 +723,8 @@ export class AddPatientPage implements OnInit{
       }
     }else{
       this.patientForm.controls.delivery_time.setValue(deliveryTime)
-    }  
-    
+    }
+
     return validated
   }
 }

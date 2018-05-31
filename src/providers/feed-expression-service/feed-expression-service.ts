@@ -13,6 +13,7 @@ import { MessageProvider } from '../message/message';
 import { OrderByDatePipe } from '../../pipes/order-by-date/order-by-date';
 import { PppServiceProvider } from '../ppp-service/ppp-service';
 import { UtilServiceProvider } from '../util-service/util-service';
+import { LactationProvider } from '../lactation/lactation';
 
 /**
  * This service will only provide service to Feed component
@@ -22,10 +23,12 @@ import { UtilServiceProvider } from '../util-service/util-service';
 @Injectable()
 export class FeedExpressionServiceProvider {
 
+  isWeb : boolean = false;
   constructor(public http: HttpClient,
-    private storage: Storage, private datePipe: DatePipe,
+    private storage: Storage, private datePipe: DatePipe,private lactationPlatform: LactationProvider,
   private userService: UserServiceProvider,private pppServiceProvider: PppServiceProvider,
   private messageService: MessageProvider, private utilService: UtilServiceProvider) {
+    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
   }
 
 
@@ -83,7 +86,10 @@ export class FeedExpressionServiceProvider {
    */
 
   saveFeedExpression(feedExpression: IFeed, existingDate: string, existingTime: string): Promise<any>{
-
+    if(existingDate != null && this.isWeb){
+      existingDate = existingDate.substring(0,10)
+      existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
+    }
     let promise = new Promise((resolve, reject) => {
       feedExpression.isSynced = false;
       feedExpression.createdDate = feedExpression.createdDate === null ?
