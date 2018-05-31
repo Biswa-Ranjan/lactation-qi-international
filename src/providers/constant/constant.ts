@@ -226,4 +226,13 @@ static areaLevels: IAreaLevel ={
 
   static appFolderName: string = 'Lactation'
 
+  static exportSheetNames: IExportSheetNames = {
+    patient: 'Patients',
+    bfExpression: 'Bf Expressions',
+    bfsp: 'BFSP',
+    logFeed: 'Log Feed',
+    bfpd: 'BFPD',
+    user: 'Users'
+  }
+
 }
