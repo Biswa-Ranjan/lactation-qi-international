@@ -5,6 +5,7 @@ import { ConstantProvider } from '../constant/constant';
 import { DatePipe } from '@angular/common';
 import { PppServiceProvider } from '../ppp-service/ppp-service';
 import { UtilServiceProvider } from '../util-service/util-service';
+import { LactationProvider } from '../lactation/lactation';
 
 /**
  *
@@ -16,8 +17,11 @@ import { UtilServiceProvider } from '../util-service/util-service';
 @Injectable()
 export class SaveExpressionBfProvider {
 
+  isWeb : boolean = false;
   constructor(public http: HttpClient, private storage: Storage, private datePipe: DatePipe,
-            private pppServiceProvider : PppServiceProvider, private utilService: UtilServiceProvider) {
+    private pppServiceProvider : PppServiceProvider, private utilService: UtilServiceProvider,
+    private lactationPlatform: LactationProvider) {
+      this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
   }
 
   /**
@@ -42,7 +46,10 @@ export class SaveExpressionBfProvider {
    * @author - Naseem Akhtar
    */
   saveBfExpression(bfExpression: IBFExpression, existingDate: string, existingTime: string): Promise<any>{
-
+    if(existingDate != null && this.isWeb){
+      existingDate = existingDate.substring(0,10)
+      existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
+    }
     let promise = new Promise((resolve, reject) => {
       bfExpression.isSynced = false;
       bfExpression.createdDate = bfExpression.createdDate === null ?

@@ -6,6 +6,7 @@ import { BfSupportivePracticeServiceProvider } from '../../providers/bf-supporti
 import { MessageProvider } from '../../providers/message/message';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { DatePicker } from '@ionic-native/date-picker';
+import { LactationProvider } from '../../providers/lactation/lactation';
 
 /**
  * This page will be used to enter the data of breast feeding supportive practice
@@ -36,12 +37,15 @@ export class BfSupportivePracticePage {
   deliveryDate: Date;
   dischargeDate: Date;
   defaultSelectedDate: Date;
+  isWeb : boolean = false;
+  minDate: string;
+  maxDate: string;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private messageService: MessageProvider,
     public formBuilder: FormBuilder, private datePipe: DatePipe,
     private bfspService: BfSupportivePracticeServiceProvider,
-    private datePicker: DatePicker
+    private datePicker: DatePicker, private lactationPlatform: LactationProvider
     ) { }
 
   /**
@@ -54,6 +58,7 @@ export class BfSupportivePracticePage {
    * fetch all the records for the selected baby and for the selected date
    */
   ngOnInit() {
+    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     this.dataForBfspPage = this.navParams.get('dataForBfspPage');
     //splitting delivery date to use it new date for min date of datepicker
     let x = this.dataForBfspPage.deliveryDate.split('-')
@@ -91,7 +96,11 @@ export class BfSupportivePracticePage {
       }, err => {
         this.messageService.showErrorToast(err)
       });
-  };
+    if(this.isWeb){
+      this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
+      this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
+    }
+  }
 
   /**
    * @author - Naseem Akhtar (naseem@sdrc.co.in)
@@ -129,6 +138,12 @@ export class BfSupportivePracticePage {
   };
 
   save(bfsp: IBFSP, index) {
+    if(this.isWeb)
+      if(bfsp.dateOfBFSP.length > 11){
+        bfsp.dateOfBFSP = this.datePipe.transform(bfsp.dateOfBFSP.substring(0,10),"dd-MM-yyyy")
+      }else{
+        bfsp.dateOfBFSP = this.datePipe.transform(bfsp.dateOfBFSP,"dd-MM-yyyy")
+      }
     let newData = bfsp.id === null ? true : false
     if(bfsp.dateOfBFSP === null) {
       this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfBfsp);
@@ -164,6 +179,10 @@ export class BfSupportivePracticePage {
     this.bfspService.findByBabyCodeAndDate(this.dataForBfspPage.babyCode,
       this.dataForBfspPage.selectedDate, this.dataForBfspPage.isNewBfsp)
       .then(data => {
+        if(this.isWeb){
+          (data as IBFSP[]).filter(data=>data.dateOfBFSP = data.dateOfBFSP.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1'));
+          (data as IBFSP[]).filter(data=>data.dateOfBFSP = String(new Date(data.dateOfBFSP).toISOString()));
+        }
         this.bfspList = data;
         if(this.bfspList.length === 0){
           this.newBFSPForm();

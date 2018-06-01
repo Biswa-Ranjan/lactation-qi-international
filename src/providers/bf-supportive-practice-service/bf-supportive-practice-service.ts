@@ -9,21 +9,25 @@ import { DatePipe } from '@angular/common';
 import { UserServiceProvider } from '../user-service/user-service';
 import { PppServiceProvider } from '../ppp-service/ppp-service';
 import { UtilServiceProvider } from '../util-service/util-service';
+import { LactationProvider } from '../lactation/lactation';
 
 /**
  * @author - Naseem Akhtar (naseem@sdrc.co.in)
  * @since - 0.0.1
- * 
- * This service will be used to fetch the mobile DB related data for 
+ *
+ * This service will be used to fetch the mobile DB related data for
  * the breastfeed supportive practices component.
  */
 
 @Injectable()
 export class BfSupportivePracticeServiceProvider {
 
+  isWeb : boolean = false;
   constructor(public http: HttpClient, private storage: Storage, private datePipe: DatePipe,
     private userService: UserServiceProvider,private pppServiceProvider: PppServiceProvider,
-    private utilService: UtilServiceProvider) {}
+    private utilService: UtilServiceProvider, private lactationPlatform: LactationProvider) {
+      this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
+    }
 
   /**
    * This method should return delivery method lists
@@ -43,7 +47,7 @@ export class BfSupportivePracticeServiceProvider {
   /**
    * This method will return all the possible options for person who has performed bfsp for drop
    * down selection in the UI
-   * 
+   *
    * @author - Naseem Akhtar (naseem@sdrc.co.in)
    * @since - 0.0.1
    */
@@ -57,14 +61,18 @@ export class BfSupportivePracticeServiceProvider {
 
   /**
    * This method will be used to update or insert a new bfsp entry into the mobile DB.
-   * 
+   *
    * @author - Naseem Akhtar (naseem@sdrc.co.in)
    * @since - 0.0.1
-   * @param bfspForm 
-   * @param existingDate 
-   * @param existingTime 
+   * @param bfspForm
+   * @param existingDate
+   * @param existingTime
    */
   saveNewBreastFeedingSupportivePracticeForm(bfspForm: IBFSP, existingDate: string, existingTime: string): Promise <any> {
+    if(existingDate != null && this.isWeb){
+      existingDate = existingDate.substring(0,10)
+      existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
+    }
     let promise = new Promise((resolve, reject) => {
       bfspForm.isSynced = false;
       bfspForm.createdDate = bfspForm.createdDate === null ?
@@ -125,10 +133,10 @@ export class BfSupportivePracticeServiceProvider {
 
   /**
    * This method is used to fetch records for the selected baby and for the selected date.
-   * 
-   * @param babyCode 
-   * @param date 
-   * @param isNewExpression 
+   *
+   * @param babyCode
+   * @param date
+   * @param isNewExpression
    */
   findByBabyCodeAndDate(babyCode: string, date: string, isNewExpression: boolean): Promise < IBFSP[] > {
     let promise: Promise < IBFSP[] > = new Promise((resolve, reject) => {
@@ -208,7 +216,7 @@ export class BfSupportivePracticeServiceProvider {
   /**
    * @author - Naseem
    * @param error - this returns the error that occured while making http call
-   * 
+   *
    * This method handles the error that occurs while making a http call
    */
   private handleError(error: HttpErrorResponse) {

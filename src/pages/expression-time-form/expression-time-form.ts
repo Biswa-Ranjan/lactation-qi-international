@@ -7,6 +7,7 @@ import { DatePipe } from '@angular/common';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { BFExpressionDateListProvider } from '../../providers/bf-expression-date-list-service/bf-expression-date-list-service';
 import { DatePicker } from '@ionic-native/date-picker';
+import { LactationProvider } from '../../providers/lactation/lactation';
 
 /**
  * This page will be used to enter the data of log expression breastfeed form
@@ -29,21 +30,22 @@ export class ExpressionTimeFormPage {
   dataForBFEntryPage: IDataForBFEntryPage
   methodOfBfExpObject: any;
   locOfExpressionObject: any;
-  maxDate:any;
   existingDate: string;
   existingTime: string;
   deliveryDate: Date;
   dischargeDate: Date;
   defaultSelectedDate: Date;
   onlyNumberRegex: RegExp = /^[0-9]*\.[0-9][0-9]$/;
+  isWeb : boolean = false;
+  minDate: string;
+  maxDate: string;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private addNewExpressionBfService: AddNewExpressionBfServiceProvider,
-    private messageService: MessageProvider,
+    private messageService: MessageProvider,private lactationPlatform: LactationProvider,
     private bfExpressionTimeService: SaveExpressionBfProvider,
     private expressionBFdateService: BFExpressionDateListProvider,
     private datePipe: DatePipe, private datePicker: DatePicker) {
-    this.maxDate = this.datePipe.transform(new Date(),"yyyy-MM-dd");
   }
 
   /**
@@ -56,6 +58,7 @@ export class ExpressionTimeFormPage {
    * fetch all the records for the selected baby and for the selected date
    */
   ngOnInit() {
+    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     this.dataForBFEntryPage = this.navParams.get('dataForBFEntryPage');
     let x = this.dataForBFEntryPage.deliveryDate.split('-');
     this.deliveryDate = new Date(+x[2],+x[1]-1,+x[0]);
@@ -77,7 +80,7 @@ export class ExpressionTimeFormPage {
       }
     }
 
-    this.findExpressionsByBabyCodeAndDate();    
+    this.findExpressionsByBabyCodeAndDate();
     //Getting method of expressionbf type details
     this.addNewExpressionBfService.getMethodOfExpressionBF()
       .subscribe(data => {
@@ -92,15 +95,18 @@ export class ExpressionTimeFormPage {
       }, err => {
         this.messageService.showErrorToast(err)
       });
-
+    if(this.isWeb){
+      this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
+      this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
+    }
   }
 
   /**
    * @author - Naseem Akhtar (naseem@sdrc.co.in)
    * @since - 0.0.1
-   * The following two methods is used to open the selected entry accordion and 
+   * The following two methods is used to open the selected entry accordion and
    * close the previously selected entry accordion.
-   * If same accordion is tapped again and again, then the same accordion will close and 
+   * If same accordion is tapped again and again, then the same accordion will close and
    * open alternatively.
   */
   toggleGroup(group: IBFExpression) {
@@ -116,17 +122,23 @@ export class ExpressionTimeFormPage {
   isGroupShown(group) {
     return this.shownGroup === group;
   };
-  
+
 
 
   /**
    * This method will save a single feed expression into database
-   * 
-   * @param {IBFExpression} BfExpression 
+   *
+   * @param {IBFExpression} BfExpression
    * @author Subhadarshani
    * @since 0.0.1
    */
   saveExpression(bfExpression: IBFExpression) {
+    if(this.isWeb)
+      if(bfExpression.dateOfExpression.length > 11){
+        bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression.substring(0,10),"dd-MM-yyyy")
+      }else{
+        bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression,"dd-MM-yyyy")
+      }
     let newData = bfExpression.id === null ? true : false
     //set validations for all the fields
     if(bfExpression.dateOfExpression === null){
@@ -152,7 +164,7 @@ export class ExpressionTimeFormPage {
   }
   /**
  * This method is going to create a new expression entry for selected date and keep it on the top and open
- * 
+ *
  * @memberof ExpressionTimeFormPage
  */
   newExpression(){
@@ -164,7 +176,7 @@ export class ExpressionTimeFormPage {
 
   /**
  * This method is going to validate the duration of expression field is a decimal field or not and check up to 2 decimal places.
- * 
+ *
  * @memberof ExpressionTimeFormPage
  */
   validateDurationOfExpression(bfExpression: IBFExpression) {
@@ -186,7 +198,7 @@ export class ExpressionTimeFormPage {
   }
    /**
  * This method is going to validate the volume of milk ranges from 0 to 300 or not.
- * 
+ *
  * @memberof ExpressionTimeFormPage
  */
   validateVolumeOfMilk(value) {
@@ -214,7 +226,7 @@ export class ExpressionTimeFormPage {
       if(data){
         this.bfExpressionTimeService.delete(bfExpression.id)
           .then(()=>{
-            //refreshing the list 
+            //refreshing the list
             this.findExpressionsByBabyCodeAndDate();
             this.messageService.showSuccessToast(ConstantProvider.messages.deleted)
           })
@@ -236,6 +248,10 @@ export class ExpressionTimeFormPage {
     this.expressionBFdateService.findByBabyCodeAndDate(this.dataForBFEntryPage.babyCode,
       this.dataForBFEntryPage.selectedDate, this.dataForBFEntryPage.isNewExpression)
     .then(data => {
+      if(this.isWeb){
+        (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1'));
+        (data as IBFExpression[]).filter(data=>data.dateOfExpression = String(new Date(data.dateOfExpression).toISOString()));
+      }
       this.bFExpressions = data;
       if(this.bFExpressions.length === 0){
         this.newExpression();
@@ -253,7 +269,7 @@ export class ExpressionTimeFormPage {
    * @author - Naseem Akhtar
    * @since - 0.0.1
    */
-  
+
   datePickerDialog(bfExpForm: IBFExpression){
     this.datePicker.show({
     date: this.defaultSelectedDate,
@@ -294,14 +310,14 @@ export class ExpressionTimeFormPage {
       bfExpform.volOfMilkExpressedFromLR = null;
   }
 
-  /** 
+  /**
    * This method will validate time selected by the user, if it is current date,
    * then future time will not be allowed.
    * @author - Naseem Akhtar
    * @since - 0.0.1
   */
  validateTime(time: string, bfExpForm: IBFExpression){
-    if(bfExpForm.dateOfExpression === this.datePipe.transform(new Date(),'dd-MM-yyyy') 
+    if(bfExpForm.dateOfExpression === this.datePipe.transform(new Date(),'dd-MM-yyyy')
       && time != null && time > this.datePipe.transform(new Date(),'HH:mm')){
         this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
         bfExpForm.timeOfExpression = null;

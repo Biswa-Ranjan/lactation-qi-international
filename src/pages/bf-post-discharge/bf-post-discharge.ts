@@ -5,6 +5,7 @@ import { MessageProvider } from '../../providers/message/message';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { DatePicker } from '@ionic-native/date-picker';
 import { DatePipe } from '@angular/common';
+import { LactationProvider } from '../../providers/lactation/lactation';
 
 /**
  * This page will be used to enter the data of breast feeding post discharge form
@@ -26,6 +27,10 @@ export class BfPostDischargePage {
   deliveryDate: Date;
   dischargeDate: Date;
   formHeading: string;
+  isWeb : boolean = false;
+  minDate: string;
+  maxDate: string;
+
   bfpd: IBFPD = {
     babyCode: null,
     dateOfBreastFeeding: null,
@@ -44,7 +49,7 @@ export class BfPostDischargePage {
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private bfPostDischargeService: BfPostDischargeServiceProvider,
     private messageService: MessageProvider, private datePicker: DatePicker,
-    private datePipe: DatePipe) {}
+    private datePipe: DatePipe, private lactationPlatform: LactationProvider) {}
 
   /**
    * @author Naseem Akhtar (naseem@sdrc.co.in)
@@ -55,6 +60,7 @@ export class BfPostDischargePage {
    * post discharge (if any)
    */
   ngOnInit() {
+    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     this.dataFromBfpdMenu = this.navParams.data;
     this.babyCode = this.dataFromBfpdMenu.babyCode;
     //splitting delivery date to use it new date for min date of datepicker
@@ -87,8 +93,13 @@ export class BfPostDischargePage {
     //fetching bfpd record by time of bf id and baby code.
     this.bfPostDischargeService.findByBabyCodeAndTimeOfBreastFeedingId(this.babyCode, this.navParams.data.menuItemId)
       .then(data => {
-        if(data != null)
+        if(data != null){
+          if(this.isWeb){
+            data.dateOfBreastFeeding = data.dateOfBreastFeeding.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1');
+            data.dateOfBreastFeeding = data.dateOfBreastFeeding = String(new Date(data.dateOfBreastFeeding).toISOString());
+          }
           this.bfpd = data;
+        }
         else
           this.bfpd.babyCode = this.babyCode;
       }).catch(error => {
@@ -114,7 +125,11 @@ export class BfPostDischargePage {
       }, error => {
         this.messageService.showErrorToast(error);
       });
-  };
+    if(this.isWeb){
+      this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
+      this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
+    }
+  }
 
   /**
    * this method is used to save the form entry by the user.
@@ -123,6 +138,12 @@ export class BfPostDischargePage {
    * @since 0.0.1
    */
   save() {
+    if(this.isWeb)
+      if(this.bfpd.dateOfBreastFeeding.length > 11){
+        this.bfpd.dateOfBreastFeeding = this.datePipe.transform(this.bfpd.dateOfBreastFeeding.substring(0,10),"dd-MM-yyyy")
+      }else{
+        this.bfpd.dateOfBreastFeeding = this.datePipe.transform(this.bfpd.dateOfBreastFeeding,"dd-MM-yyyy")
+      }
     let newData: boolean = this.bfpd.id === null ? true : false
     if(this.bfpd.dateOfBreastFeeding === null) {
       this.messageService.showErrorToast(ConstantProvider.messages.dateOfBfpd)

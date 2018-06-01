@@ -29,7 +29,8 @@
               <ion-label color="black" stacked>Date of BFSP
                 <span class="text-color"> *</span>
               </ion-label>
-              <ion-input [readonly]="true" [(ngModel)]="bfsp.dateOfBFSP" (ionFocus)="datePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
+              <ion-input *ngIf="!isWeb" [readonly]="true" [(ngModel)]="bfsp.dateOfBFSP" (ionFocus)="datePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
+              <ion-datetime *ngIf="isWeb" [(ngModel)]="bfsp.dateOfBFSP" [ngModelOptions]="{standalone: true}" displayFormat="DD-MM-YYYY" [min]="minDate" [max]="maxDate"></ion-datetime>
               <ion-icon padding-top name="calendar" item-right></ion-icon>
             </ion-item>
 
@@ -37,7 +38,8 @@
               <ion-label color="black" stacked>Time at which BFSP occured
                 <span class="text-color"> *</span>
               </ion-label>
-              <ion-input [readonly]="true" [(ngModel)]="bfsp.timeOfBFSP" (ionFocus)="timePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
+              <ion-input *ngIf="!isWeb" [readonly]="true" [(ngModel)]="bfsp.timeOfBFSP" (ionFocus)="timePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
+              <ion-datetime *ngIf="isWeb" [(ngModel)]="bfsp.timeOfBFSP" [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"></ion-datetime>
               <ion-icon padding-top name="time" item-right></ion-icon>
             </ion-item>
             <p class="error" *ngIf="">

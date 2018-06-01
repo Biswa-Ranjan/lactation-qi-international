@@ -93,8 +93,6 @@ export class FeedPage {
     }, err => {
       this.messageService.showErrorToast(err)
     });
-
-    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     if(this.isWeb){
       this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
       this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
@@ -150,11 +148,11 @@ export class FeedPage {
   // This method will be called when the user clicks on save of a particular entry.
   saveExpression(feedExpression: IFeed){
     if(this.isWeb)
-    if(feedExpression.dateOfFeed.length > 11){
-      feedExpression.dateOfFeed = this.datePipe.transform(feedExpression.dateOfFeed.substring(0,10),"dd-MM-yyyy")
-    }else{
-      feedExpression.dateOfFeed = this.datePipe.transform(feedExpression.dateOfFeed,"dd-MM-yyyy")
-    }
+      if(feedExpression.dateOfFeed.length > 11){
+        feedExpression.dateOfFeed = this.datePipe.transform(feedExpression.dateOfFeed.substring(0,10),"dd-MM-yyyy")
+      }else{
+        feedExpression.dateOfFeed = this.datePipe.transform(feedExpression.dateOfFeed,"dd-MM-yyyy")
+      }
     let newData: boolean = feedExpression.id === null ? true : false
     this.feedExpressionService.saveFeedExpression(feedExpression, this.existingDate, this.existingTime)
       .then(data=> {
