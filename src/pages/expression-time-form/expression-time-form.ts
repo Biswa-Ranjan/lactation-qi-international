@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { AddNewExpressionBfServiceProvider } from '../../providers/add-new-expression-bf-service/add-new-expression-bf-service';
 import { MessageProvider } from '../../providers/message/message';
 import { SaveExpressionBfProvider } from '../../providers/save-expression-bf/save-expression-bf';
@@ -8,6 +8,7 @@ import { ConstantProvider } from '../../providers/constant/constant';
 import { BFExpressionDateListProvider } from '../../providers/bf-expression-date-list-service/bf-expression-date-list-service';
 import { DatePicker } from '@ionic-native/date-picker';
 import { LactationProvider } from '../../providers/lactation/lactation';
+import { window } from 'rxjs/operators';
 
 /**
  * This page will be used to enter the data of log expression breastfeed form
@@ -39,13 +40,16 @@ export class ExpressionTimeFormPage {
   isWeb : boolean = false;
   minDate: string;
   maxDate: string;
+  babyCode: string = null;
+  dateOfExpressions: string = null;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private addNewExpressionBfService: AddNewExpressionBfServiceProvider,
     private messageService: MessageProvider,private lactationPlatform: LactationProvider,
     private bfExpressionTimeService: SaveExpressionBfProvider,
     private expressionBFdateService: BFExpressionDateListProvider,
-    private datePipe: DatePipe, private datePicker: DatePicker) {
+    private datePipe: DatePipe, private datePicker: DatePicker,
+    private platform: Platform) {
   }
 
   /**
@@ -58,8 +62,16 @@ export class ExpressionTimeFormPage {
    * fetch all the records for the selected baby and for the selected date
    */
   ngOnInit() {
-    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     this.dataForBFEntryPage = this.navParams.get('dataForBFEntryPage');
+    //setting baby code and date of expressions as per the new requirement and design.
+    this.babyCode = this.dataForBFEntryPage.babyCode
+    this.dateOfExpressions = this.dataForBFEntryPage.selectedDate
+    if(this.dateOfExpressions != null && this.isWeb) {
+      this.dateOfExpressions.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
+      String(new Date(this.dateOfExpressions).toISOString())
+    }
+
+    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     let x = this.dataForBFEntryPage.deliveryDate.split('-');
     this.deliveryDate = new Date(+x[2],+x[1]-1,+x[0]);
     let check90Days = new Date(+x[2],+x[1]-1,+x[0]);
@@ -133,7 +145,7 @@ export class ExpressionTimeFormPage {
    * @since 0.0.1
    */
   saveExpression(bfExpression: IBFExpression) {
-    if(this.isWeb)
+    if(this.isWeb && bfExpression.dateOfExpression)
       if(bfExpression.dateOfExpression.length > 11){
         bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression.substring(0,10),"dd-MM-yyyy")
       }else{
@@ -141,13 +153,14 @@ export class ExpressionTimeFormPage {
       }
     let newData = bfExpression.id === null ? true : false
     //set validations for all the fields
-    if(bfExpression.dateOfExpression === null){
+    if(this.dateOfExpressions === null){
       this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfExpression);
     }else if(bfExpression.timeOfExpression === null){
       this.messageService.showErrorToast(ConstantProvider.messages.enterTimeOfExpression);
     }else if(!this.validateDurationOfExpression(bfExpression)){
       this.messageService.showErrorToast(ConstantProvider.messages.volumeOfMilkExpressedFromBreast);
     }else {
+      bfExpression.dateOfExpression = this.dateOfExpressions
       this.bfExpressionTimeService.saveBfExpression(bfExpression, this.existingDate, this.existingTime)
       .then(data => {
         this.findExpressionsByBabyCodeAndDate();
@@ -167,11 +180,11 @@ export class ExpressionTimeFormPage {
  *
  * @memberof ExpressionTimeFormPage
  */
-  newExpression(){
+  newExpression() {
     this.bFExpressions = this.expressionBFdateService.appendNewRecordAndReturn(this.bFExpressions,
-      this.dataForBFEntryPage.babyCode, this.dataForBFEntryPage.selectedDate);
-    setTimeout(d => this.toggleGroup(this.bFExpressions[0]),100);
-    document.getElementById('scrollHere').scrollIntoView({behavior: 'smooth'})
+      this.dataForBFEntryPage.babyCode, 1, this.dataForBFEntryPage.selectedDate)
+    // setTimeout(d => this.toggleGroup(this.bFExpressions[0]),100)
+    // document.getElementById('scrollHere').scrollIntoView({behavior: 'smooth'})
   }
 
   /**
@@ -248,13 +261,14 @@ export class ExpressionTimeFormPage {
     this.expressionBFdateService.findByBabyCodeAndDate(this.dataForBFEntryPage.babyCode,
       this.dataForBFEntryPage.selectedDate, this.dataForBFEntryPage.isNewExpression)
     .then(data => {
-      if(this.isWeb){
-        (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1'));
-        (data as IBFExpression[]).filter(data=>data.dateOfExpression = String(new Date(data.dateOfExpression).toISOString()));
-      }
-      this.bFExpressions = data;
-      if(this.bFExpressions.length === 0){
+      if(data.length === 0) {
         this.newExpression();
+      }else {
+        if(this.isWeb){
+          (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression === null ? null : data.dateOfExpression.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1'));
+          (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression === null ? null : String(new Date(data.dateOfExpression).toISOString()));
+        }
+        this.bFExpressions = data
       }
     })
     .catch(err => {
@@ -270,7 +284,7 @@ export class ExpressionTimeFormPage {
    * @since - 0.0.1
    */
 
-  datePickerDialog(bfExpForm: IBFExpression){
+  datePickerDialog(){
     this.datePicker.show({
     date: this.defaultSelectedDate,
     minDate: this.deliveryDate.valueOf(),
@@ -279,8 +293,8 @@ export class ExpressionTimeFormPage {
     androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
     }).then(
       date => {
-        bfExpForm.dateOfExpression = this.datePipe.transform(date,"dd-MM-yyyy")
-        this.validateTime(bfExpForm.timeOfExpression, bfExpForm)
+        this.dateOfExpressions = this.datePipe.transform(date,"dd-MM-yyyy")
+        // this.validateTime(bfExpForm.timeOfExpression, bfExpForm)
       },
       err => console.log('Error occurred while getting date: ', err)
     );

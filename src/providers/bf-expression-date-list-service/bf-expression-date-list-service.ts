@@ -74,19 +74,19 @@ export class BFExpressionDateListProvider {
           if(data != null){
             data = (data as IBFExpression[]).filter(d => d.babyCode === babyCode && d.dateOfExpression === date);
             if((data as IBFExpression[]).length > 0){
-              resolve(data)
+              resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault - data.length, babyCode, date))
             }else{
-              resolve([]);
+              resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault, babyCode, date));
             }
           }else{
-            resolve([])
+            resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault, babyCode, date))
           }
         })
         .catch(err=>{
           reject(err.message)
         })
       }else{
-        resolve([])
+        resolve(this.defaultDisplayOfEntries([], ConstantProvider.noOfRecordsByDefault, babyCode, date))
       }
     });
     return promise;
@@ -101,8 +101,30 @@ export class BFExpressionDateListProvider {
  * @returns {IBFExpression[]} The final appended list
  * @memberof ExpressionBfDateProvider
  */
-  appendNewRecordAndReturn(data: IBFExpression[], babyCode: string, date?: string): IBFExpression[]{
+  appendNewRecordAndReturn(data: IBFExpression[], babyCode: string, count: number, date?: string): IBFExpression[] {
+    
     //The blank feed object
+
+    // if(data != null){
+    //   (data as IBFExpression[]).splice(0, 0, bf)
+    // }else{
+    //   data = [];
+    //   data.push(bf)
+    // }
+
+    if(data === null) {
+      data = []
+    }else {
+      for (let index = 0; index <= count; index++) {
+        data.push(this.getNewBfExpressionEntry(babyCode, date))
+      }
+    }
+    // data.push(this.getNewBfExpressionEntry(babyCode, date))
+
+    return data
+  }
+
+  getNewBfExpressionEntry(babyCode: string, date: string) {
     let bf: IBFExpression = {
       id: null,
       babyCode: babyCode,
@@ -119,12 +141,13 @@ export class BFExpressionDateListProvider {
       uuidNumber: null
     }
 
-    if(data != null){
-      (data as IBFExpression[]).splice(0, 0, bf)
-    }else{
-      data = [];
-      data.push(bf)
+    return bf;
+  }
+
+  defaultDisplayOfEntries(bfExpressions: IBFExpression[], count: number, babyCode: string, date: string) {
+    for (let index = 0; index < count; index++) {
+      bfExpressions.push(this.getNewBfExpressionEntry(babyCode, date))
     }
-    return data
+    return bfExpressions
   }
 }

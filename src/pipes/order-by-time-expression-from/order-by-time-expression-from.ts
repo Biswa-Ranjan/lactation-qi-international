@@ -19,28 +19,29 @@ export class OrderByTimeExpressionFromPipe implements PipeTransform {
 
       let date = expressionForm[0].dateOfExpression
       expressionForm.sort((a: IBFExpression, b: IBFExpression) => {
+        if(date != null && a.timeOfExpression && b.timeOfExpression) {
+          let day = parseInt(date.split('-')[0])
+          let month = parseInt(date.split('-')[1])
+          let year = parseInt(date.split('-')[2])
 
-        let day = parseInt(date.split('-')[0])
-        let month = parseInt(date.split('-')[1])
-        let year = parseInt(date.split('-')[2])
+          let hourOfA = parseInt(a.timeOfExpression.split(':')[0])
+          let minuteOfA = parseInt(a.timeOfExpression.split(':')[1])
 
-        let hourOfA = parseInt(a.timeOfExpression.split(':')[0])
-        let minuteOfA = parseInt(a.timeOfExpression.split(':')[1])
+          let hourOfB = parseInt(b.timeOfExpression.split(':')[0])
+          let minuteOfB = parseInt(b.timeOfExpression.split(':')[1])
 
-        let hourOfB = parseInt(b.timeOfExpression.split(':')[0])
-        let minuteOfB = parseInt(b.timeOfExpression.split(':')[1])
+          // passing year, month, day, hourOfA and minuteOfA to Date()
+          let dateOfA: Date = new Date(year, month, day, hourOfA, minuteOfA)
+          let dateOfB: Date = new Date(year, month, day, hourOfB, minuteOfB)
 
-        // passing year, month, day, hourOfA and minuteOfA to Date()
-        let dateOfA: Date = new Date(year, month, day, hourOfA, minuteOfA)
-        let dateOfB: Date = new Date(year, month, day, hourOfB, minuteOfB)
-
-        //comparing both the dates.
-        if (dateOfA < dateOfB) {
-          return 1;
-        } else if (a > b) {
-          return -1;
-        } else {
-          return 0;
+          //comparing both the dates.
+          if (dateOfA < dateOfB) {
+            return 1;
+          } else if (a > b) {
+            return -1;
+          } else {
+            return 0;
+          }
         }
       });
       return expressionForm

@@ -235,4 +235,6 @@ static areaLevels: IAreaLevel ={
     user: 'Users'
   }
 
+  static noOfRecordsByDefault: number = 8;
+
 }
