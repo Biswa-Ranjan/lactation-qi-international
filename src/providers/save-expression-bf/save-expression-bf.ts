@@ -45,11 +45,11 @@ export class SaveExpressionBfProvider {
    * @param babyid the patient id for which we are saving data
    * @author - Naseem Akhtar
    */
-  saveBfExpression(bfExpression: IBFExpression, existingDate: string, existingTime: string): Promise<any>{
-    if(existingDate != null && this.isWeb){
-      existingDate = existingDate.substring(0,10)
-      existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
-    }
+  saveBfExpression(bfExpression: IBFExpression, newData: boolean): Promise<any>{
+    // if(existingDate != null && this.isWeb){
+    //   existingDate = existingDate.substring(0,10)
+    //   existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
+    // }
     let promise = new Promise((resolve, reject) => {
       bfExpression.isSynced = false;
       bfExpression.createdDate = bfExpression.createdDate === null ?
@@ -63,11 +63,14 @@ export class SaveExpressionBfProvider {
         if(val != null && val.length > 0) {
           bfExpressions = val;
           let index = bfExpressions.findIndex(d=>d.babyCode === bfExpression.babyCode && d.dateOfExpression === bfExpression.dateOfExpression
-              && d.timeOfExpression === bfExpression.timeOfExpression);
+              && d.timeOfExpression === bfExpression.timeOfExpression)
+
           if(index < 0) {
-            index = bfExpressions.findIndex(d=>d.babyCode === bfExpression.babyCode && d.dateOfExpression === existingDate
-              && d.timeOfExpression === existingTime);
-            bfExpressions = this.validateNewEntryAndUpdate(bfExpressions, bfExpression, index)
+            // index = bfExpressions.findIndex(d=>d.babyCode === bfExpression.babyCode && d.dateOfExpression === existingDate
+            //   && d.timeOfExpression === existingTime);
+            bfExpression.id = this.getNewBfExpressionId(bfExpression.babyCode)
+            bfExpressions.push(bfExpression)
+            // bfExpressions = this.validateNewEntryAndUpdate(bfExpressions, bfExpression, index)
             this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
               .then(data=> {
                 resolve()
@@ -76,10 +79,11 @@ export class SaveExpressionBfProvider {
                 reject(err.message);
               })
           }else {
-            if(bfExpression.dateOfExpression === existingDate &&  bfExpression.timeOfExpression === existingTime){
-              bfExpressions = this.validateNewEntryAndUpdate(bfExpressions, bfExpression, index)
+            if(!newData) {
+              bfExpressions.splice(index, 1, bfExpression)
+              // bfExpressions = this.validateNewEntryAndUpdate(bfExpressions, bfExpression, index)
               this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
-              .then(data=>{
+              .then(data => {
                 resolve()
               })
               .catch(err=>{
@@ -171,5 +175,50 @@ export class SaveExpressionBfProvider {
       }
     });
     return promise;
+  }
+
+  saveMultipleBfExpressions(bfExpressions: IBFExpression[], babyCode: string, date: string): Promise<any> {
+    let promise = new Promise((resolve, reject) => {
+      this.storage.get(ConstantProvider.dbKeyNames.bfExpressions)
+      .then( data => {
+        if(data != null && data.length > 0 && data.filter(d => d.babyCode === babyCode 
+          && d.dateOfExpression === date).length > 0) {
+          let validatedExpressions = this.validateMultipleExpressions(data, bfExpressions)
+          this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, validatedExpressions)
+          .then( d => resolve() )
+          .catch( error => reject(error.message) )
+        }else {
+          bfExpressions = this.setUpdatedDateAndUuidInExpressions(bfExpressions)
+          this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
+          .then( d => resolve() )
+          .catch( error => reject(error.message) )
+        }
+      })
+    })
+    return promise
+  }
+
+  setUpdatedDateAndUuidInExpressions(bfExpressions: IBFExpression[]) {
+    bfExpressions.forEach(bfExpression => {
+      bfExpression.updatedDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
+      bfExpression.uuidNumber = this.utilService.getUuid();
+    })
+
+    return bfExpressions
+  }
+
+  validateMultipleExpressions(dbExpressions: IBFExpression[], expressionsToBeSaved: IBFExpression[]) {
+    expressionsToBeSaved.forEach( exp => {
+      let index = dbExpressions.findIndex( d => d.babyCode === exp.babyCode && 
+        d.dateOfExpression === exp.dateOfExpression && d.timeOfExpression === exp.timeOfExpression)
+
+      if(index >= 0) {
+        dbExpressions.splice(index, 1)
+      }
+    })
+
+    dbExpressions.push(...expressionsToBeSaved)
+
+    return dbExpressions
   }
 }

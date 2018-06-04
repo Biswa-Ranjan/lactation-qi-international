@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AddNewExpressionBfServiceProvider } from '../../providers/add-new-expression-bf-service/add-new-expression-bf-service';
 import { MessageProvider } from '../../providers/message/message';
 import { SaveExpressionBfProvider } from '../../providers/save-expression-bf/save-expression-bf';
@@ -8,7 +8,6 @@ import { ConstantProvider } from '../../providers/constant/constant';
 import { BFExpressionDateListProvider } from '../../providers/bf-expression-date-list-service/bf-expression-date-list-service';
 import { DatePicker } from '@ionic-native/date-picker';
 import { LactationProvider } from '../../providers/lactation/lactation';
-import { window } from 'rxjs/operators';
 
 /**
  * This page will be used to enter the data of log expression breastfeed form
@@ -42,14 +41,19 @@ export class ExpressionTimeFormPage {
   maxDate: string;
   babyCode: string = null;
   dateOfExpressions: string = null;
+  methodOfExpressionConfig: any = {
+    title: 'Method of Expression'
+  };
+  locationWhereExpressionOccuredConfig: any = {
+    title: 'Location where expression occured'
+  }
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private addNewExpressionBfService: AddNewExpressionBfServiceProvider,
     private messageService: MessageProvider,private lactationPlatform: LactationProvider,
     private bfExpressionTimeService: SaveExpressionBfProvider,
     private expressionBFdateService: BFExpressionDateListProvider,
-    private datePipe: DatePipe, private datePicker: DatePicker,
-    private platform: Platform) {
+    private datePipe: DatePipe, private datePicker: DatePicker) {
   }
 
   /**
@@ -62,16 +66,19 @@ export class ExpressionTimeFormPage {
    * fetch all the records for the selected baby and for the selected date
    */
   ngOnInit() {
+    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     this.dataForBFEntryPage = this.navParams.get('dataForBFEntryPage');
     //setting baby code and date of expressions as per the new requirement and design.
     this.babyCode = this.dataForBFEntryPage.babyCode
     this.dateOfExpressions = this.dataForBFEntryPage.selectedDate
     if(this.dateOfExpressions != null && this.isWeb) {
-      this.dateOfExpressions.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
-      String(new Date(this.dateOfExpressions).toISOString())
+      let tempDateOfExpression = this.dataForBFEntryPage.selectedDate.split('-')
+      this.dateOfExpressions = tempDateOfExpression[2] + '-' + tempDateOfExpression[1] + '-'
+        + tempDateOfExpression[0]
+      // this.dateOfExpressions.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
+      // String(new Date(this.dateOfExpressions).toISOString())
     }
 
-    this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     let x = this.dataForBFEntryPage.deliveryDate.split('-');
     this.deliveryDate = new Date(+x[2],+x[1]-1,+x[0]);
     let check90Days = new Date(+x[2],+x[1]-1,+x[0]);
@@ -145,12 +152,12 @@ export class ExpressionTimeFormPage {
    * @since 0.0.1
    */
   saveExpression(bfExpression: IBFExpression) {
-    if(this.isWeb && bfExpression.dateOfExpression)
-      if(bfExpression.dateOfExpression.length > 11){
-        bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression.substring(0,10),"dd-MM-yyyy")
-      }else{
-        bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression,"dd-MM-yyyy")
-      }
+    // if(this.isWeb && bfExpression.dateOfExpression)
+    //   if(bfExpression.dateOfExpression.length > 11){
+    //     bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression.substring(0,10),"dd-MM-yyyy")
+    //   }else{
+    //     bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression,"dd-MM-yyyy")
+    //   }
     let newData = bfExpression.id === null ? true : false
     //set validations for all the fields
     if(this.dateOfExpressions === null){
@@ -160,8 +167,8 @@ export class ExpressionTimeFormPage {
     }else if(!this.validateDurationOfExpression(bfExpression)){
       this.messageService.showErrorToast(ConstantProvider.messages.volumeOfMilkExpressedFromBreast);
     }else {
-      bfExpression.dateOfExpression = this.dateOfExpressions
-      this.bfExpressionTimeService.saveBfExpression(bfExpression, this.existingDate, this.existingTime)
+      bfExpression.dateOfExpression = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
+      this.bfExpressionTimeService.saveBfExpression(bfExpression, newData)
       .then(data => {
         this.findExpressionsByBabyCodeAndDate();
         if(newData)
@@ -265,8 +272,8 @@ export class ExpressionTimeFormPage {
         this.newExpression();
       }else {
         if(this.isWeb){
-          (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression === null ? null : data.dateOfExpression.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1'));
-          (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression === null ? null : String(new Date(data.dateOfExpression).toISOString()));
+          // (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression === null ? null : data.dateOfExpression.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1'));
+          // (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression === null ? null : String(new Date(data.dateOfExpression).toISOString()));
         }
         this.bFExpressions = data
       }
@@ -332,15 +339,65 @@ export class ExpressionTimeFormPage {
   */
  validateTime(time: string, bfExpForm: IBFExpression){
     if(bfExpForm.dateOfExpression === this.datePipe.transform(new Date(),'dd-MM-yyyy')
-      && time != null && time > this.datePipe.transform(new Date(),'HH:mm')){
+      && time != null && time > this.datePipe.transform(new Date(),'HH:mm')) {
         this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
-        bfExpForm.timeOfExpression = null;
+        bfExpForm.timeOfExpression = null
     }else if(bfExpForm.dateOfExpression === this.dataForBFEntryPage.deliveryDate && time != null
-      && time < this.dataForBFEntryPage.deliveryTime){
+      && time < this.dataForBFEntryPage.deliveryTime) {
         this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
-        bfExpForm.timeOfExpression = null;
-    }else{
+        bfExpForm.timeOfExpression = null
+    }else if(this.bFExpressions.filter( d => d.timeOfExpression === time).length > 1) {
+      this.messageService.showErrorToast(ConstantProvider.messages.duplicateTime)
+    }else {
       bfExpForm.timeOfExpression = time
+    }
+  }
+
+  saveAllExpressions() {
+    if(this.dateOfExpressions != null) {
+      let date = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
+      let finalExpressions: IBFExpression[] = []
+
+      this.bFExpressions.forEach(bfExpression => {
+        bfExpression.dateOfExpression = this.dateOfExpressions
+        if(this.isWeb && bfExpression.dateOfExpression) {
+          bfExpression.dateOfExpression = date
+          // if(bfExpression.dateOfExpression.length > 11) {
+          //   bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression.substring(0,10),"dd-MM-yyyy")
+          // }else {
+          //   bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression,"dd-MM-yyyy")
+          // }
+        }
+
+        if(bfExpression.timeOfExpression != null && this.validateDurationOfExpression(bfExpression)) {
+          finalExpressions.push(bfExpression)
+        }
+      });
+
+      if(finalExpressions.length > 0)
+        this.bfExpressionTimeService.saveMultipleBfExpressions(finalExpressions, this.babyCode, date)
+      else
+        this.messageService.showErrorToast("No valid record to save")
+    }else {
+      this.messageService.showErrorToast("Please enter the date of expression and try saving again.")
+    }
+  }
+
+  /**
+   * @since - 2.0.1
+   * @author - Naseem Akhtar
+   * This method will ask the user for confirmation regarding the date that has been
+   * selected.
+   */
+  dateConfirmation() {
+    if(this.dateOfExpressions != null) {
+      this.messageService.showAlert('Alert', 'Are you sure you want to continue with this date')
+      .then( data => {
+        if(!data)
+          this.dateOfExpressions = null
+      }).catch( error => {
+        this.messageService.showErrorToast(error)
+      })
     }
   }
 }
