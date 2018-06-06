@@ -337,7 +337,7 @@ export class ExpressionTimeFormPage {
    * @author - Naseem Akhtar
    * @since - 0.0.1
   */
- validateTime(time: string, bfExpForm: IBFExpression){
+ validateTime(time: string, bfExpForm: IBFExpression) {
     if(bfExpForm.dateOfExpression === this.datePipe.transform(new Date(),'dd-MM-yyyy')
       && time != null && time > this.datePipe.transform(new Date(),'HH:mm')) {
         this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
@@ -348,8 +348,11 @@ export class ExpressionTimeFormPage {
         bfExpForm.timeOfExpression = null
     }else if(this.bFExpressions.filter( d => d.timeOfExpression === time).length > 1) {
       this.messageService.showErrorToast(ConstantProvider.messages.duplicateTime)
+      bfExpForm.timeOfExpression = null
     }else {
       bfExpForm.timeOfExpression = time
+      bfExpForm.id = bfExpForm.id != null ? bfExpForm.id : 
+        this.bfExpressionTimeService.getNewBfExpressionId(bfExpForm.babyCode)
     }
   }
 
@@ -359,8 +362,8 @@ export class ExpressionTimeFormPage {
       let finalExpressions: IBFExpression[] = []
 
       this.bFExpressions.forEach(bfExpression => {
-        bfExpression.dateOfExpression = this.dateOfExpressions
-        if(this.isWeb && bfExpression.dateOfExpression) {
+        // bfExpression.dateOfExpression = this.dateOfExpressions
+        if(!bfExpression.dateOfExpression) {
           bfExpression.dateOfExpression = date
           // if(bfExpression.dateOfExpression.length > 11) {
           //   bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression.substring(0,10),"dd-MM-yyyy")
@@ -374,8 +377,13 @@ export class ExpressionTimeFormPage {
         }
       });
 
-      if(finalExpressions.length > 0)
+      if(finalExpressions.length > 0) {
         this.bfExpressionTimeService.saveMultipleBfExpressions(finalExpressions, this.babyCode, date)
+        .then( data => {
+          this.findExpressionsByBabyCodeAndDate()
+          this.messageService.showSuccessToast(ConstantProvider.messages.saveAllString)
+        }).catch( error => this.messageService.showErrorToast('Warning' + error.message))
+      }
       else
         this.messageService.showErrorToast("No valid record to save")
     }else {

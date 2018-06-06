@@ -177,17 +177,26 @@ export class SaveExpressionBfProvider {
     return promise;
   }
 
+  /**
+   * @author Naseem Akhtar
+   * @param bfExpressions 
+   * @param babyCode 
+   * @param date 
+   * 
+   * This method will be used to save multiple entries at once.
+   */
   saveMultipleBfExpressions(bfExpressions: IBFExpression[], babyCode: string, date: string): Promise<any> {
     let promise = new Promise((resolve, reject) => {
       this.storage.get(ConstantProvider.dbKeyNames.bfExpressions)
       .then( data => {
         if(data != null && data.length > 0 && data.filter(d => d.babyCode === babyCode 
           && d.dateOfExpression === date).length > 0) {
-          let validatedExpressions = this.validateMultipleExpressions(data, bfExpressions)
+          let validatedExpressions = this.validateMultipleExpressions(data, bfExpressions, babyCode, date)
           this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, validatedExpressions)
           .then( d => resolve() )
           .catch( error => reject(error.message) )
         }else {
+          bfExpressions = bfExpressions === null ?  [] : bfExpressions
           bfExpressions = this.setUpdatedDateAndUuidInExpressions(bfExpressions)
           this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
           .then( d => resolve() )
@@ -198,25 +207,49 @@ export class SaveExpressionBfProvider {
     return promise
   }
 
+
+  /**
+   * @author Naseem Akhtar
+   * @param bfExpressions 
+   * @since 2.0.0
+   * 
+   * This method will be used to set created date, updated date and uuid for the expressions that are going
+   * to be saved in DB
+   */
   setUpdatedDateAndUuidInExpressions(bfExpressions: IBFExpression[]) {
     bfExpressions.forEach(bfExpression => {
-      bfExpression.updatedDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss');
-      bfExpression.uuidNumber = this.utilService.getUuid();
+      bfExpression.createdDate = bfExpression.createdDate != null ? bfExpression.createdDate :
+        this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss')
+      bfExpression.updatedDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss')
+      bfExpression.uuidNumber = this.utilService.getUuid()
     })
 
     return bfExpressions
   }
 
-  validateMultipleExpressions(dbExpressions: IBFExpression[], expressionsToBeSaved: IBFExpression[]) {
-    expressionsToBeSaved.forEach( exp => {
-      let index = dbExpressions.findIndex( d => d.babyCode === exp.babyCode && 
-        d.dateOfExpression === exp.dateOfExpression && d.timeOfExpression === exp.timeOfExpression)
+  /**
+   * @author - Naseem Akhtar
+   * @param dbExpressions - expressions of all baby present in the DB
+   * @param expressionsToBeSaved - multiple expressions that needs to be saved
+   * @param babyCode
+   * @param date - date for which multiple entries have come.
+   * 
+   * This method will be used to validate multiple records for save all functionality.
+   * All records for a particular date and baby is removed from the DB and then the records
+   * received by @param expressionsToBeSaved are pushed to the expression array.
+   */
+  validateMultipleExpressions(dbExpressions: IBFExpression[], expressionsToBeSaved: IBFExpression[],
+    babyCode: string, date: string) {
 
-      if(index >= 0) {
-        dbExpressions.splice(index, 1)
-      }
-    })
+    let recordsToRemoveIndex: number[] = []
+    for (let index = 0; index < dbExpressions.length; index++) {
+      if(dbExpressions[index].babyCode === babyCode && dbExpressions[index].dateOfExpression === date)
+        recordsToRemoveIndex.push(index)
+    }
 
+    recordsToRemoveIndex.reverse()
+    recordsToRemoveIndex.forEach( index => dbExpressions.splice(index, 1) )
+    expressionsToBeSaved = this.setUpdatedDateAndUuidInExpressions(expressionsToBeSaved)
     dbExpressions.push(...expressionsToBeSaved)
 
     return dbExpressions

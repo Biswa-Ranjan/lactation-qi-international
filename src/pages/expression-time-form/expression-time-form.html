@@ -46,9 +46,14 @@
           <ion-label color="black" stacked>Time
             <span class="text-color"> *</span>
           </ion-label>
-          <ion-input *ngIf="!isWeb" [disabled]="!dateOfExpressions" [readonly]="true" [(ngModel)]="item.timeOfExpression" (ionFocus)="timePickerDialog(item)" [ngModelOptions]="{standalone: true}"></ion-input>
+          
+          <ion-input *ngIf="!isWeb" [disabled]="!dateOfExpressions" [readonly]="true" 
+            [(ngModel)]="item.timeOfExpression" (ionFocus)="timePickerDialog(item)" 
+              [ngModelOptions]="{standalone: true}"></ion-input>
+
           <ion-datetime *ngIf="isWeb" [disabled]="!dateOfExpressions" [(ngModel)]="item.timeOfExpression" 
-            [ngModelOptions]="{standalone: true}" displayFormat="HH:mm" (ionChange)="validateTime(item.timeOfExpression, item)"></ion-datetime>
+            [ngModelOptions]="{standalone: true}" displayFormat="HH:mm" 
+            (ionChange)="validateTime(item.timeOfExpression, item)"></ion-datetime>
           <!-- <ion-icon padding-top name="time" item-right></ion-icon> -->
         </ion-col>
 
@@ -75,11 +80,11 @@
         </ion-col>
 
         <ion-col col-2 col-sm-2 col-md-1 col-lg-1 class="save_margin">
-          <button padding ion-button block small (click)="saveExpression(item)">{{item.id === null ? 'Save' : 'Update'}}</button>
+          <button padding ion-button block small (click)="saveExpression(item)">{{item.createdDate === null ? 'Save' : 'Update'}}</button>
         </ion-col>
 
         <ion-col col-1 col-sm-1 col-md-1 col-lg-1 class="delete_margin" text-center>
-          <button [disabled]="item.id === null" ion-button icon-only clear large (click)="delete(item)">
+          <button [disabled]="item.createdDate === null" ion-button icon-only clear large (click)="delete(item)">
             <ion-icon name="trash" color="danger"></ion-icon>
           </button>
         </ion-col>
@@ -93,7 +98,7 @@
     <button ion-button block (click)="newExpression()">New Expression</button>
   </ion-col>
   <ion-col>
-    <button ion-button block (click)="saveAllExpressions()">Save All</button>
+    <button ion-button block (click)="saveAllExpressions()">Save / Update All</button>
   </ion-col>
 </ion-footer>
 

@@ -200,7 +200,8 @@ export class ConstantProvider {
     twoWeeksPostDischarge: 13,
     oneMonthPostDischarge: 29,
     threeMonthsOfLife: 89,
-    sixMonthsOfLife: 179
+    sixMonthsOfLife: 179,
+    saveAllString: 'Saved / updated records successfully'
   };
 
 /**

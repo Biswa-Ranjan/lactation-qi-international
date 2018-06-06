@@ -87,4 +87,5 @@ interface IMessage{
     oneMonthPostDischarge: number;
     threeMonthsOfLife: number;
     sixMonthsOfLife: number;
+    saveAllString: string;
 }
