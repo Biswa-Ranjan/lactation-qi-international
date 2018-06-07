@@ -145,21 +145,20 @@ export class BfSupportivePracticeServiceProvider {
         .then(data => {
           if (data != null) {
             data = (data as IBFSP[]).filter(d => d.babyCode === babyCode && d.dateOfBFSP === date);
-
             if ((data as IBFSP[]).length > 0) {
-              resolve(data)
+              resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault - data.length, babyCode, date))
             } else {
-              resolve([])
+              resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault, babyCode, date))
             }
           } else {
-            resolve([])
+            resolve(this.defaultDisplayOfEntries([], ConstantProvider.noOfRecordsByDefault, babyCode, date))
           }
         })
         .catch(err => {
           reject(err.message)
         })
       }else{
-        resolve([]);
+        resolve(this.defaultDisplayOfEntries([], ConstantProvider.noOfRecordsByDefault, babyCode, date));
       }
     });
     return promise;
@@ -292,6 +291,32 @@ export class BfSupportivePracticeServiceProvider {
 
     bfsps.push(bfsp)
     return bfsps;
+  }
+
+  getNewBfspEntry(babyCode:string, date: string) {
+    let bfspObject: IBFSP = {
+      babyCode: babyCode,
+      bfspDuration: null,
+      bfspPerformed: null,
+      createdDate: null,
+      dateOfBFSP: date,
+      id: null,
+      isSynced: null,
+      personWhoPerformedBFSP: null,
+      syncFailureMessage: null,
+      timeOfBFSP: null,
+      updatedDate: null,
+      userId: this.userService.getUser().email,
+      uuidNumber: null
+    }
+    return bfspObject
+  }
+
+  defaultDisplayOfEntries(bfspList: IBFSP[], count: number, babyCode: string, date: string) {
+    for (let index = 0; index < count; index++) {
+      bfspList.push(this.getNewBfspEntry(babyCode, date))
+    }
+    return bfspList
   }
 
 }

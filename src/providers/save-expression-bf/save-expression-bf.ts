@@ -196,9 +196,10 @@ export class SaveExpressionBfProvider {
           .then( d => resolve() )
           .catch( error => reject(error.message) )
         }else {
-          bfExpressions = bfExpressions === null ?  [] : bfExpressions
+          data = data === null ? [] : data
           bfExpressions = this.setUpdatedDateAndUuidInExpressions(bfExpressions)
-          this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
+          data.push(...bfExpressions)
+          this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, data)
           .then( d => resolve() )
           .catch( error => reject(error.message) )
         }

@@ -40,13 +40,15 @@ export class BfSupportivePracticePage {
   isWeb : boolean = false;
   minDate: string;
   maxDate: string;
+  dateOfBfsp: string = null
+  babyCode: string = null
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private messageService: MessageProvider,
     public formBuilder: FormBuilder, private datePipe: DatePipe,
     private bfspService: BfSupportivePracticeServiceProvider,
     private datePicker: DatePicker, private lactationPlatform: LactationProvider
-    ) { }
+    ) {}
 
   /**
    * @author Naseem Akhtar (naseem@sdrc.co.in)
@@ -60,6 +62,15 @@ export class BfSupportivePracticePage {
   ngOnInit() {
     this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
     this.dataForBfspPage = this.navParams.get('dataForBfspPage');
+    this.babyCode = this.dataForBfspPage.babyCode
+    this.dateOfBfsp = this.dataForBfspPage.selectedDate
+
+    if(this.dateOfBfsp != null && this.isWeb) {
+      let tempDateOfExpression = this.dataForBfspPage.selectedDate.split('-')
+      this.dateOfBfsp = tempDateOfExpression[2] + '-' + tempDateOfExpression[1] + '-'
+        + tempDateOfExpression[0]
+    }
+
     //splitting delivery date to use it new date for min date of datepicker
     let x = this.dataForBfspPage.deliveryDate.split('-')
     this.deliveryDate = new Date(+x[2],+x[1]-1,+x[0])
@@ -103,28 +114,6 @@ export class BfSupportivePracticePage {
   }
 
   /**
-   * @author - Naseem Akhtar (naseem@sdrc.co.in)
-   * @since - 0.0.1
-   * The following two methods is used to open the selected entry accordion and
-   * close the previously selected entry accordion.
-   * If same accordion is tapped again and again, then the same accordion will close and
-   * open alternatively.
-  */
-  toggleGroup(group: IBFSP) {
-    this.existingDate = group.dateOfBFSP === null ? null : group.dateOfBFSP;
-    this.existingTime = group.timeOfBFSP === null ? null : group.timeOfBFSP;
-    if (this.isGroupShown(group)) {
-      this.shownGroup = null;
-    } else {
-      this.shownGroup = group;
-    }
-  };
-
-  isGroupShown(group) {
-    return this.shownGroup === group;
-  };
-
-  /**
    * @author - Naseem Akhtar
    * @since - 0.0.1
    * This method documen.getElement is called to scroll to the latest accordion
@@ -133,9 +122,8 @@ export class BfSupportivePracticePage {
   newBFSPForm() {
     this.bfspList = this.bfspService.appendNewRecordAndReturn(this.bfspList, this.dataForBfspPage.babyCode,
       this.dataForBfspPage.selectedDate);
-    setTimeout( data => this.toggleGroup(this.bfspList[0]), 100);
-    document.getElementById('scrollHere').scrollIntoView({behavior: 'smooth'})
-  };
+    // document.getElementById('scrollHere').scrollIntoView({behavior: 'smooth'})
+  }
 
   save(bfsp: IBFSP, index) {
     if(this.isWeb)
@@ -179,15 +167,10 @@ export class BfSupportivePracticePage {
     this.bfspService.findByBabyCodeAndDate(this.dataForBfspPage.babyCode,
       this.dataForBfspPage.selectedDate, this.dataForBfspPage.isNewBfsp)
       .then(data => {
-        if(this.isWeb){
-          (data as IBFSP[]).filter(data=>data.dateOfBFSP = data.dateOfBFSP.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1'));
-          (data as IBFSP[]).filter(data=>data.dateOfBFSP = String(new Date(data.dateOfBFSP).toISOString()));
-        }
-        this.bfspList = data;
-        if(this.bfspList.length === 0){
-          this.newBFSPForm();
-          // setTimeout(d => this.toggleGroup(this.bfspList[0], 0), 200);
-        }
+        // if(this.bfspList.length === 0)
+        //   this.newBFSPForm()
+        // else
+          this.bfspList = data
       })
       .catch(err => {
         this.messageService.showErrorToast(err)
@@ -305,6 +288,24 @@ export class BfSupportivePracticePage {
         bfsp.timeOfBFSP = null;
     }else{
       bfsp.timeOfBFSP = time
+    }
+  }
+
+  /**
+   * @since - 2.0.1
+   * @author - Naseem Akhtar
+   * This method will ask the user for confirmation regarding the date that has been
+   * selected.
+   */
+  dateConfirmation() {
+    if(this.dateOfBfsp != null) {
+      this.messageService.showAlert('Alert', 'Are you sure you want to continue with this date')
+      .then( data => {
+        if(!data)
+          this.dateOfBfsp = null
+      }).catch( error => {
+        this.messageService.showErrorToast(error)
+      })
     }
   }
 

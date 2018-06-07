@@ -75,8 +75,6 @@ export class ExpressionTimeFormPage {
       let tempDateOfExpression = this.dataForBFEntryPage.selectedDate.split('-')
       this.dateOfExpressions = tempDateOfExpression[2] + '-' + tempDateOfExpression[1] + '-'
         + tempDateOfExpression[0]
-      // this.dateOfExpressions.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
-      // String(new Date(this.dateOfExpressions).toISOString())
     }
 
     let x = this.dataForBFEntryPage.deliveryDate.split('-');
@@ -121,30 +119,6 @@ export class ExpressionTimeFormPage {
   }
 
   /**
-   * @author - Naseem Akhtar (naseem@sdrc.co.in)
-   * @since - 0.0.1
-   * The following two methods is used to open the selected entry accordion and
-   * close the previously selected entry accordion.
-   * If same accordion is tapped again and again, then the same accordion will close and
-   * open alternatively.
-  */
-  toggleGroup(group: IBFExpression) {
-    this.existingDate = group.dateOfExpression;
-    this.existingTime = group.timeOfExpression;
-    if (this.isGroupShown(group)) {
-      this.shownGroup = null;
-    } else {
-      this.shownGroup = group;
-    }
-  };
-
-  isGroupShown(group) {
-    return this.shownGroup === group;
-  };
-
-
-
-  /**
    * This method will save a single feed expression into database
    *
    * @param {IBFExpression} BfExpression
@@ -152,12 +126,6 @@ export class ExpressionTimeFormPage {
    * @since 0.0.1
    */
   saveExpression(bfExpression: IBFExpression) {
-    // if(this.isWeb && bfExpression.dateOfExpression)
-    //   if(bfExpression.dateOfExpression.length > 11){
-    //     bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression.substring(0,10),"dd-MM-yyyy")
-    //   }else{
-    //     bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression,"dd-MM-yyyy")
-    //   }
     let newData = bfExpression.id === null ? true : false
     //set validations for all the fields
     if(this.dateOfExpressions === null){
@@ -182,16 +150,15 @@ export class ExpressionTimeFormPage {
       })
     }
   }
+
   /**
- * This method is going to create a new expression entry for selected date and keep it on the top and open
- *
- * @memberof ExpressionTimeFormPage
- */
+  * This method is going to create a new expression entry for selected date 
+  * and keep it on the top and open
+  * @memberof ExpressionTimeFormPage
+  */
   newExpression() {
     this.bFExpressions = this.expressionBFdateService.appendNewRecordAndReturn(this.bFExpressions,
       this.dataForBFEntryPage.babyCode, 1, this.dataForBFEntryPage.selectedDate)
-    // setTimeout(d => this.toggleGroup(this.bFExpressions[0]),100)
-    // document.getElementById('scrollHere').scrollIntoView({behavior: 'smooth'})
   }
 
   /**
@@ -215,22 +182,6 @@ export class ExpressionTimeFormPage {
         return false;
       }
     }
-  }
-   /**
- * This method is going to validate the volume of milk ranges from 0 to 300 or not.
- *
- * @memberof ExpressionTimeFormPage
- */
-  validateVolumeOfMilk(value) {
-    if (value < 0 || value > 300) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  volumeValidation(item: IBFExpression){
-    console.log(item.volOfMilkExpressedFromLR)
   }
 
   /**
@@ -268,15 +219,11 @@ export class ExpressionTimeFormPage {
     this.expressionBFdateService.findByBabyCodeAndDate(this.dataForBFEntryPage.babyCode,
       this.dataForBFEntryPage.selectedDate, this.dataForBFEntryPage.isNewExpression)
     .then(data => {
-      if(data.length === 0) {
-        this.newExpression();
-      }else {
-        if(this.isWeb){
-          // (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression === null ? null : data.dateOfExpression.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1'));
-          // (data as IBFExpression[]).filter(data=>data.dateOfExpression = data.dateOfExpression === null ? null : String(new Date(data.dateOfExpression).toISOString()));
-        }
+      // if(data.length === 0) {
+      //   this.newExpression();
+      // }else {
         this.bFExpressions = data
-      }
+      // }
     })
     .catch(err => {
       this.messageService.showErrorToast(err)
@@ -291,7 +238,7 @@ export class ExpressionTimeFormPage {
    * @since - 0.0.1
    */
 
-  datePickerDialog(){
+  datePickerDialog() {
     this.datePicker.show({
     date: this.defaultSelectedDate,
     minDate: this.deliveryDate.valueOf(),
@@ -307,7 +254,7 @@ export class ExpressionTimeFormPage {
     );
   }
 
-  timePickerDialog(bfExpForm: IBFExpression){
+  timePickerDialog(bfExpForm: IBFExpression) {
     this.datePicker.show({
     date: this.defaultSelectedDate,
     mode: 'time',
@@ -362,14 +309,8 @@ export class ExpressionTimeFormPage {
       let finalExpressions: IBFExpression[] = []
 
       this.bFExpressions.forEach(bfExpression => {
-        // bfExpression.dateOfExpression = this.dateOfExpressions
         if(!bfExpression.dateOfExpression) {
           bfExpression.dateOfExpression = date
-          // if(bfExpression.dateOfExpression.length > 11) {
-          //   bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression.substring(0,10),"dd-MM-yyyy")
-          // }else {
-          //   bfExpression.dateOfExpression = this.datePipe.transform(bfExpression.dateOfExpression,"dd-MM-yyyy")
-          // }
         }
 
         if(bfExpression.timeOfExpression != null && this.validateDurationOfExpression(bfExpression)) {

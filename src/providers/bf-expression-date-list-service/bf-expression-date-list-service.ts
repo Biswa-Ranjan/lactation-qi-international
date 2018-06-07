@@ -79,7 +79,7 @@ export class BFExpressionDateListProvider {
               resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault, babyCode, date));
             }
           }else{
-            resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault, babyCode, date))
+            resolve(this.defaultDisplayOfEntries([], ConstantProvider.noOfRecordsByDefault, babyCode, date))
           }
         })
         .catch(err=>{

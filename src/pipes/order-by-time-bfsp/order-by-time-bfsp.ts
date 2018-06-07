@@ -19,28 +19,29 @@ export class OrderByTimeBfspPipe implements PipeTransform {
 
       let date = bfsp[0].dateOfBFSP;
       bfsp.sort((a: IBFSP, b: IBFSP) => {
+        if(date != null && a.timeOfBFSP && b.timeOfBFSP) {
+          let day = parseInt(date.split('-')[0])
+          let month = parseInt(date.split('-')[1])
+          let year = parseInt(date.split('-')[2])
 
-        let day = parseInt(date.split('-')[0])
-        let month = parseInt(date.split('-')[1])
-        let year = parseInt(date.split('-')[2])
+          let hourOfA = parseInt(a.timeOfBFSP.split(':')[0])
+          let minuteOfA = parseInt(a.timeOfBFSP.split(':')[1])
 
-        let hourOfA = parseInt(a.timeOfBFSP.split(':')[0])
-        let minuteOfA = parseInt(a.timeOfBFSP.split(':')[1])
+          let hourOfB = parseInt(b.timeOfBFSP.split(':')[0])
+          let minuteOfB = parseInt(b.timeOfBFSP.split(':')[1])
 
-        let hourOfB = parseInt(b.timeOfBFSP.split(':')[0])
-        let minuteOfB = parseInt(b.timeOfBFSP.split(':')[1])
+          // passing year, month, day, hourOfA and minuteOfA to Date()
+          let dateOfA: Date = new Date(year, month, day, hourOfA, minuteOfA)
+          let dateOfB: Date = new Date(year, month, day, hourOfB, minuteOfB)
 
-        // passing year, month, day, hourOfA and minuteOfA to Date()
-        let dateOfA: Date = new Date(year, month, day, hourOfA, minuteOfA)
-        let dateOfB: Date = new Date(year, month, day, hourOfB, minuteOfB)
-
-        //comparing both the dates.
-        if (dateOfA < dateOfB) {
-          return 1;
-        } else if (a > b) {
-          return -1;
-        } else {
-          return 0;
+          //comparing both the dates.
+          if (dateOfA < dateOfB) {
+            return 1;
+          } else if (a > b) {
+            return -1;
+          } else {
+            return 0;
+          }
         }
       });
       return bfsp
