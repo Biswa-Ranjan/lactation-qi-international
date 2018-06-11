@@ -68,11 +68,7 @@ export class BfSupportivePracticeServiceProvider {
    * @param existingDate
    * @param existingTime
    */
-  saveNewBreastFeedingSupportivePracticeForm(bfspForm: IBFSP, existingDate: string, existingTime: string): Promise <any> {
-    if(existingDate != null && this.isWeb){
-      existingDate = existingDate.substring(0,10)
-      existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
-    }
+  saveNewBreastFeedingSupportivePracticeForm(bfspForm: IBFSP, newData: boolean): Promise <any> {
     let promise = new Promise((resolve, reject) => {
       bfspForm.isSynced = false;
       bfspForm.createdDate = bfspForm.createdDate === null ?
@@ -88,9 +84,8 @@ export class BfSupportivePracticeServiceProvider {
             let index = bfspForms.findIndex(d=>d.babyCode === bfspForm.babyCode && d.dateOfBFSP === bfspForm.dateOfBFSP
               && d.timeOfBFSP === bfspForm.timeOfBFSP)
             if(index < 0) {
-              index = bfspForms.findIndex(d=>d.babyCode === bfspForm.babyCode && d.dateOfBFSP === existingDate
-                && d.timeOfBFSP === existingTime)
-              bfspForms = this.validateNewEntryAndUpdate(bfspForms, bfspForm, index)
+              bfspForm.id = this.getNewBfspId(bfspForm.babyCode)
+              bfspForms.push(bfspForm)
               this.storage.set(ConstantProvider.dbKeyNames.bfsps, bfspForms)
                 .then(data => {
                   resolve()
@@ -99,8 +94,8 @@ export class BfSupportivePracticeServiceProvider {
                   reject(err.message);
                 })
             }else{
-              if(bfspForm.dateOfBFSP === existingDate && bfspForm.timeOfBFSP === existingTime){
-                bfspForms = this.validateNewEntryAndUpdate(bfspForms, bfspForm, index)
+              if(!newData) {
+                bfspForms.splice(index, 1, bfspForm)
                 this.storage.set(ConstantProvider.dbKeyNames.bfsps, bfspForms)
                 .then(data => {
                   resolve()
@@ -108,8 +103,7 @@ export class BfSupportivePracticeServiceProvider {
                 .catch(err => {
                   reject(err.message);
                 })
-              }
-              else
+              }else
                 reject(ConstantProvider.messages.duplicateTime);
             }
           }else {

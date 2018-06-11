@@ -32,13 +32,6 @@
           [min]="minDate" [max]="maxDate" (ionChange)="dateConfirmation()"></ion-datetime>
         <!-- <ion-icon padding-top name="calendar" item-right></ion-icon> -->
       </ion-col>
-
-      <ion-col col-12 col-sm-4>
-        <ion-item>
-          <ion-label stacked>Weight of baby (in grams)</ion-label>
-          <ion-input type="number"></ion-input>
-        </ion-item>
-      </ion-col>
     </ion-row>
 
     <div *ngFor="let bfsp of bfspList | orderByTimeBfsp; let i=index" margin class="form-border-box">
@@ -53,14 +46,17 @@
 
         <ion-col col col-sm-10 col-md-5 col-lg-3>
           <ion-label color="black" stacked>Breastfeeding supportive practice performed</ion-label>
-          <ion-select [(ngModel)]="bfsp.bfspPerformed" [ngModelOptions]="{standalone: true}" (ionChange)="setPersonWhoPerformed(bfsp)">
+          <ion-select [(ngModel)]="bfsp.bfspPerformed" [ngModelOptions]="{standalone: true}" 
+            (ionChange)="setPersonWhoPerformed(bfsp)" [selectOptions]="bfspPerformedConfig">
             <ion-option *ngFor="let item of bfSupportivePracticePerformedList" [value]="item.id">{{item.name}}</ion-option>
           </ion-select>
         </ion-col>
 
         <ion-col col col-sm-12 col-md-5 col-lg-3>
           <ion-label color="black" stacked>Person who performed the BFSP</ion-label>
-          <ion-select id="person+i" [(ngModel)]="bfsp.personWhoPerformedBFSP" [ngModelOptions]="{standalone: true}" [disabled]="bfsp.bfspPerformed === 54 ? true : false">
+          <ion-select id="person+i" [(ngModel)]="bfsp.personWhoPerformedBFSP" 
+            [ngModelOptions]="{standalone: true}" [selectOptions]="personWhoPerformedBfspConfig"
+            [disabled]="bfsp.bfspPerformed === 54 ? true : false">
             <ion-option *ngFor="let item of personWhoPerformedBSFPList" [value]="item.id">{{item.name}}</ion-option>
           </ion-select>
         </ion-col>

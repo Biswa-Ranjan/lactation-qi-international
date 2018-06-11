@@ -32,12 +32,12 @@
         <!-- <ion-icon padding-top name="calendar" item-right></ion-icon> -->
       </ion-col>
 
-      <ion-col col-12 col-sm-4>
+      <!-- <ion-col col-12 col-sm-4>
         <ion-item>
           <ion-label stacked>Weight of baby (in grams)</ion-label>
           <ion-input type="number"></ion-input>
         </ion-item>
-      </ion-col>
+      </ion-col> -->
     </ion-row>
 
     <div *ngFor="let item of bFExpressions | orderByTimeExpressionFrom; let i=index" margin class="form-border-box">
@@ -65,9 +65,10 @@
           </ion-select>
         </ion-col>
 
-        <ion-col *ngIf="item.methodOfExpression && item.methodOfExpression == 75">
+        <ion-col>
           <ion-label color="black" stacked>Please specify</ion-label>
-          <ion-input [(ngModel)]="item.methodOfExpressionOthers"></ion-input>
+          <ion-input [disabled]="item.methodOfExpression != 75" 
+            [(ngModel)]="item.methodOfExpressionOthers"></ion-input>
         </ion-col>
 
         <ion-col col-12 col-sm-12 col-md-5 col-lg-3>

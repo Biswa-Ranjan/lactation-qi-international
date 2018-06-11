@@ -138,7 +138,8 @@ export class BFExpressionDateListProvider {
       syncFailureMessage: null,
       createdDate: null,
       updatedDate: null,
-      uuidNumber: null
+      uuidNumber: null,
+      methodOfExpressionOthers: null
     }
 
     return bf;

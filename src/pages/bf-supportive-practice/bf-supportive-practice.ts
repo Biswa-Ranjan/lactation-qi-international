@@ -42,6 +42,12 @@ export class BfSupportivePracticePage {
   maxDate: string;
   dateOfBfsp: string = null
   babyCode: string = null
+  bfspPerformedConfig: any = {
+    title: 'Breastfeeding supportive practice performed'
+  };
+  personWhoPerformedBfspConfig: any = {
+    title: 'Person who performed the BFSP'
+  }
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private messageService: MessageProvider,
@@ -126,12 +132,12 @@ export class BfSupportivePracticePage {
   }
 
   save(bfsp: IBFSP, index) {
-    if(this.isWeb)
-      if(bfsp.dateOfBFSP.length > 11){
-        bfsp.dateOfBFSP = this.datePipe.transform(bfsp.dateOfBFSP.substring(0,10),"dd-MM-yyyy")
-      }else{
-        bfsp.dateOfBFSP = this.datePipe.transform(bfsp.dateOfBFSP,"dd-MM-yyyy")
-      }
+    // if(this.isWeb)
+    //   if(bfsp.dateOfBFSP.length > 11){
+    //     bfsp.dateOfBFSP = this.datePipe.transform(bfsp.dateOfBFSP.substring(0,10),"dd-MM-yyyy")
+    //   }else{
+    //     bfsp.dateOfBFSP = this.datePipe.transform(bfsp.dateOfBFSP,"dd-MM-yyyy")
+    //   }
     let newData = bfsp.id === null ? true : false
     if(bfsp.dateOfBFSP === null) {
       this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfBfsp);
@@ -140,7 +146,7 @@ export class BfSupportivePracticePage {
     }else if(bfsp.bfspDuration === undefined || !this.checkForOnlyNumber(bfsp.bfspDuration)) {
       this.messageService.showErrorToast(ConstantProvider.messages.durationOfBfsp);
     }else{
-      this.bfspService.saveNewBreastFeedingSupportivePracticeForm(bfsp, this.existingDate, this.existingTime)
+      this.bfspService.saveNewBreastFeedingSupportivePracticeForm(bfsp, newData)
       .then(data => {
         this.findExpressionsByBabyCodeAndDate();
         if(newData)
