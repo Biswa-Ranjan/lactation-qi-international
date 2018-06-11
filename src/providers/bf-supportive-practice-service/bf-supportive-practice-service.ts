@@ -276,16 +276,16 @@ export class BfSupportivePracticeServiceProvider {
    * @param feedExpression incoming feed expression
    * @returns IFeed[] modified feed expressions
    */
-  private validateNewEntryAndUpdate(bfsps: IBFSP[], bfsp: IBFSP, index: number): IBFSP[] {
-    if(index < 0) {
-      bfsp.id = this.getNewBfspId(bfsp.babyCode);
-    }else {
-      bfsps.splice(index, 1);
-    }
+  // private validateNewEntryAndUpdate(bfsps: IBFSP[], bfsp: IBFSP, index: number): IBFSP[] {
+  //   if(index < 0) {
+  //     bfsp.id = this.getNewBfspId(bfsp.babyCode);
+  //   }else {
+  //     bfsps.splice(index, 1);
+  //   }
 
-    bfsps.push(bfsp)
-    return bfsps;
-  }
+  //   bfsps.push(bfsp)
+  //   return bfsps;
+  // }
 
   getNewBfspEntry(babyCode:string, date: string) {
     let bfspObject: IBFSP = {
@@ -311,6 +311,85 @@ export class BfSupportivePracticeServiceProvider {
       bfspList.push(this.getNewBfspEntry(babyCode, date))
     }
     return bfspList
+  }
+
+  /**
+   * @author Naseem Akhtar
+   * @param bfspList 
+   * @param babyCode 
+   * @param date 
+   * 
+   * This method will be used to save multiple entries at once.
+   */
+  saveMultipleBfsp(bfspList: IBFSP[], babyCode: string, date: string): Promise<any> {
+    let promise = new Promise((resolve, reject) => {
+      this.storage.get(ConstantProvider.dbKeyNames.bfsps)
+      .then( (data: IBFSP[]) => {
+        if(data != null && data.length > 0 && data.filter(d => d.babyCode === babyCode 
+          && d.dateOfBFSP === date).length > 0) {
+          let validatedExpressions = this.validateMultipleExpressions(data, bfspList, babyCode, date)
+          this.storage.set(ConstantProvider.dbKeyNames.bfsps, validatedExpressions)
+          .then( d => resolve() )
+          .catch( error => reject(error.message) )
+        }else {
+          data = data === null ? [] : data
+          bfspList = this.setUpdatedDateAndUuidInExpressions(bfspList)
+          data.push(...bfspList)
+          this.storage.set(ConstantProvider.dbKeyNames.bfsps, data)
+          .then( d => resolve() )
+          .catch( error => reject(error.message) )
+        }
+      })
+    })
+    return promise
+  }
+
+
+  /**
+   * @author Naseem Akhtar
+   * @param bfExpressions 
+   * @since 2.0.0
+   * 
+   * This method will be used to set created date, updated date and uuid for the expressions that are going
+   * to be saved in DB
+   */
+  setUpdatedDateAndUuidInExpressions(bfspList: IBFSP[]) {
+    bfspList.forEach(bfExpression => {
+      bfExpression.createdDate = bfExpression.createdDate != null ? bfExpression.createdDate :
+        this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss')
+      bfExpression.updatedDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss')
+      bfExpression.uuidNumber = this.utilService.getUuid()
+    })
+
+    return bfspList
+  }
+
+  /**
+   * @author - Naseem Akhtar
+   * @param dbBfspList - bfsp records of all baby present in the DB
+   * @param bfspListToBeSaved - multiple bfsp records that needs to be saved
+   * @param babyCode
+   * @param date - date for which multiple entries have come.
+   * 
+   * This method will be used to validate multiple records for save all functionality.
+   * All records for a particular date and baby is removed from the DB and then the records
+   * received by @param bfspListToBeSaved are pushed to the expression array.
+   */
+  validateMultipleExpressions(dbBfspList: IBFSP[], bfspListToBeSaved: IBFSP[],
+    babyCode: string, date: string) {
+
+    let recordsToRemoveIndex: number[] = []
+    for (let index = 0; index < dbBfspList.length; index++) {
+      if(dbBfspList[index].babyCode === babyCode && dbBfspList[index].dateOfBFSP === date)
+        recordsToRemoveIndex.push(index)
+    }
+
+    recordsToRemoveIndex.reverse()
+    recordsToRemoveIndex.forEach( index => dbBfspList.splice(index, 1) )
+    bfspListToBeSaved = this.setUpdatedDateAndUuidInExpressions(bfspListToBeSaved)
+    dbBfspList.push(...bfspListToBeSaved)
+
+    return dbBfspList
   }
 
 }

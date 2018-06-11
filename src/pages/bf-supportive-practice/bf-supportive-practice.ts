@@ -132,20 +132,15 @@ export class BfSupportivePracticePage {
   }
 
   save(bfsp: IBFSP, index) {
-    // if(this.isWeb)
-    //   if(bfsp.dateOfBFSP.length > 11){
-    //     bfsp.dateOfBFSP = this.datePipe.transform(bfsp.dateOfBFSP.substring(0,10),"dd-MM-yyyy")
-    //   }else{
-    //     bfsp.dateOfBFSP = this.datePipe.transform(bfsp.dateOfBFSP,"dd-MM-yyyy")
-    //   }
     let newData = bfsp.id === null ? true : false
-    if(bfsp.dateOfBFSP === null) {
+    if(this.dateOfBfsp === null) {
       this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfBfsp);
     }else if(bfsp.timeOfBFSP === null) {
       this.messageService.showErrorToast(ConstantProvider.messages.enterTimeOfBfsp);
     }else if(bfsp.bfspDuration === undefined || !this.checkForOnlyNumber(bfsp.bfspDuration)) {
       this.messageService.showErrorToast(ConstantProvider.messages.durationOfBfsp);
     }else{
+      bfsp.dateOfBFSP = this.datePipe.transform(this.dateOfBfsp.concat(), 'dd-MM-yyyy')
       this.bfspService.saveNewBreastFeedingSupportivePracticeForm(bfsp, newData)
       .then(data => {
         this.findExpressionsByBabyCodeAndDate();
@@ -242,7 +237,7 @@ export class BfSupportivePracticePage {
     }).then(
       date => {
         bfsp.dateOfBFSP = this.datePipe.transform(date,"dd-MM-yyyy")
-        this.validateTime(bfsp.timeOfBFSP, bfsp)
+        // this.validateTime(bfsp.timeOfBFSP, bfsp)
       },
       err => console.log('Error occurred while getting date: ', err)
     );
@@ -283,7 +278,7 @@ export class BfSupportivePracticePage {
    * @author - Naseem Akhtar
    * @since - 0.0.1
   */
-  validateTime(time: string, bfsp: IBFSP){
+  validateTime(time: string, bfsp: IBFSP) {
     if(bfsp.dateOfBFSP === this.datePipe.transform(new Date(),'dd-MM-yyyy')
       && time != null && time > this.datePipe.transform(new Date(),'HH:mm')){
         this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
@@ -292,8 +287,12 @@ export class BfSupportivePracticePage {
       time < this.dataForBfspPage.deliveryTime){
         this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
         bfsp.timeOfBFSP = null;
+    }else if(this.bfspList.filter( d => d.timeOfBFSP === time).length > 1) {
+      this.messageService.showErrorToast(ConstantProvider.messages.duplicateTime)
+      bfsp.timeOfBFSP = null
     }else{
       bfsp.timeOfBFSP = time
+      bfsp.id = bfsp.id != null ? bfsp.id : this.bfspService.getNewBfspId(bfsp.babyCode)
     }
   }
 
@@ -312,6 +311,32 @@ export class BfSupportivePracticePage {
       }).catch( error => {
         this.messageService.showErrorToast(error)
       })
+    }
+  }
+
+  saveAllExpressions() {
+    if(this.dateOfBfsp != null) {
+      let date = this.datePipe.transform(this.dateOfBfsp.concat(), 'dd-MM-yyyy')
+      let finalBfspList: IBFSP[] = []
+
+      this.bfspList.forEach( bfsp => {
+        if(!bfsp.dateOfBFSP)
+          bfsp.dateOfBFSP = date
+        
+        if(bfsp.timeOfBFSP != null && this.checkForOnlyNumber(bfsp.bfspDuration))
+          finalBfspList.push(bfsp)
+      })
+
+      if(finalBfspList.length > 0) {
+        this.bfspService.saveMultipleBfsp(finalBfspList, this.babyCode, date)
+        .then(data => {
+          this.findExpressionsByBabyCodeAndDate()
+          this.messageService.showSuccessToast(ConstantProvider.messages.saveAllString)
+        }).catch( error => this.messageService.showErrorToast('Warning' + error.message))
+      }else
+        this.messageService.showErrorToast('No valid record to save')
+    }else {
+      this.messageService.showErrorToast("Please enter the date of bfsp and try saving again.")
     }
   }
 

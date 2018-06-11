@@ -40,8 +40,10 @@
           <ion-label color="black" stacked>Time
             <span class="text-color"> *</span>
           </ion-label>
-          <ion-input *ngIf="!isWeb" [readonly]="true" [(ngModel)]="bfsp.timeOfBFSP" (ionFocus)="timePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
-          <ion-datetime *ngIf="isWeb" [(ngModel)]="bfsp.timeOfBFSP" [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"></ion-datetime>
+          <ion-input *ngIf="!isWeb" [readonly]="true" [(ngModel)]="bfsp.timeOfBFSP" 
+            (ionFocus)="timePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
+          <ion-datetime *ngIf="isWeb" [(ngModel)]="bfsp.timeOfBFSP" [ngModelOptions]="{standalone: true}" 
+            displayFormat="HH:mm" (ionChange)="validateTime(bfsp.timeOfBFSP, bfsp)"></ion-datetime>
         </ion-col>
 
         <ion-col col col-sm-10 col-md-5 col-lg-3>
@@ -157,7 +159,7 @@
     <button ion-button block (click)="newBFSPForm()">New Entry</button>
   </ion-col>
   <ion-col>
-    <button ion-button block>Save / Update All</button>
+    <button ion-button block (click)="saveAllExpressions()">Save / Update All</button>
   </ion-col>
 </ion-footer>
 
