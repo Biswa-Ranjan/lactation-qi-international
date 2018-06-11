@@ -354,7 +354,7 @@
     },
     {
       "id": 61,
-      "name": "Parenteral",
+      "name": "Parenteral (NBM)",
       "typeId": 11
     },
     {
@@ -415,6 +415,21 @@
     {
       "id": 73,
       "name": "None",
+      "typeId": 13
+    },
+    {
+      "id": 74,
+      "name": "Syringe pump",
+      "typeId": 7
+    },
+    {
+      "id": 75,
+      "name": "Other",
+      "typeId": 7
+    },
+    {
+      "id": 76,
+      "name": "Predominant",
       "typeId": 13
     }
   ],

@@ -26,8 +26,8 @@
           <span class="text-color"> *</span>
         </ion-label>
         <ion-input *ngIf="!isWeb" [disabled]="dateOfExpressions" [readonly]="true" [(ngModel)]="dateOfExpressions" (ionFocus)="datePickerDialog()" [ngModelOptions]="{standalone: true}"></ion-input>
-        <ion-datetime *ngIf="isWeb" [disabled]="dateOfExpressions" [(ngModel)]="dateOfExpressions" 
-          [ngModelOptions]="{standalone: true}" displayFormat="DD-MM-YYYY" [min]="minDate" 
+        <ion-datetime *ngIf="isWeb" [disabled]="dateOfExpressions" [(ngModel)]="dateOfExpressions"
+          [ngModelOptions]="{standalone: true}" displayFormat="DD-MM-YYYY" [min]="minDate"
           [max]="maxDate" (ionChange)="dateConfirmation()"></ion-datetime>
         <!-- <ion-icon padding-top name="calendar" item-right></ion-icon> -->
       </ion-col>
@@ -46,23 +46,28 @@
           <ion-label color="black" stacked>Time
             <span class="text-color"> *</span>
           </ion-label>
-          
-          <ion-input *ngIf="!isWeb" [disabled]="!dateOfExpressions" [readonly]="true" 
-            [(ngModel)]="item.timeOfExpression" (ionFocus)="timePickerDialog(item)" 
+
+          <ion-input *ngIf="!isWeb" [disabled]="!dateOfExpressions" [readonly]="true"
+            [(ngModel)]="item.timeOfExpression" (ionFocus)="timePickerDialog(item)"
               [ngModelOptions]="{standalone: true}"></ion-input>
 
-          <ion-datetime *ngIf="isWeb" [disabled]="!dateOfExpressions" [(ngModel)]="item.timeOfExpression" 
-            [ngModelOptions]="{standalone: true}" displayFormat="HH:mm" 
+          <ion-datetime *ngIf="isWeb" [disabled]="!dateOfExpressions" [(ngModel)]="item.timeOfExpression"
+            [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"
             (ionChange)="validateTime(item.timeOfExpression, item)"></ion-datetime>
           <!-- <ion-icon padding-top name="time" item-right></ion-icon> -->
         </ion-col>
 
         <ion-col col-9 col-sm-10 col-md-5 col-lg-3>
           <ion-label color="black" stacked>Method of expression</ion-label>
-          <ion-select [(ngModel)]="item.methodOfExpression" [ngModelOptions]="{standalone: true}" 
+          <ion-select [(ngModel)]="item.methodOfExpression" [ngModelOptions]="{standalone: true}"
             (ionChange)="checkVolumeOfMilkExpressed(item)" [selectOptions]="methodOfExpressionConfig">
             <ion-option *ngFor="let bfExpMethod of bfExpressionMethods" text-wrap [value]="bfExpMethod.id">{{bfExpMethod.name}}</ion-option>
           </ion-select>
+        </ion-col>
+
+        <ion-col *ngIf="item.methodOfExpression && item.methodOfExpression == 75">
+          <ion-label color="black" stacked>Please specify</ion-label>
+          <ion-input [(ngModel)]="item.methodOfExpressionOthers"></ion-input>
         </ion-col>
 
         <ion-col col-12 col-sm-12 col-md-5 col-lg-3>
