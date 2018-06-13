@@ -16,7 +16,7 @@ export class LactationProvider {
    * We have to change the it accordingly. Yes we can get it from android device, when it comes to PWA,
    * the default will help us.
    */
-  private appVersionName : string = '2.0.0'
+  private appVersionName : string = '2.1.0'
 
   /**
    * It defines the ess data entry platform
