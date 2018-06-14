@@ -176,7 +176,7 @@
         <ion-label color="black" stacked>Discharge date</ion-label>
         <ion-input *ngIf="!isWeb"formControlName="discharge_date" (click)="datePickerDialog('dischargeDate')" (ionFocus)="datePickerDialog('dischargeDate')"
           [readonly]="true"></ion-input>
-          <ion-datetime *ngIf="isWeb" formControlName="discharge_date" [disabled]="forEdit" displayFormat="DD-MM-YYYY" [max]="maxDate"></ion-datetime>
+          <ion-datetime *ngIf="isWeb" formControlName="discharge_date" displayFormat="DD-MM-YYYY" [max]="maxDate"></ion-datetime>
         <ion-icon padding-top name="calendar" item-right></ion-icon>
       </ion-item>
     </div>
