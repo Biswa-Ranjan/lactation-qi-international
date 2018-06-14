@@ -149,8 +149,9 @@
     <div class="form-group" *ngIf="outPatientAdmissionStatus">
       <ion-item>
         <ion-label color="black" stacked>Admission date (Outpatients)</ion-label>
-        <ion-input formControlName="admission_date" (click)="datePickerDialog('addmissionDate')" (ionFocus)="datePickerDialog('addmissionDate')"
+        <ion-input *ngIf="!isWeb" formControlName="admission_date" (click)="datePickerDialog('addmissionDate')" (ionFocus)="datePickerDialog('addmissionDate')"
           [readonly]="true"></ion-input>
+          <ion-datetime *ngIf="isWeb" formControlName="admission_date" displayFormat="DD-MM-YYYY" [max]="maxDate"></ion-datetime>
         <ion-icon name="calendar" item-right></ion-icon>
       </ion-item>
     </div>
