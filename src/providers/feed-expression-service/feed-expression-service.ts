@@ -191,22 +191,21 @@ export class FeedExpressionServiceProvider {
         this.storage.get(ConstantProvider.dbKeyNames.feedExpressions)
         .then(data=>{
           if(data != null){
-            data = (data as IFeed[]).filter(d => (d.babyCode === babyCode && d.dateOfFeed === date));
-
-            if ((data as IFeed[]).length > 0) {
-              resolve(data)
+            data = (data as IFeed[]).filter(d => (d.babyCode === babyCode && d.dateOfFeed === date))
+            if((data as IFeed[]).length > 0) {
+              resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault - data.length, babyCode, date))
             }else{
-              resolve([])
+              resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault, babyCode, date))
             }
           }else{
-            resolve([])
+            resolve(this.defaultDisplayOfEntries([], ConstantProvider.noOfRecordsByDefault, babyCode, date))
           }
         })
         .catch(err=>{
           reject(err.message)
         })
       }else{
-        resolve([]);
+        resolve(this.defaultDisplayOfEntries([], ConstantProvider.noOfRecordsByDefault, babyCode, date))
       }
     });
     return promise;
@@ -234,36 +233,16 @@ export class FeedExpressionServiceProvider {
  * @returns {IFeed[]} The final appended list
  * @memberof FeedExpressionServiceProvider
  */
-appendNewRecordAndReturn(data: IFeed[], babyCode: string, date?: string): IFeed[]{
-    //The blank feed object
-    let feed: IFeed = {
-      id: null,
-      babyCode: babyCode,
-      userId: this.userService.getUser().email,
-      babyWeight: null,
-      dateOfFeed: date,
-      dhmVolume: null,
-      formulaVolume: null,
-      animalMilkVolume: null,
-      methodOfFeed: null,
-      ommVolume: null,
-      otherVolume: null,
-      timeOfFeed: null,
-      isSynced: false,
-      locationOfFeeding: null,
-      syncFailureMessage: null,
-      createdDate: null,
-      updatedDate: null,
-      uuidNumber: null
+appendNewRecordAndReturn(data: IFeed[], babyCode: string, count: number, date?: string): IFeed[] {
+    if(data === null) {
+      data = []
+    }
+    else {
+      for (let index = 0; index <= count; index++) {
+        data.push(this.getNewFeedExpressionEntry(babyCode, date))
+      }
     }
 
-
-    if(data != null){
-      (data as IFeed[]).splice(0, 0, feed)
-    }else{
-      data = [];
-      data.push(feed)
-    }
     return data
   }
 
@@ -449,6 +428,128 @@ appendNewRecordAndReturn(data: IFeed[], babyCode: string, date?: string): IFeed[
       }).catch(error => this.messageService.showErrorToast(error))
     })
     return promise
+  }
+
+  /**
+   * @author Naseem Akhtar
+   * @param bfExpressions 
+   * @param babyCode 
+   * @param date 
+   * 
+   * This method will be used to save multiple entries at once.
+   */
+  saveMultipleBfExpressions(feedExpressions: IFeed[], babyCode: string, date: string): Promise<any> {
+    let promise = new Promise((resolve, reject) => {
+      this.storage.get(ConstantProvider.dbKeyNames.feedExpressions)
+      .then( data => {
+        if(data != null && data.length > 0 && data.filter(d => d.babyCode === babyCode 
+          && d.dateOfExpression === date).length > 0) {
+          let validatedExpressions = this.validateMultipleExpressions(data, feedExpressions, babyCode, date)
+          this.storage.set(ConstantProvider.dbKeyNames.feedExpressions, validatedExpressions)
+          .then( d => resolve() )
+          .catch( error => reject(error.message) )
+        }else {
+          data = data === null ? [] : data
+          feedExpressions = this.setUpdatedDateAndUuidInExpressions(feedExpressions)
+          data.push(...feedExpressions)
+          this.storage.set(ConstantProvider.dbKeyNames.feedExpressions, data)
+          .then( d => resolve() )
+          .catch( error => reject(error.message) )
+        }
+      })
+    })
+    return promise
+  }
+
+
+  /**
+   * @author Naseem Akhtar
+   * @param bfExpressions 
+   * @since 2.0.0
+   * 
+   * This method will be used to set created date, updated date and uuid for the expressions that are going
+   * to be saved in DB
+   */
+  setUpdatedDateAndUuidInExpressions(feedExpressions: IFeed[]) {
+    feedExpressions.forEach(feedExpression => {
+      feedExpression.createdDate = feedExpression.createdDate != null ? feedExpression.createdDate :
+        this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss')
+      feedExpression.updatedDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss')
+      feedExpression.uuidNumber = this.utilService.getUuid()
+    })
+
+    return feedExpressions
+  }
+
+  /**
+   * @author - Naseem Akhtar
+   * @param dbExpressions - expressions of all baby present in the DB
+   * @param expressionsToBeSaved - multiple expressions that needs to be saved
+   * @param babyCode
+   * @param date - date for which multiple entries have come.
+   * 
+   * This method will be used to validate multiple records for save all functionality.
+   * All records for a particular date and baby is removed from the DB and then the records
+   * received by @param expressionsToBeSaved are pushed to the expression array.
+   */
+  validateMultipleExpressions(dbExpressions: IFeed[], expressionsToBeSaved: IFeed[],
+    babyCode: string, date: string) {
+
+    let recordsToRemoveIndex: number[] = []
+    for (let index = 0; index < dbExpressions.length; index++) {
+      if(dbExpressions[index].babyCode === babyCode && dbExpressions[index].dateOfFeed === date)
+        recordsToRemoveIndex.push(index)
+    }
+
+    recordsToRemoveIndex.reverse()
+    recordsToRemoveIndex.forEach( index => dbExpressions.splice(index, 1) )
+    expressionsToBeSaved = this.setUpdatedDateAndUuidInExpressions(expressionsToBeSaved)
+    dbExpressions.push(...expressionsToBeSaved)
+
+    return dbExpressions
+  }
+
+  /**
+   * @author Naseem Akhtar
+   * @param feedExpressions 
+   * @param count 
+   * @param babyCode 
+   * @param date 
+   * 
+   * This method will check the length of the expressions array and will adjust the 
+   * array to always display 8 records at minimum.
+   */
+  defaultDisplayOfEntries(feedExpressions: IFeed[], count: number, babyCode: string, date: string) {
+    for (let index = 0; index < count; index++) {
+      feedExpressions.push(this.getNewFeedExpressionEntry(babyCode, date))
+    }
+    return feedExpressions
+  }
+
+  getNewFeedExpressionEntry(babyCode: string, date: string) {
+    //The blank feed object
+    let feed: IFeed = {
+      id: null,
+      babyCode: babyCode,
+      userId: this.userService.getUser().email,
+      babyWeight: null,
+      dateOfFeed: date,
+      dhmVolume: null,
+      formulaVolume: null,
+      animalMilkVolume: null,
+      methodOfFeed: null,
+      ommVolume: null,
+      otherVolume: null,
+      timeOfFeed: null,
+      isSynced: false,
+      locationOfFeeding: null,
+      syncFailureMessage: null,
+      createdDate: null,
+      updatedDate: null,
+      uuidNumber: null
+    }
+
+    return feed
   }
 
 }

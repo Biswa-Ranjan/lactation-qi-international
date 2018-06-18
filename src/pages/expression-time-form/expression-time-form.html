@@ -57,39 +57,39 @@
           <!-- <ion-icon padding-top name="time" item-right></ion-icon> -->
         </ion-col>
 
-        <ion-col col-9 col-sm-10 col-md-5 col-lg-3>
-          <ion-label color="black" stacked>Method of expression</ion-label>
+        <ion-col col-9 col-sm-6 col-md-5 col-lg-2>
+          <ion-label color="black" stacked>Expression Method</ion-label>
           <ion-select [(ngModel)]="item.methodOfExpression" [ngModelOptions]="{standalone: true}"
             (ionChange)="checkVolumeOfMilkExpressed(item)" [selectOptions]="methodOfExpressionConfig">
             <ion-option *ngFor="let bfExpMethod of bfExpressionMethods" text-wrap [value]="bfExpMethod.id">{{bfExpMethod.name}}</ion-option>
           </ion-select>
         </ion-col>
 
-        <ion-col>
-          <ion-label color="black" stacked>Please specify</ion-label>
+        <ion-col col-12 col-sm-4 col-md-5 col-lg-2>
+          <ion-label color="black" stacked>Please Specify</ion-label>
           <ion-input [disabled]="item.methodOfExpression != 75" 
             [(ngModel)]="item.methodOfExpressionOthers"></ion-input>
         </ion-col>
 
-        <ion-col col-12 col-sm-12 col-md-5 col-lg-3>
-          <ion-label color="black" stacked>Location where expression occurred</ion-label>
+        <ion-col col-12 col-sm-8 col-md-4 col-lg-3>
+          <ion-label color="black" stacked>Location</ion-label>
           <ion-select [(ngModel)]="item.locationOfExpression" [ngModelOptions]="{standalone: true}"
             [selectOptions]="locationWhereExpressionOccuredConfig">
             <ion-option *ngFor="let locOfExpMethod of locationOfexpressionMethods" text-wrap [value]="locOfExpMethod.id">{{locOfExpMethod.name}}</ion-option>
           </ion-select>
         </ion-col>
 
-        <ion-col col-8 col-sm-8 col-md-8 col-lg-3>
-          <ion-label color="black" stacked>Volume of milk expressed from left and right breast (in ml,range 0-300)</ion-label>
+        <ion-col col-8 col-sm-4 col-md-4 col-lg-2>
+          <ion-label color="black" stacked>EBM (in ml,range 0-300)</ion-label>
           <ion-input type="tel" [disabled]="!item.methodOfExpression || item.methodOfExpression === 43" [pattern]="onlyNumberRegex"
             [(ngModel)]="item.volOfMilkExpressedFromLR"></ion-input>
         </ion-col>
 
-        <ion-col col-2 col-sm-2 col-md-1 col-lg-1 class="save_margin">
+        <ion-col col-3 col-sm-4 col-md-2 col-lg-1 class="save_margin">
           <button padding ion-button block small (click)="saveExpression(item)">{{item.createdDate === null ? 'Save' : 'Update'}}</button>
         </ion-col>
 
-        <ion-col col-1 col-sm-1 col-md-1 col-lg-1 class="delete_margin" text-center>
+        <ion-col col-1 col-sm-2 col-md-2 col-lg-1 class="delete_margin" text-center>
           <button [disabled]="item.createdDate === null" ion-button icon-only clear large (click)="delete(item)">
             <ion-icon name="trash" color="danger"></ion-icon>
           </button>

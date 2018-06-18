@@ -126,7 +126,7 @@ export class ExpressionTimeFormPage {
    * @since 0.0.1
    */
   saveExpression(bfExpression: IBFExpression) {
-    let newData = bfExpression.id === null ? true : false
+    let newData = bfExpression.createdDate === null ? true : false
     //set validations for all the fields
     if(this.dateOfExpressions === null){
       this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfExpression);
