@@ -727,4 +727,17 @@ export class AddPatientPage implements OnInit{
 
     return validated
   }
+
+  _numberKeyPress(event: any) {
+    const pattern = /[0-9\ ]/;
+    var a = event.charCode;
+        if(a==0){return;}
+    let inputChar = String.fromCharCode(event.charCode);
+    if (event.target["value"].length >= 8 || event.keyCode == 32) {
+      event.preventDefault();
+    }
+    if (!pattern.test(inputChar)) {
+      event.preventDefault();
+    }
+  }
 }
