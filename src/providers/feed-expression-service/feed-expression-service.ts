@@ -86,10 +86,10 @@ export class FeedExpressionServiceProvider {
    */
 
   saveFeedExpression(feedExpression: IFeed, existingDate: string, existingTime: string): Promise<any>{
-    if(existingDate != null && this.isWeb){
-      existingDate = existingDate.substring(0,10)
-      existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
-    }
+    // if(existingDate != null && this.isWeb){
+    //   existingDate = existingDate.substring(0,10)
+    //   existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
+    // }
     let promise = new Promise((resolve, reject) => {
       feedExpression.isSynced = false;
       feedExpression.createdDate = feedExpression.createdDate === null ?
@@ -496,9 +496,13 @@ appendNewRecordAndReturn(data: IFeed[], babyCode: string, count: number, date?: 
     babyCode: string, date: string) {
 
     let recordsToRemoveIndex: number[] = []
-    for (let index = 0; index < dbExpressions.length; index++) {
-      if(dbExpressions[index].babyCode === babyCode && dbExpressions[index].dateOfFeed === date)
-        recordsToRemoveIndex.push(index)
+    for (let dbIndex = 0; dbIndex < dbExpressions.length; dbIndex++) {
+      for (let index = 0; index < expressionsToBeSaved.length; index++) {
+        if(dbExpressions[dbIndex].babyCode === babyCode && dbExpressions[dbIndex].dateOfFeed === date
+          && expressionsToBeSaved[index].dateOfFeed === date
+          && dbExpressions[dbIndex].timeOfFeed === expressionsToBeSaved[index].timeOfFeed)
+            recordsToRemoveIndex.push(dbIndex)
+      }
     }
 
     recordsToRemoveIndex.reverse()

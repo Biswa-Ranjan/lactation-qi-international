@@ -249,11 +249,10 @@ export class BfSupportivePracticePage {
     mode: 'time',
     is24Hour: true,
     androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
-    })
-    .then(time => {
+    }).then(time => {
       this.validateTime(this.datePipe.transform(time, 'HH:mm'), bfsp)
-    },
-    err => this.messageService.showErrorToast('Error occurred while getting date: ' + err)
+      },
+      err => console.log('Error occurred while getting time: ', err)
     );
   }
 
@@ -261,7 +260,7 @@ export class BfSupportivePracticePage {
    * @author - Naseem Akhtar (naseem@sdrc.co.in)
    * This method will check whether the passed parameter is number or not.
    */
-  checkForOnlyNumber(forValidation){
+  checkForOnlyNumber(forValidation) {
     if(forValidation === null)
       return true;
     else{

@@ -213,7 +213,7 @@ export class ExpressionTimeFormPage {
    * @author Ratikanta
    * @since 0.0.1
    */
-  findExpressionsByBabyCodeAndDate(){
+  findExpressionsByBabyCodeAndDate() {
 
     //getting existing BF expression for given baby code and date
     this.expressionBFdateService.findByBabyCodeAndDate(this.dataForBFEntryPage.babyCode,
@@ -342,7 +342,11 @@ export class ExpressionTimeFormPage {
     if(this.dateOfExpressions != null) {
       this.messageService.showAlert('Alert', 'Are you sure you want to continue with this date')
       .then( data => {
-        if(!data)
+        if(data) {
+          this.dataForBFEntryPage.selectedDate = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
+          this.findExpressionsByBabyCodeAndDate()
+        }
+        else
           this.dateOfExpressions = null
       }).catch( error => {
         this.messageService.showErrorToast(error)

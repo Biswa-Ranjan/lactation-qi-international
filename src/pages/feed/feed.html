@@ -34,7 +34,7 @@
       <ion-col col-12 col-sm-4>
         <ion-item>
           <ion-label stacked>Weight of baby (in grams)</ion-label>
-          <ion-input type="number"></ion-input>
+          <ion-input type="number" [(ngModel)]="babyWeight" (ionChange)="validateBabyWeight()"></ion-input>
         </ion-item>
       </ion-col>
 
@@ -48,11 +48,11 @@
             <span class="text-color"> *</span>
           </ion-label>
 
-          <ion-input *ngIf="!isWeb" [disabled]="!dateOfExpressions" [readonly]="true"
+          <ion-input *ngIf="!isWeb" [disabled]="!dateOfFeed" [readonly]="true"
             [(ngModel)]="feedExpression.timeOfFeed" (ionFocus)="timePickerDialog(feedExpression)"
               [ngModelOptions]="{standalone: true}"></ion-input>
 
-          <ion-datetime *ngIf="isWeb" [disabled]="!dateOfExpressions" [(ngModel)]="feedExpression.timeOfFeed"
+          <ion-datetime *ngIf="isWeb" [disabled]="!dateOfFeed" [(ngModel)]="feedExpression.timeOfFeed"
             [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"
             (ionChange)="validateTime(feedExpression.timeOfFeed, feedExpression)"></ion-datetime>
         </ion-col>

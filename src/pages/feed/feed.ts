@@ -122,7 +122,7 @@ export class FeedPage {
  * @since 0.0.1
  */
   validateExpression(feedExpression: IFeed) {
-    if(feedExpression.dateOfFeed === null) {
+    if(this.dateOfFeed === null) {
       this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfFeed)
     }
     else if(feedExpression.timeOfFeed === null) {
@@ -143,17 +143,7 @@ export class FeedPage {
     else if(!this.checkForOnlyNumber(feedExpression, 'otherVolume')) {
       this.messageService.showErrorToast(ConstantProvider.messages.otherVolume)
     }
-    else if(feedExpression.babyWeight != null && feedExpression.babyWeight.toString() != ""
-      && (feedExpression.babyWeight < 400 || feedExpression.babyWeight > 6000)){
-      this.messageService.showAlert(ConstantProvider.messages.warning,ConstantProvider.messages.babyOverWeight)
-        .then((data)=>{
-          if(data){
-            this.saveExpression(feedExpression);
-          }else{
-            feedExpression.babyWeight = null;
-          }
-        })
-    }else{
+    else{
       this.saveExpression(feedExpression);
     }
   }
@@ -161,6 +151,8 @@ export class FeedPage {
   // This method will be called when the user clicks on save of a particular entry.
   saveExpression(feedExpression: IFeed) {
     let newData: boolean = feedExpression.id === null ? true : false
+    feedExpression.babyWeight = this.babyWeight
+    feedExpression.dateOfFeed = this.dateOfFeed
     this.feedExpressionService.saveFeedExpression(feedExpression, this.existingDate, this.existingTime)
       .then(data=> {
         this.dataForFeedEntryPage.isNewExpression = false;
@@ -433,6 +425,18 @@ export class FeedPage {
 
     else
       return true
+  }
+
+  validateBabyWeight() {
+    if(this.babyWeight != null && this.babyWeight.toString() != "" 
+      && (this.babyWeight < 400 || this.babyWeight > 6000)) {
+
+      this.messageService.showAlert(ConstantProvider.messages.warning,ConstantProvider.messages.babyOverWeight)
+      .then((data)=>{
+        if(!data)
+          this.babyWeight = null;
+      })
+    }
   }
 
 }

@@ -24,11 +24,13 @@ export class OrderByDatePipe implements PipeTransform {
       //Converting to date format to sort
       let dateArray: Date[] = [];
       dateStringArray.forEach(d=>{
-        let day = parseInt(d.split('-')[0]);
-        let month = parseInt(d.split('-')[1]) - 1;
-        let year = parseInt(d.split('-')[2]);
+        if(d != null) {
+          let day = parseInt(d.split('-')[0])
+          let month = parseInt(d.split('-')[1]) - 1
+          let year = parseInt(d.split('-')[2])
 
-        dateArray.push(new Date(year, month, day))
+          dateArray.push(new Date(year, month, day))
+        }
       })
 
       //Arranging the dates in descending order

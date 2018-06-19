@@ -243,9 +243,13 @@ export class SaveExpressionBfProvider {
     babyCode: string, date: string) {
 
     let recordsToRemoveIndex: number[] = []
-    for (let index = 0; index < dbExpressions.length; index++) {
-      if(dbExpressions[index].babyCode === babyCode && dbExpressions[index].dateOfExpression === date)
-        recordsToRemoveIndex.push(index)
+    for (let dbIndex = 0; dbIndex < dbExpressions.length; dbIndex++) {
+      for (let index = 0; index < expressionsToBeSaved.length; index++) {
+        if(dbExpressions[dbIndex].babyCode === babyCode && dbExpressions[dbIndex].dateOfExpression === date
+          && expressionsToBeSaved[index].dateOfExpression === date
+          && dbExpressions[dbIndex].timeOfExpression === expressionsToBeSaved[index].timeOfExpression)
+            recordsToRemoveIndex.push(dbIndex)
+      }
     }
 
     recordsToRemoveIndex.reverse()

@@ -379,9 +379,13 @@ export class BfSupportivePracticeServiceProvider {
     babyCode: string, date: string) {
 
     let recordsToRemoveIndex: number[] = []
-    for (let index = 0; index < dbBfspList.length; index++) {
-      if(dbBfspList[index].babyCode === babyCode && dbBfspList[index].dateOfBFSP === date)
-        recordsToRemoveIndex.push(index)
+    for (let dbIndex = 0; dbIndex < dbBfspList.length; dbIndex++) {
+      for (let index = 0; index < bfspListToBeSaved.length; index++) {
+        if(dbBfspList[dbIndex].babyCode === babyCode && dbBfspList[dbIndex].dateOfBFSP === date
+          && bfspListToBeSaved[index].dateOfBFSP === date 
+          && dbBfspList[dbIndex].timeOfBFSP === bfspListToBeSaved[index].timeOfBFSP)
+            recordsToRemoveIndex.push(dbIndex)
+      }
     }
 
     recordsToRemoveIndex.reverse()
