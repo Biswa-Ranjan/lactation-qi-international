@@ -121,4 +121,10 @@ export class LoginPage {
       this.type = 'password';
     }
   }
+
+  _runScript(event:any){
+    if(event.keyCode == 13){
+      this.login ();
+    }
+  }
 }

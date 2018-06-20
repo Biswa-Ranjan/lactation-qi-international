@@ -37,6 +37,7 @@ import { SinglePatientSummaryServiceProvider } from '../providers/single-patient
 import { PppServiceProvider } from '../providers/ppp-service/ppp-service';
 import { Device } from '@ionic-native/device';
 import { LactationProvider } from '../providers/lactation/lactation';
+import { DatePickerModule } from 'ionic2-date-picker';
 
 @NgModule({
   declarations: [
@@ -44,12 +45,14 @@ import { LactationProvider } from '../providers/lactation/lactation';
   ],
   imports: [
     BrowserModule,
+    DatePickerModule,
     IonicStorageModule.forRoot({
       name: 'lactation',
          driverOrder: ['sqlite', 'indexeddb', 'websql'],
 
     }),
     IonicModule.forRoot(MyApp, {
+      preloadModules: true,
       tabsPlacement: 'bottom',
         platforms: {
           android: {

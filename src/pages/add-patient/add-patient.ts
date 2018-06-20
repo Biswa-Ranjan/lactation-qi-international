@@ -1,6 +1,6 @@
 import { ConstantProvider } from './../../providers/constant/constant';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, MenuController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, MenuController, ModalController } from 'ionic-angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { OnInit } from '@angular/core';
 import { MessageProvider } from '../../providers/message/message';
@@ -9,7 +9,8 @@ import { DatePipe } from '@angular/common';
 import { UserServiceProvider } from '../../providers/user-service/user-service';
 import { DatePicker } from '@ionic-native/date-picker';
 import { LactationProvider } from '../../providers/lactation/lactation';
-
+import { DatePickerProvider } from 'ionic2-date-picker';
+import { DatePickerOption } from 'ionic2-date-picker';
 
 /**
  * This page is used to add new patient details, view the patient and edit the patient record.
@@ -77,7 +78,8 @@ export class AddPatientPage implements OnInit{
     private addNewPatientService: AddNewPatientServiceProvider,private datePipe: DatePipe,
     private messageService: MessageProvider,private datePicker: DatePicker,
     private userService: UserServiceProvider, private menuCtrl: MenuController,
-    private lactationPlatform: LactationProvider) {
+    private lactationPlatform: LactationProvider,private datePickerProvider: DatePickerProvider,
+    public modalCtrl: ModalController) {
   }
 
   /**
@@ -402,19 +404,6 @@ export class AddPatientPage implements OnInit{
         } else {
           this.resetStatus = false;
 
-          if(this.isWeb)
-          {
-            if(this.patientForm.controls.delivery_date.value.length > 11){
-              this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(this.patientForm.controls.delivery_date.value.substring(0,10),"dd-MM-yyyy"))
-            }else{
-              this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy"))
-            }
-            if(this.patientForm.controls.discharge_date.value != null && this.patientForm.controls.discharge_date.value.length > 11){
-              this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(this.patientForm.controls.discharge_date.value.substring(0,10),"dd-MM-yyyy"))
-            }else{
-              this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(this.patientForm.controls.discharge_date.value,"dd-MM-yyyy"))
-            }
-          }
           //Initialize the add new patient object
           this.patient = {
             babyCode: this.uniquePatientId.id,
@@ -467,14 +456,6 @@ export class AddPatientPage implements OnInit{
      */
     setFetchedDataToUi(){
 
-      if(this.isWeb){
-        this.patient.deliveryDate = this.patient.deliveryDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
-        this.patient.deliveryDate = String(new Date(this.patient.deliveryDate).toISOString())
-        if(this.patient.dischargeDate != null){
-          this.patient.dischargeDate = this.patient.dischargeDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
-          this.patient.dischargeDate = String(new Date(this.patient.dischargeDate).toISOString())
-        }
-      }
       this.patientForm = new FormGroup({
         baby_id: new FormControl(this.patient.babyCode),
         hospital_baby_id: new FormControl(this.patient.babyCodeHospital, [Validators.pattern(this.alphaNumeric), Validators.maxLength(25)]),
@@ -710,7 +691,7 @@ export class AddPatientPage implements OnInit{
     let validated: boolean = true
     if(this.patientForm.controls.delivery_date.value != "" &&
     this.patientForm.controls.delivery_date.value != null){
-      if(this.datePipe.transform(this.patientForm.controls.delivery_date.value,"dd-MM-yyyy") === this.datePipe.transform(new Date(),"dd-MM-yyyy") ){
+      if(this.patientForm.controls.delivery_date.value === this.datePipe.transform(new Date(),"dd-MM-yyyy") ){
         if( deliveryTime > this.datePipe.transform(new Date(),"HH:mm")){
           this.patientForm.controls.delivery_time.setValue("")
           this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
@@ -738,6 +719,30 @@ export class AddPatientPage implements OnInit{
     }
     if (!pattern.test(inputChar)) {
       event.preventDefault();
+    }
+  }
+
+  showCalendar(type: string) {
+    if(!this.forEdit){
+      let datePickerOption: DatePickerOption = {
+        maximumDate: new Date() // the maximum date selectable
+      };
+      const dateSelected =
+        this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
+
+      dateSelected.subscribe(date =>{
+        switch(type){
+          case ConstantProvider.datePickerType.deliveryDate:
+            this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
+          break;
+          case ConstantProvider.datePickerType.addmissionDate:
+            this.patientForm.controls.admission_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
+          break;
+          case ConstantProvider.datePickerType.dischargeDate:
+            this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
+          break;
+        }
+      });
     }
   }
 }

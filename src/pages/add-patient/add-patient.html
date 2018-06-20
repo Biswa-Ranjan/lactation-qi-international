@@ -36,7 +36,7 @@
       </ion-item>
       <p class="error" *ngIf="patientForm.controls.hospital_baby_id.invalid  && (patientForm.controls.hospital_baby_id.dirty || patientForm.controls.hospital_baby_id.touched) && resetStatus">
         Please enter a valid Baby ID provided by hospital
-    </p>
+      </p>
     </div>
     <div class="form-group">
       <ion-item>
@@ -44,7 +44,7 @@
         <ion-input type="text" formControlName="mother_name"></ion-input>
       </ion-item>
       <p class="error" *ngIf="patientForm.controls.mother_name.invalid  && (patientForm.controls.mother_name.dirty || patientForm.controls.mother_name.touched) && resetStatus">
-          Please enter a valid name
+        Please enter a valid name
       </p>
     </div>
     <div class="form-group">
@@ -58,9 +58,9 @@
         <ion-label color="black" stacked>Delivery date
           <span class="text-color"> *</span>
         </ion-label>
-        <ion-input *ngIf="!isWeb" formControlName="delivery_date" [disabled]="forEdit" (click)="deliveryDatePicker('deliveryDate')" (ionFocus)="deliveryDatePicker('deliveryDate')"
-           [readonly]="true"></ion-input>
-        <ion-datetime *ngIf="isWeb" formControlName="delivery_date" [disabled]="forEdit" displayFormat="DD-MM-YYYY" [min]="minDate" [max]="maxDate"></ion-datetime>
+        <ion-input *ngIf="!isWeb" formControlName="delivery_date" [disabled]="forEdit" (click)="deliveryDatePicker('deliveryDate')"
+          (ionFocus)="deliveryDatePicker('deliveryDate')" [readonly]="true"></ion-input>
+        <ion-input *ngIf="isWeb" formControlName="delivery_date" [disabled]="forEdit" (click)="showCalendar('deliveryDate')" (ionFocus)="showCalendar('deliveryDate')"></ion-input>
         <ion-icon padding-top name="calendar" item-right></ion-icon>
       </ion-item>
       <p class="error" *ngIf="patientForm.controls.delivery_date.invalid  && (patientForm.controls.delivery_date.dirty || patientForm.controls.delivery_date.touched) && resetStatus">
@@ -72,7 +72,8 @@
         <ion-label color="black" stacked>Delivery time
           <span class="text-color"> *</span>
         </ion-label>
-        <ion-input *ngIf="!isWeb"formControlName="delivery_time" [disabled]="forEdit" (click)="timePickerDialog()"  (ionFocus)="timePickerDialog()" [readonly]="true"></ion-input>
+        <ion-input *ngIf="!isWeb" formControlName="delivery_time" [disabled]="forEdit" (click)="timePickerDialog()" (ionFocus)="timePickerDialog()"
+          [readonly]="true"></ion-input>
         <ion-datetime *ngIf="isWeb" formControlName="delivery_time" [disabled]="forEdit" displayFormat="HH:mm"></ion-datetime>
         <ion-icon padding-top name="time" item-right></ion-icon>
       </ion-item>
@@ -91,7 +92,7 @@
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Baby's weight in grams</ion-label>
-        <ion-input type="tel" (keypress)="_numberKeyPress($event)" (focusout)="validateBabyWeight()" maxlength="4"formControlName="baby_weight"></ion-input>
+        <ion-input type="tel" (keypress)="_numberKeyPress($event)" (focusout)="validateBabyWeight()" maxlength="4" formControlName="baby_weight"></ion-input>
       </ion-item>
     </div>
     <div class="form-group">
@@ -132,8 +133,8 @@
               <ion-input type="tel" (keypress)="onlyNumberKey($event)" placeholder="mm" maxlength="2" formControlName="first_exp_time_in_minute"></ion-input>
             </ion-item>
             <p class="error" *ngIf="patientForm.controls.first_exp_time_in_minute.invalid  && (patientForm.controls.first_exp_time_in_minute.dirty || patientForm.controls.first_exp_time_in_minute.touched)">
-                Please enter minute below 60
-              </p>
+              Please enter minute below 60
+            </p>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -151,7 +152,7 @@
         <ion-label color="black" stacked>Admission date (Outpatients)</ion-label>
         <ion-input *ngIf="!isWeb" formControlName="admission_date" (click)="datePickerDialog('addmissionDate')" (ionFocus)="datePickerDialog('addmissionDate')"
           [readonly]="true"></ion-input>
-          <ion-datetime *ngIf="isWeb" formControlName="admission_date" displayFormat="DD-MM-YYYY" [max]="maxDate"></ion-datetime>
+        <ion-input *ngIf="isWeb" formControlName="admission_date" (click)="showCalendar('addmissionDate')" (ionFocus)="showCalendar('addmissionDate')"></ion-input>
         <ion-icon name="calendar" item-right></ion-icon>
       </ion-item>
     </div>
@@ -174,9 +175,9 @@
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Discharge date</ion-label>
-        <ion-input *ngIf="!isWeb"formControlName="discharge_date" (click)="datePickerDialog('dischargeDate')" (ionFocus)="datePickerDialog('dischargeDate')"
+        <ion-input *ngIf="!isWeb" formControlName="discharge_date" (click)="datePickerDialog('dischargeDate')" (ionFocus)="datePickerDialog('dischargeDate')"
           [readonly]="true"></ion-input>
-          <ion-datetime *ngIf="isWeb" formControlName="discharge_date" displayFormat="DD-MM-YYYY" [max]="maxDate"></ion-datetime>
+        <ion-input *ngIf="isWeb" formControlName="discharge_date" (click)="showCalendar('dischargeDate')" (ionFocus)="showCalendar('dischargeDate')"></ion-input>
         <ion-icon padding-top name="calendar" item-right></ion-icon>
       </ion-item>
     </div>
