@@ -201,7 +201,8 @@ export class ConstantProvider {
     oneMonthPostDischarge: 29,
     threeMonthsOfLife: 89,
     sixMonthsOfLife: 179,
-    saveAllString: 'Saved / updated records successfully'
+    saveAllString: 'Saved / updated records successfully',
+    mobilePwaWarning: 'Please use desktop device, this device is not supported.'
   };
 
 /**

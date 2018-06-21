@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastController, LoadingController, AlertController } from 'ionic-angular';
+import { ToastController, LoadingController, AlertController, Platform } from 'ionic-angular';
 
 /**
  * This service we only use to show messages
@@ -12,7 +12,7 @@ export class MessageProvider {
   loading;
 
   constructor(private toastCtrl: ToastController, private loadingCtrl: LoadingController,
-  private alertCtrl: AlertController) {}
+  private alertCtrl: AlertController, private platform: Platform) {}
 
   /**
    * This method will be used to show success toast to user
@@ -61,7 +61,7 @@ export class MessageProvider {
 
   /**
    * This method will hide loader (if any).
-   * 
+   *
    * @author Naseem Akhtar (naseem@sdrc.co.in)
    * @author Ratikanta
    * @param message The message which we want to show the user
@@ -72,9 +72,9 @@ export class MessageProvider {
   }
 
   /**
-   * This method will display alert modal with the message as passed in 
+   * This method will display alert modal with the message as passed in
    * the argument.
-   * 
+   *
    * @author Naseem Akhtar (naseem@sdrc.co.in)
    * @author Jagat
    * @param message The message which we want to show the user
@@ -107,10 +107,10 @@ export class MessageProvider {
   }
 
   /**This method will show alert modal with one button i.e 'OK'
-   * 
+   *
    * @author Naseem Akhtar (naseem@sdrc.co.in)
-   * @param title 
-   * @param message 
+   * @param title
+   * @param message
    */
   showOkAlert(title: string, message: string): Promise<any>{
     let promise= new Promise((resolve, reject)=>{
@@ -132,4 +132,20 @@ export class MessageProvider {
     return promise;
   }
 
+  mobilePwaWarning(title: string, message: string){
+      let confirm = this.alertCtrl.create({
+        enableBackdropDismiss: false,
+        title: title,
+        message: message,
+        buttons: [
+          {
+            text: 'Ok',
+            handler: () => {
+              this.platform.exitApp();
+            }
+          }
+        ]
+      });
+      confirm.present();
+    }
 }

@@ -16,7 +16,7 @@ import { LactationProvider } from '../providers/lactation/lactation';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = 'LoginPage';
+  rootPage: any;
   user: IUser = {
     country: null,
     district: null,
@@ -53,10 +53,13 @@ private utilService: UtilServiceProvider, private lactationProvider: LactationPr
 
       if(this.platform.is('mobileweb')){
         lactartionPlatform.isMobilePWA = true
+        this.messageProvider.mobilePwaWarning(ConstantProvider.messages.warning,"Please use desktop device, this device is not suppoted")
       }else if(this.platform.is('core')){
         lactartionPlatform.isWebPWA = true
+        this.rootPage = 'LoginPage'
       }else if(this.platform.is('android') && this.platform.is('cordova')){
         lactartionPlatform.isAndroid = true
+        this.rootPage = 'LoginPage'
       }
 
       this.lactationProvider.setPlatform(lactartionPlatform)

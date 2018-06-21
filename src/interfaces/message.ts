@@ -88,4 +88,5 @@ interface IMessage{
     threeMonthsOfLife: number;
     sixMonthsOfLife: number;
     saveAllString: string;
+    mobilePwaWarning: string;
 }
