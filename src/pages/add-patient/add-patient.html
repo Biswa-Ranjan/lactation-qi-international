@@ -74,7 +74,6 @@
         </ion-label>
         <ion-input *ngIf="!isWeb" formControlName="delivery_time" [disabled]="forEdit" (click)="timePickerDialog()" (ionFocus)="timePickerDialog()"
           [readonly]="true"></ion-input>
-        <!-- <ion-datetime *ngIf="isWeb" formControlName="delivery_time" [disabled]="forEdit" displayFormat="HH:mm"></ion-datetime> -->
         <ion-input *ngIf="isWeb" type="tel" maxlength="5" formControlName="delivery_time" [disabled]="forEdit" (keypress)="_numberKeyPress($event);_formatTime($event)"></ion-input>
         <ion-icon padding-top name="time" item-right></ion-icon>
       </ion-item>
