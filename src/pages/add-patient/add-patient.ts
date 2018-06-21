@@ -55,6 +55,7 @@ export class AddPatientPage implements OnInit{
   motherNameRegex: RegExp = /^[a-zA-Z][a-zA-Z\s\.]+$/;
   alphaNumeric: RegExp = /^[-_ a-zA-Z0-9]+$/;
   numberRegex: RegExp = /^[0-9]+(\.[0-9]*){0,1}$/;
+  timeRegex: RegExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
   hasError: boolean = false;
 
   /**
@@ -254,7 +255,7 @@ export class AddPatientPage implements OnInit{
       mother_name: new FormControl(null, [Validators.pattern(this.motherNameRegex), Validators.maxLength(30)]),
       mother_age: new FormControl(null),
       delivery_date: new FormControl(null,[Validators.required]),
-      delivery_time: new FormControl(null,[Validators.required]),
+      delivery_time: new FormControl(null,[Validators.required,Validators.pattern(this.timeRegex)]),
       delivery_method: new FormControl(null),
       baby_weight: new FormControl(null),
       gestational_age: new FormControl(null),
@@ -462,7 +463,7 @@ export class AddPatientPage implements OnInit{
         mother_name: new FormControl(this.patient.babyOf, [Validators.pattern(this.motherNameRegex), Validators.maxLength(30)]),
         mother_age: new FormControl(this.patient.mothersAge),
         delivery_date: new FormControl(this.patient.deliveryDate,[Validators.required]),
-        delivery_time: new FormControl(this.patient.deliveryTime,[Validators.required]),
+        delivery_time: new FormControl(this.patient.deliveryTime,[Validators.required,Validators.pattern(this.timeRegex)]),
         delivery_method: new FormControl(this.patient.deliveryMethod),
         baby_weight: new FormControl(this.patient.babyWeight),
         gestational_age: new FormControl(this.patient.gestationalAgeInWeek),
@@ -743,6 +744,12 @@ export class AddPatientPage implements OnInit{
           break;
         }
       });
+    }
+  }
+
+  _formatTime(event: any){
+    if (event.target["value"].length == 2){
+      this.patientForm.controls.delivery_time.setValue(event.target["value"]+":")
     }
   }
 }
