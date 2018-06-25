@@ -354,13 +354,17 @@ export class CreateNewAccountPage {
    * that user has noted the email id to get the password.
    *
    * @author Jagat Bandhu
+   * @author Subhadarshani
+   * @description the info message text is changed for lactation intrnational
    * @since 0.0.1
    */
   showConfirmAlert(){
+    let password = this.user.email.substring(0, 2) + ConstantProvider.messages.commonPasswordSubString
+    let msg =  ConstantProvider.messages.registeredSuccessful + password +ConstantProvider.messages.waringToNoteDownPasswordMsg
     let confirm = this.alertCtrl.create({
       enableBackdropDismiss: false,
       title: ConstantProvider.messages.important,
-      message: ConstantProvider.messages.forgotPasswordMessage,
+      message: msg,
       inputs: [
         {
           type: 'checkbox',

@@ -116,6 +116,7 @@ export class ConstantProvider {
    * @author Ratikanta
    * @author Jagat Bandhu
    * @author Naseem Akhtar (naseem@sdr.co.in)
+   * @author subhadarshani
    * @since -0.0.1
    */
   static messages: IMessage = {
@@ -202,7 +203,10 @@ export class ConstantProvider {
     threeMonthsOfLife: 89,
     sixMonthsOfLife: 179,
     saveAllString: 'Saved / updated records successfully',
-    mobilePwaWarning: 'Please use desktop device, this device is not supported.'
+    mobilePwaWarning: 'Please use desktop device, this device is not supported.',
+    commonPasswordSubString: '@123#!',
+    registeredSuccessful : 'You have registered successfully, your password is ',
+    waringToNoteDownPasswordMsg : ', Please note this down and store it safely. If you forget please contact Paul<span class="forgot">(Paul.Bolla@medela.ch)</span>.'
   };
 
 /**

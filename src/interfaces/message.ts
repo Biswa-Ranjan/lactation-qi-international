@@ -89,4 +89,7 @@ interface IMessage{
     sixMonthsOfLife: number;
     saveAllString: string;
     mobilePwaWarning: string;
+    commonPasswordSubString: string;
+    registeredSuccessful : string;
+    waringToNoteDownPasswordMsg:string;
 }
