@@ -64,9 +64,9 @@
         </ion-col>
 
         <ion-col col col-sm-8 col-md-6 col-lg-3>
-          <ion-label color="black" stacked>Duration of BFSP performed in minutes</ion-label>
+          <ion-label color="black" stacked>Duration (Min.)</ion-label>
           <ion-input type="number" [(ngModel)]="bfsp.bfspDuration" [pattern]="onlyNumberRegex" 
-            [ngModelOptions]="{standalone: true}"></ion-input>
+            [ngModelOptions]="{standalone: true}"  [disabled]="(bfsp.bfspPerformed === 54 || bfsp.bfspPerformed === 55)  ? true : false"></ion-input>
         </ion-col>
 
         <ion-col col-6 col-sm-2 col-md-2 col-lg-1 class="save_margin">
