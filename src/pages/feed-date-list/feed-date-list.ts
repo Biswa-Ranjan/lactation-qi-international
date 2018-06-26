@@ -30,7 +30,6 @@ export class FeedDateListPage {
 
     this.paramToExpressionPage = {
       babyCode: this.navParams.get("babyCode"),
-      babyCodeByHospital: this.navParams.get("babyCodeByHospital"),
       deliveryDate: this.navParams.get('deliveryDate'),
       deliveryTime: this.navParams.get('deiveryTime')
     }

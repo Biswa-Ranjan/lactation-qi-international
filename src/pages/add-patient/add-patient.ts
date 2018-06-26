@@ -147,9 +147,11 @@ export class AddPatientPage implements OnInit{
       this.forEdit = true;
       this.uniquePatientId.id = this.patient.babyCode;
       this.setFetchedDataToUi();
-    }else{
-      this.getUniquePatientId();
     }
+    //Below line of codes are for generating uniquebabyID, Which is no longer required
+    // else{
+    //   this.getUniquePatientId();
+    // }
   }
 
   /**
@@ -181,7 +183,6 @@ export class AddPatientPage implements OnInit{
       this.headerTitle = "Edit Patient"
       this.paramToExpressionPage = {
         babyCode: this.navParams.get('babyCode'),
-        babyCodeByHospital: this.navParams.get('babyCodeByHospital'),
         deliveryDate: this.navParams.get('deliveryDate'),
         deliveryTime: null,
         dischargeDate: this.navParams.get('dischargeDate')
@@ -407,8 +408,7 @@ export class AddPatientPage implements OnInit{
 
           //Initialize the add new patient object
           this.patient = {
-            babyCode: this.uniquePatientId.id,
-            babyCodeHospital: this.patientForm.controls.hospital_baby_id.value,
+            babyCode: this.patientForm.controls.baby_id.value,
             babyOf: this.patientForm.controls.mother_name.value,
             mothersAge: this.patientForm.controls.mother_age.value==null?null:parseInt(this.patientForm.controls.mother_age.value),
             deliveryDate: this.patientForm.controls.delivery_date.value,
@@ -459,7 +459,6 @@ export class AddPatientPage implements OnInit{
 
       this.patientForm = new FormGroup({
         baby_id: new FormControl(this.patient.babyCode),
-        hospital_baby_id: new FormControl(this.patient.babyCodeHospital, [Validators.pattern(this.alphaNumeric), Validators.maxLength(25)]),
         mother_name: new FormControl(this.patient.babyOf, [Validators.pattern(this.motherNameRegex), Validators.maxLength(30)]),
         mother_age: new FormControl(this.patient.mothersAge),
         delivery_date: new FormControl(this.patient.deliveryDate,[Validators.required]),

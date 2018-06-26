@@ -18,7 +18,7 @@
 
 
 <ion-content>
-  <ion-searchbar placeholder="Search by Baby of, Baby ID, Hospital Baby ID" [(ngModel)]="searchTerm" [formControl]="searchControl" (ionInput)="onSearchInput()"></ion-searchbar>
+  <ion-searchbar placeholder="Search by Baby of, Baby ID" [(ngModel)]="searchTerm" [formControl]="searchControl" (ionInput)="onSearchInput()"></ion-searchbar>
   <div *ngIf="searching" class="spinner-container">
       <ion-spinner></ion-spinner>
   </div>
@@ -33,7 +33,7 @@
             </ion-col>
             <ion-col md-6 text-right>
               <div class="form-group">{{item.deliveryDate}} {{item.deliveryTime}}</div>
-              <div>Hospital Baby ID: {{(item.babyCodeHospital != null && item.babyCodeHospital != "")?item.babyCodeHospital:"N/A"}}</div>
+              <!-- <div>Hospital Baby ID: {{(item.babyCodeHospital != null && item.babyCodeHospital != "")?item.babyCodeHospital:"N/A"}}</div> -->
             </ion-col>
           </ion-row>
         </ion-card>

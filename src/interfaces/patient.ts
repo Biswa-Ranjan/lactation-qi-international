@@ -4,8 +4,7 @@
  * @since 0.0.1
  */
 interface IPatient{
-    babyCode: string;
-    babyCodeHospital: string;
+    babyCode: string;    
     babyOf: string;
     mothersAge: number;
     deliveryDate: string;

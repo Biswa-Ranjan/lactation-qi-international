@@ -77,4 +77,33 @@ export class SortPatientPipe implements PipeTransform {
       return patients;
     }
   }
+  /**
+ * This method will sort Baby Id .
+ * @author Subhadarshani
+ * @since 0.0.1
+ */
+  sortByBabyd(patients: IPatient[], ...args): IPatient[] {
+    if(patients != undefined && patients != null && patients.length > 0){
+      let reA = /[^a-zA-Z]/g;
+      let reN = /[^0-9]/g;
+        patients.sort((a: IPatient, b: IPatient) => {
+          if(a.babyCode!=null && b.babyCode!=null){
+            let aA = a.babyCode.replace(reA, "");
+            let bA = b.babyCode.replace(reA, "");
+            if(aA === bA) {
+              var aN = parseInt(a.babyCode.replace(reN, ""), 10);
+              var bN = parseInt(b.babyCode.replace(reN, ""), 10);
+              return aN === bN ? 0 : aN > bN ? 1 : -1;
+          } else {
+              return aA > bA ? 1 : -1;
+          }    
+          }         
+                
+        });
+      
+      }
+      return patients;
+    }
+  
+ 
 }

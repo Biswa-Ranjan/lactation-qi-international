@@ -94,7 +94,6 @@ export class BabyDashboardPage {
         //sets to the data to the navParam
         this.paramToExpressionPage = {
           babyCode: this.babyDetails.babyCode,
-          babyCodeByHospital: this.babyDetails.babyCodeHospital,
           deliveryDate: this.babyDetails.deliveryDate,
           deliveryTime: this.babyDetails.deliveryTime,
           dischargeDate: this.babyDetails.dischargeDate

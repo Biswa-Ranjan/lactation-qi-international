@@ -31,14 +31,19 @@ export class SearchPipe implements PipeTransform {
         }else{
           count++;
         }
-        if(patient.babyCodeHospital != null && patient.babyCodeHospital != undefined && patient.babyCodeHospital != ""){
-          if (patient.babyCodeHospital.toLowerCase().indexOf(searchText.toLowerCase()) === -1) {
-            count++;
-          }
-        }else{
-          count++;
-        }
-        if(count === 3){
+        /**
+          * babyCodeHospital is no longer required.So serch functionalty by babyCodeHospital code is commented here
+          * @author Subhadarshani
+         */
+
+        // if(patient.babyCodeHospital != null && patient.babyCodeHospital != undefined && patient.babyCodeHospital != ""){
+        //   if (patient.babyCodeHospital.toLowerCase().indexOf(searchText.toLowerCase()) === -1) {
+        //     count++;
+        //   }
+        // }else{
+        //   count++;
+        // }
+        if(count === 2){
           return false
         }else{
           return true;

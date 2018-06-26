@@ -229,7 +229,6 @@ export class ExportServiceProvider {
         row = []
         //Setting all column value
         row.push(patient.babyCode)
-        row.push(patient.babyCodeHospital ? patient.babyCodeHospital: '')
         row.push(patient.mothersAge ? patient.mothersAge: '')
         row.push(patient.babyOf ? patient.babyOf: '')
         row.push(patient.deliveryDate)

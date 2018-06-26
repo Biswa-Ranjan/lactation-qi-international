@@ -172,6 +172,11 @@ export class RegisteredPatientPage {
       label: 'Delivery Date (Ascending)',
       value: 'Delivery Date'
     });
+    alert.addInput({
+      type: 'radio',
+      label: 'Baby Id',
+      value: 'Baby Id'
+    });
     alert.addButton('Cancel');
     alert.addButton({
       text: 'OK',
@@ -179,9 +184,13 @@ export class RegisteredPatientPage {
            switch(data){
              case "Delivery Date":
              this.sortBy = ConstantProvider.patientSortBy.deliveryDateAscending
+             this.patientList = this.sortPatient.transform(this.patientList,this.sortBy);
+             break;
+             case "Baby Id":
+             this.patientList = this.sortPatient.sortByBabyd(this.patientList);
              break;
            }
-           this.patientList = this.sortPatient.transform(this.patientList,this.sortBy);
+         
       }
     });
     alert.present();
@@ -241,4 +250,6 @@ export class RegisteredPatientPage {
       }
     })
   }
+ 
+ 
 }

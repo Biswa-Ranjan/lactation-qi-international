@@ -26,10 +26,10 @@
         <ion-label color="black" stacked>Baby ID
           <span class="text-color"> *</span>
         </ion-label>
-        <ion-input type="text" disabled formControlName="baby_id"></ion-input>
+        <ion-input type="text"  formControlName="baby_id"></ion-input>
       </ion-item>
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Baby ID provided by hospital</ion-label>
         <ion-input type="text" formControlName="hospital_baby_id"></ion-input>
@@ -37,7 +37,7 @@
       <p class="error" *ngIf="patientForm.controls.hospital_baby_id.invalid  && (patientForm.controls.hospital_baby_id.dirty || patientForm.controls.hospital_baby_id.touched) && resetStatus">
         Please enter a valid Baby ID provided by hospital
       </p>
-    </div>
+    </div> -->
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Baby of (mother's name)</ion-label>
