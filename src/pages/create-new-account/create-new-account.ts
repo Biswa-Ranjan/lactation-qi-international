@@ -28,6 +28,7 @@ import { UtilServiceProvider } from '../../providers/util-service/util-service';
  * This is registration page component
  * @author Ratikanta
  * @author Jagat
+ * @author Subhadarshani
  * @since 0.0.1
  *
  * @export
@@ -137,25 +138,32 @@ export class CreateNewAccountPage {
         title: ConstantProvider.messages.selectInstitute
       }
 
+
+        /**
+       * @author Subhadarshani
+       * The below line of code is commented,as all the country,state district,institution will be no longer dropdown they will be entered manually.
+       * 
+       */
       //get the first user from the db
       //get the values of country, state, district, institute, set the values to the respective fields and disable the fields
-      this.createNewAccountService.getFirstUser()
-      .then(data=>{
-        if(data != null){
-          this.countrySelected((data as IUser).country);
-          this.stateSelected((data as IUser).state);
-          this.districtSelected((data as IUser).district);
-          this.instituteSelected((data as IUser).institution);
-          this.userForm.controls.country.setValue((data as IUser).country);
-          this.userForm.controls.state.setValue((data as IUser).state);
-          this.userForm.controls.district.setValue((data as IUser).district);
-          this.userForm.controls.institution.setValue((data as IUser).institution);
-          this.countryStatus = true;
-          this.stateStatus = true;
-          this.districtStatus = true;
-          this.institutionStatus = true;
-        }
-      })
+      
+      // this.createNewAccountService.getFirstUser()
+      // .then(data=>{
+      //   if(data != null){
+      //     this.countrySelected((data as IUser).country);
+      //     this.stateSelected((data as IUser).state);
+      //     this.districtSelected((data as IUser).district);
+      //     this.instituteSelected((data as IUser).institution);
+      //     this.userForm.controls.country.setValue((data as IUser).country);
+      //     this.userForm.controls.state.setValue((data as IUser).state);
+      //     this.userForm.controls.district.setValue((data as IUser).district);
+      //     this.userForm.controls.institution.setValue((data as IUser).institution);
+      //     this.countryStatus = true;
+      //     this.stateStatus = true;
+      //     this.districtStatus = true;
+      //     this.institutionStatus = true;
+      //   }
+      // })
 
     //checks the required fields through form validator
     this.userForm = new FormGroup({
