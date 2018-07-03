@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, Events } from 'ionic-angular';
+import { Nav, Platform, Events, NavController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { MessageProvider } from '../providers/message/message';
@@ -34,8 +34,8 @@ export class MyApp {
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen,
     private messageProvider: MessageProvider,
-  private events: Events, private exportService: ExportServiceProvider, private file: File,
-private utilService: UtilServiceProvider, private lactationProvider: LactationProvider) {
+    private events: Events, private exportService: ExportServiceProvider, private file: File,
+    private utilService: UtilServiceProvider, private lactationProvider: LactationProvider) {
     this.initializeApp();
   }
 
@@ -104,7 +104,15 @@ private utilService: UtilServiceProvider, private lactationProvider: LactationPr
   logout(){
     this.nav.setRoot('LoginPage');
   }
-
+  /**
+   * This method will help to go to settings page
+   * @author Subhadarshani
+   * @since 0.0.1
+   * @memberof MyApp
+   */
+  goToSettings(){
+    this.nav.push('SettingsPage');
+  }
   /**
    *
    * This method is going to create project folders where we are going to keep the data and if

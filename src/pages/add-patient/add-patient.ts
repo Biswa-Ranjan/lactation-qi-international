@@ -11,7 +11,9 @@ import { DatePicker } from '@ionic-native/date-picker';
 import { LactationProvider } from '../../providers/lactation/lactation';
 import { DatePickerProvider } from 'ionic2-date-picker';
 import { DatePickerOption } from 'ionic2-date-picker';
-
+import {
+  Storage
+} from '@ionic/storage';
 /**
  * This page is used to add new patient details, view the patient and edit the patient record.
  *
@@ -80,7 +82,7 @@ export class AddPatientPage implements OnInit{
     private messageService: MessageProvider,private datePicker: DatePicker,
     private userService: UserServiceProvider, private menuCtrl: MenuController,
     private lactationPlatform: LactationProvider,private datePickerProvider: DatePickerProvider,
-    public modalCtrl: ModalController) {
+    public modalCtrl: ModalController,private storage : Storage) {
   }
 
   /**
@@ -235,12 +237,20 @@ export class AddPatientPage implements OnInit{
     });
 
     //Getting baby admitted to type details
-    this.addNewPatientService.getBabyAdmittedTo()
-    .subscribe(data =>{
-      this.babyAdmittedTo = data
-    }, err => {
-      this.messageService.showErrorToast(err)
-    });
+    // this.addNewPatientService.getBabyAdmittedTo()
+    // .subscribe(data =>{
+    //   this.babyAdmittedTo = data
+    // }, err => {
+    //   this.messageService.showErrorToast(err)
+    // });
+    
+
+    this.storage.get(ConstantProvider.dbKeyNames.babyAdmittedTo).then(data=>{
+      if(data!=null){
+        this.babyAdmittedTo = data
+      }
+      
+    })
 
     //Getting nicu admission reason type details
     this.addNewPatientService.getNICAdmissionReason()

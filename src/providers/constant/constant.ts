@@ -74,7 +74,8 @@ export class ConstantProvider {
     bfsps: "bfsps",
     bfpds: 'bfpds',
     latestPatientId: 'latestPatientId',
-    sps: 'sps'
+    sps: 'sps',
+    babyAdmittedTo : 'babyAdmittedTo'
   }
 
   static patientSortBy: IPatientSortBy = {
@@ -206,7 +207,13 @@ export class ConstantProvider {
     mobilePwaWarning: 'Please use desktop device, this device is not supported.',
     commonPasswordSubString: '@123#!',
     registeredSuccessful : 'You have registered successfully, your password is ',
-    waringToNoteDownPasswordMsg : ', Please note this down and store it safely. If you forget please contact Paul<span class="forgot">(Paul.Bolla@medela.ch)</span>.'
+    waringToNoteDownPasswordMsg : ', Please note this down and store it safely. If you forget please contact Paul<span class="forgot">(Paul.Bolla@medela.ch)</span>.',
+    recordAddedMsg : 'Record added successfull.',
+    recordDeletedMsg :'Record deleted successfully',
+    deletionConfirmMsg : 'Are you sure want to delete this record?',
+    emptyBabeAdmittedToFieldMsg :'Please enter where baby is admitted to.',
+    editSuccessMessage : 'Record edited successfully.'
+
   };
 
 /**

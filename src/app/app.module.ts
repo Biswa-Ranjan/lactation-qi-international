@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule, NavController } from 'ionic-angular';
 
 
 import { MyApp } from './app.component';
@@ -38,6 +38,7 @@ import { PppServiceProvider } from '../providers/ppp-service/ppp-service';
 import { Device } from '@ionic-native/device';
 import { LactationProvider } from '../providers/lactation/lactation';
 import { DatePickerModule } from 'ionic2-date-picker';
+import { SettingsServiceProvider } from '../providers/settings-service/settings-service';
 
 @NgModule({
   declarations: [
@@ -108,7 +109,9 @@ import { DatePickerModule } from 'ionic2-date-picker';
     DecimalPipe,
     PppServiceProvider,
     Device,
-    LactationProvider
+    LactationProvider,
+    SettingsServiceProvider
+    
   ]
 })
 export class AppModule {}

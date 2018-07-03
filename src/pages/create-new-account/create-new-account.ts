@@ -110,40 +110,41 @@ export class CreateNewAccountPage {
    */
   ngOnInit() {
     //Getting all areas
-    this.createNewAccountService.getAllAreas()
-      .subscribe(data => {
-        this.areas = data
-        this.countries = this.areas.filter(d => d.areaLevel === ConstantProvider.areaLevels.country)
-      }, err => {
-        this.messageService.showErrorToast(err)
-      });
-
-      //change the title name of the country select popup
-      this.selectCountryOptions = {
-        title: ConstantProvider.messages.selectCountry
-      }
-
-      //change the title name of the state select popup
-      this.selectStateOptions = {
-        title: ConstantProvider.messages.selectState
-      }
-
-      //change the title name of the district select popup
-      this.selectDistrictOptions = {
-        title: ConstantProvider.messages.selectDistrict
-      }
-
-      //change the title name of the institute select popup
-      this.selectInstituteOptions = {
-        title: ConstantProvider.messages.selectInstitute
-      }
-
-
-        /**
+    /**
        * @author Subhadarshani
        * The below line of code is commented,as all the country,state district,institution will be no longer dropdown they will be entered manually.
        * 
        */
+    // this.createNewAccountService.getAllAreas()
+    //   .subscribe(data => {
+    //     this.areas = data
+    //     this.countries = this.areas.filter(d => d.areaLevel === ConstantProvider.areaLevels.country)
+    //   }, err => {
+    //     this.messageService.showErrorToast(err)
+    //   });
+
+    //   //change the title name of the country select popup
+    //   this.selectCountryOptions = {
+    //     title: ConstantProvider.messages.selectCountry
+    //   }
+
+    //   //change the title name of the state select popup
+    //   this.selectStateOptions = {
+    //     title: ConstantProvider.messages.selectState
+    //   }
+
+    //   //change the title name of the district select popup
+    //   this.selectDistrictOptions = {
+    //     title: ConstantProvider.messages.selectDistrict
+    //   }
+
+    //   //change the title name of the institute select popup
+    //   this.selectInstituteOptions = {
+    //     title: ConstantProvider.messages.selectInstitute
+    //   }
+
+
+        
       //get the first user from the db
       //get the values of country, state, district, institute, set the values to the respective fields and disable the fields
       

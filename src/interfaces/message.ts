@@ -92,4 +92,9 @@ interface IMessage{
     commonPasswordSubString: string;
     registeredSuccessful : string;
     waringToNoteDownPasswordMsg:string;
+    recordAddedMsg : string
+    recordDeletedMsg :string
+    deletionConfirmMsg : string
+    emptyBabeAdmittedToFieldMsg : string
+    editSuccessMessage : string
 }
