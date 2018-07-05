@@ -16,12 +16,12 @@
 
 
   <ion-item>
-    <ion-label floating>Email</ion-label>
+    <ion-label stacked>Email</ion-label>
     <ion-input type="email" [(ngModel)]="loginData.username"></ion-input>
   </ion-item>
 
   <ion-item>
-    <ion-label floating>Password</ion-label>
+    <ion-label stacked>Password</ion-label>
     <ion-input type="{{type}}" [(ngModel)]="loginData.password" (keypress)="_runScript($event)"></ion-input>
     <button *ngIf="!showPass" ion-button clear color="dark" type="button" item-right (click)="showPassword()"> <ion-icon class="icon-eye" name="md-eye-off"></ion-icon></button>
     <button *ngIf="showPass" ion-button clear color="dark" type="button" item-right (click)="showPassword()"> <ion-icon class="icon-eye" name="md-eye"></ion-icon></button>
