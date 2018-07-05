@@ -178,41 +178,7 @@ export class CreateNewAccountPage {
     });
   }
 
-  /**
-   * This method will show the error message if user will select the state wihtout selecting the country
-   *
-   * @author Jagat Bandhu
-   * @since 0.0.1
-   */
-  onClickState(){
-    if(this.userForm.controls.country.value == ""){
-      this.messageService.showErrorToast(ConstantProvider.messages.stateAlert);
-    }
-  }
 
-  /**
-   * This method will show the error message if user will select the district wihtout selecting the state
-   *
-   * @author Jagat Bandhu
-   * @since 0.0.1
-   */
-  onClickDistrict(){
-    if(this.userForm.controls.state.value == ""){
-      this.messageService.showErrorToast(ConstantProvider.messages.districtAlert);
-    }
-  }
-
-  /**
-   * This method will show the error message if user will select the institution wihtout selecting the district
-   *
-   * @author Jagat Bandhu
-   * @since 0.0.1
-   */
-  onClickInstitution(){
-    if(this.userForm.controls.district.value == ""){
-      this.messageService.showErrorToast(ConstantProvider.messages.institutionAlert);
-    }
-  }
 
   /**
    * This method will save the deo data to the database
@@ -233,77 +199,7 @@ export class CreateNewAccountPage {
     }
   }
 
-  /**
-   * This method is going to get executed when country is selected
-   * @author Ratikanta
-   * @since 0.0.1
-   * @memberof CreateNewAccountPage
-   */
-  countrySelected(id?:any) {
-    if(id != undefined && id != null){
-      this.user.country = id;
-    }else{
-      this.user.country = this.userForm.controls.country.value;
-    }
-    this.states = this.areas.filter(d => d.parentAreaId === this.user.country)
-    this.stateStatus = false;
-    this.userForm.controls.state.setValue(null);
-    this.userForm.controls.district.setValue(null);
-    this.userForm.controls.institution.setValue(null);
-  }
-
-  /**
-   * This method is going to get executed when state is selected
-   * @author Ratikanta
-   * @since 0.0.1
-   * @param {IArea} state
-   * @memberof CreateNewAccountPage
-   */
-  stateSelected(id?:any) {
-    if(id != undefined && id != null){
-      this.user.state = id;
-    }else{
-      this.user.state = this.userForm.controls.state.value;
-    }
-    this.districts = this.areas.filter(d => d.parentAreaId === this.user.state)
-    this.districtStatus  = false;
-    this.userForm.controls.district.setValue(null);
-    this.userForm.controls.institution.setValue(null);
-  }
-
-
-  /**
-   * This method is going to get executed when district is selected
-   * @author Ratikanta
-   * @since 0.0.1
-   * @param {IArea} district
-   * @memberof CreateNewAccountPage
-   */
-  districtSelected(id?:any) {
-    if(id != undefined && id != null){
-      this.user.district = id;
-    }else{
-      this.user.district = this.userForm.controls.district.value;
-    }
-    this.institutes = this.areas.filter(d => d.parentAreaId === this.user.district)
-    this.institutionStatus = false;
-    this.userForm.controls.institution.setValue(null);
-  }
-
-  /**
-   * This method is going to get executed when institution is selected
-   * @author Ratikanta
-   * @since 0.0.1
-   * @param {IArea} institution
-   * @memberof CreateNewAccountPage
-   */
-  instituteSelected(id?:any) {
-    if(id != undefined && id != null){
-      this.user.institution = id;
-    }else{
-      this.user.institution = this.userForm.controls.institution.value;
-    }
-  }
+ 
 
   /**
    * This method is used to restrict the special character in the input field
@@ -374,28 +270,29 @@ export class CreateNewAccountPage {
       enableBackdropDismiss: false,
       title: ConstantProvider.messages.important,
       message: msg,
-      inputs: [
-        {
-          type: 'checkbox',
-          label: ConstantProvider.messages.emailNoted,
-          checked: false,
-          value: 'unchecked',
-          handler: (data)=>{
-            if(data.checked === true)
-              data.value = 'checked';
-          }
-        },
-      ],
+      // inputs: [
+      //   {
+      //     type: 'checkbox',
+      //     label: ConstantProvider.messages.emailNoted,
+      //     checked: false,
+      //     value: 'unchecked',
+      //     handler: (data)=>{
+      //       if(data.checked === true)
+      //         data.value = 'checked';
+      //     }
+      //   },
+      // ],
       buttons: [
         {
           text: 'Ok',
           handler: (data) => {
-            if(data.length === 0){
-            this.messageService.showErrorToast(ConstantProvider.messages.selectCheckBox)
-              return false;
-              }
-              else
-              this.navCtrl.pop();
+            // if(data.length === 0){
+            // this.messageService.showErrorToast(ConstantProvider.messages.selectCheckBox)
+            //   return false;
+            //   }
+            //   else
+            //   this.navCtrl.pop();
+            this.navCtrl.pop();
           }
         }
       ]
