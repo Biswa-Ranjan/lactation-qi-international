@@ -755,8 +755,14 @@ export class SinglePatientSummaryServiceProvider {
     this.babyBasicDetails.admissionDateForOutdoorPatients = babyDetails.admissionDateForOutdoorPatients;
 
     //finding the value for the id of baby admitted to in type details array
+    //code start
+    /**
+    *  As Baby Admitted to is no longer in data.json so it is fetched from local database.
+    */
+    let babyAdmittedToDetails = await this.storage.get(ConstantProvider.dbKeyNames.babyAdmittedTo)
+    //code end
     this.babyBasicDetails.babyAdmittedTo = (babyDetails.babyAdmittedTo != null && babyDetails.babyAdmittedTo.toString() != '') ?
-      typeDetails[typeDetails.findIndex(d => d.id === babyDetails.babyAdmittedTo)].name : null;
+    babyAdmittedToDetails[babyAdmittedToDetails.findIndex(d => d.id === babyDetails.babyAdmittedTo)].name : null;
     this.babyBasicDetails.babyCode = babyDetails.babyCode;
 
     //finding delivery method name in type details array

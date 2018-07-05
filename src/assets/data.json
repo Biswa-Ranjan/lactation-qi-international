@@ -118,36 +118,6 @@
       "typeId": 4
     },
     {
-      "id": 14,
-      "name": "Level 3 NICU/High Dependency",
-      "typeId": 5
-    },
-    {
-      "id": 15,
-      "name": "Level 2 SNCU/Low Dependency",
-      "typeId": 5
-    },
-    {
-      "id": 16,
-      "name": "Level 1 NICU",
-      "typeId": 5
-    },
-    {
-      "id": 17,
-      "name": "Step-down unit",
-      "typeId": 5
-    },
-    {
-      "id": 18,
-      "name": "KMC unit",
-      "typeId": 5
-    },
-    {
-      "id": 19,
-      "name": "Maternity ward",
-      "typeId": 5
-    },
-    {
       "id": 20,
       "name": "Prematurity < 34 weeks",
       "typeId": 6
