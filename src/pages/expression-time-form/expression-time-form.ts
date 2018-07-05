@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 import { AddNewExpressionBfServiceProvider } from '../../providers/add-new-expression-bf-service/add-new-expression-bf-service';
 import { MessageProvider } from '../../providers/message/message';
 import { SaveExpressionBfProvider } from '../../providers/save-expression-bf/save-expression-bf';
@@ -8,6 +8,7 @@ import { ConstantProvider } from '../../providers/constant/constant';
 import { BFExpressionDateListProvider } from '../../providers/bf-expression-date-list-service/bf-expression-date-list-service';
 import { DatePicker } from '@ionic-native/date-picker';
 import { LactationProvider } from '../../providers/lactation/lactation';
+import { DatePickerOption, DatePickerProvider } from 'ionic2-date-picker';
 
 /**
  * This page will be used to enter the data of log expression breastfeed form
@@ -53,7 +54,9 @@ export class ExpressionTimeFormPage {
     private messageService: MessageProvider,private lactationPlatform: LactationProvider,
     private bfExpressionTimeService: SaveExpressionBfProvider,
     private expressionBFdateService: BFExpressionDateListProvider,
-    private datePipe: DatePipe, private datePicker: DatePicker) {
+    private datePipe: DatePipe, private datePicker: DatePicker,
+    private datePickerProvider: DatePickerProvider,
+    public modalCtrl: ModalController) {
   }
 
   /**
@@ -112,10 +115,10 @@ export class ExpressionTimeFormPage {
       }, err => {
         this.messageService.showErrorToast(err)
       });
-    if(this.isWeb){
-      this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
-      this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
-    }
+    // if(this.isWeb){
+    //   this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
+    //   this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
+    // }
   }
 
   /**
@@ -135,7 +138,8 @@ export class ExpressionTimeFormPage {
     }else if(!this.validateDurationOfExpression(bfExpression)){
       this.messageService.showErrorToast(ConstantProvider.messages.volumeOfMilkExpressedFromBreast);
     }else {
-      bfExpression.dateOfExpression = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
+      // bfExpression.dateOfExpression = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
+      bfExpression.dateOfExpression = this.dateOfExpressions.concat()
       this.bfExpressionTimeService.saveBfExpression(bfExpression, newData)
       .then(data => {
         this.findExpressionsByBabyCodeAndDate();
@@ -352,5 +356,17 @@ export class ExpressionTimeFormPage {
         this.messageService.showErrorToast(error)
       })
     }
+  }
+
+  showCalendar() {
+    let datePickerOption: DatePickerOption = {
+      maximumDate: new Date() // the maximum date selectable
+    };
+    const dateSelected =
+      this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
+
+    dateSelected.subscribe(date => {
+      this.dateOfExpressions = this.datePipe.transform(date,"dd-MM-yyyy")
+    });
   }
 }
