@@ -245,7 +245,7 @@ export class CreateNewAccountPage {
         this.createNewAccountService.saveNewUser(this.user)
           .then(data => {
             this.messageService.showSuccessToast(ConstantProvider.messages.submitSuccessfull);
-            this.showConfirmAlert();
+            this.showConfirmAlert()
           })
           .catch(err => {
             this.messageService.showErrorToast(err)
@@ -265,7 +265,7 @@ export class CreateNewAccountPage {
    */
   showConfirmAlert(){
     let password = this.user.email.substring(0, 2) + ConstantProvider.messages.commonPasswordSubString
-    let msg =  ConstantProvider.messages.registeredSuccessful + password +ConstantProvider.messages.waringToNoteDownPasswordMsg
+    let msg =  ConstantProvider.messages.registeredSuccessful + "<b>" + password + "</b>" + ConstantProvider.messages.waringToNoteDownPasswordMsg
     let confirm = this.alertCtrl.create({
       enableBackdropDismiss: false,
       title: ConstantProvider.messages.important,
@@ -294,6 +294,7 @@ export class CreateNewAccountPage {
             //   this.navCtrl.pop();
             this.navCtrl.pop();
           }
+
         }
       ]
     });
