@@ -1,11 +1,12 @@
 import { FeedExpressionServiceProvider } from './../../providers/feed-expression-service/feed-expression-service';
 import { Component } from '@angular/core';
-import { IonicPage, NavParams } from 'ionic-angular';
+import { IonicPage, NavParams, ModalController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message/message';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { DatePicker } from '@ionic-native/date-picker';
 import { DatePipe } from '@angular/common';
 import { LactationProvider } from '../../providers/lactation/lactation';
+import { DatePickerOption, DatePickerProvider } from 'ionic2-date-picker';
 
 
 /**
@@ -41,8 +42,11 @@ export class FeedPage {
   babyWeight: number;
 
   constructor(private feedExpressionService: FeedExpressionServiceProvider,
-  private messageService: MessageProvider, private navParams: NavParams, private datePicker: DatePicker,
-    private datePipe: DatePipe,private lactationPlatform: LactationProvider) {}
+    private messageService: MessageProvider, private navParams: NavParams,
+    private datePicker: DatePicker,
+    private datePipe: DatePipe,private lactationPlatform: LactationProvider,
+    private datePickerProvider: DatePickerProvider,
+    public modalCtrl: ModalController) {}
 
   /**
    * @author Naseem Akhtar (naseem@sdrc.co.in)
@@ -436,6 +440,22 @@ export class FeedPage {
         if(!data)
           this.babyWeight = null;
       })
+    }
+  }
+
+  showCalendar(dateInput) {
+    if(this.dateOfFeed === null || this.dateOfFeed === '') {
+      let datePickerOption: DatePickerOption = {
+        maximumDate: new Date() // the maximum date selectable
+      };
+      const dateSelected =
+        this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
+
+      dateSelected.subscribe(date => {
+        this.dateOfFeed = this.datePipe.transform(date,"dd-MM-yyyy")
+        this.dateConfirmation()
+        dateInput.setFocus()
+      });
     }
   }
 

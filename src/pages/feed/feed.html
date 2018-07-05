@@ -26,9 +26,7 @@
           <span class="text-color"> *</span>
         </ion-label>
         <ion-input *ngIf="!isWeb" [disabled]="dateOfFeed" [readonly]="true" [(ngModel)]="dateOfFeed" (ionFocus)="datePickerDialog()" [ngModelOptions]="{standalone: true}"></ion-input>
-        <ion-datetime *ngIf="isWeb" [disabled]="dateOfFeed" [(ngModel)]="dateOfFeed"
-          [ngModelOptions]="{standalone: true}" displayFormat="DD-MM-YYYY" [min]="minDate"
-          [max]="maxDate" (ionChange)="dateConfirmation()"></ion-datetime>
+        <ion-input *ngIf="isWeb" [disabled]="dateOfFeed" [readonly]="true" [(ngModel)]="dateOfFeed" (click)="showCalendar(dateInput)" #dateInput></ion-input>
       </ion-col>
 
       <ion-col col-12 col-sm-4>
