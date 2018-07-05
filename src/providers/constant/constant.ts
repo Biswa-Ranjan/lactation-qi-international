@@ -212,7 +212,8 @@ export class ConstantProvider {
     recordDeletedMsg :'Record deleted successfully',
     deletionConfirmMsg : 'Are you sure want to delete this record?',
     emptyBabeAdmittedToFieldMsg :'Please enter where baby is admitted to.',
-    editSuccessMessage : 'Record edited successfully.'
+    editSuccessMessage : 'Record edited successfully.',
+    recordFoundDeletionCanNotBeDoneMsg :"Record found, deletion can not be done.You can edit it."
 
   };
 

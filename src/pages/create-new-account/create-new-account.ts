@@ -265,7 +265,7 @@ export class CreateNewAccountPage {
    */
   showConfirmAlert(){
     let password = this.user.email.substring(0, 2) + ConstantProvider.messages.commonPasswordSubString
-    let msg =  ConstantProvider.messages.registeredSuccessful + "<b>" + password + "</b>" + ConstantProvider.messages.waringToNoteDownPasswordMsg
+    let msg =  ConstantProvider.messages.registeredSuccessful + "<b>" + password + "</b>" + "<br>"+ ConstantProvider.messages.waringToNoteDownPasswordMsg
     let confirm = this.alertCtrl.create({
       enableBackdropDismiss: false,
       title: ConstantProvider.messages.important,

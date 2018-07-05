@@ -97,4 +97,5 @@ interface IMessage{
     deletionConfirmMsg : string
     emptyBabeAdmittedToFieldMsg : string
     editSuccessMessage : string
+    recordFoundDeletionCanNotBeDoneMsg : string
 }
