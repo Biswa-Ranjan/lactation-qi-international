@@ -99,4 +99,5 @@ interface IMessage{
     editSuccessMessage : string
     recordFoundDeletionCanNotBeDoneMsg : string
     invalidTimeFormat: string
+    babyIdExistsMsg: string
 }

@@ -153,7 +153,7 @@ export class ConstantProvider {
     districtAlert: 'Please enter the state before entering district',
     institutionAlert: 'Please enter the district before entering insitution',
     saveSuccessfull: 'Saved successfully.',
-    info: 'Infomation',
+    info: 'Information',
     warning: 'Warning',
     deletePatient: 'Do you want to delete the selected Patient record?',
     duplicateTime: 'Record for this particular time exists. Please visit the record created for this time to edit.',
@@ -214,7 +214,8 @@ export class ConstantProvider {
     emptyBabeAdmittedToFieldMsg :'Please enter where baby is admitted to.',
     editSuccessMessage : 'Record edited successfully.',
     recordFoundDeletionCanNotBeDoneMsg :"Record found, deletion can not be done.You can edit it.",
-    invalidTimeFormat: 'Invalid time format'
+    invalidTimeFormat: 'Invalid time format',
+    babyIdExistsMsg :"Baby Id already exists."
 
   };
 

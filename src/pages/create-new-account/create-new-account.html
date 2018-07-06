@@ -45,7 +45,7 @@
         <!-- <ion-select [disabled]="countryStatus" formControlName="country" (ionChange)="countrySelected()" [selectOptions]="selectCountryOptions">
           <ion-option *ngFor="let country of countries | orderAreaByName" [value]="country.id">{{country.name}}</ion-option>
         </ion-select> -->
-        <ion-input type="text" value="" formControlName="country"></ion-input>
+        <ion-input type="text" value="" formControlName="country" [disabled]="countryStatus"></ion-input>
       </ion-item>
 
     
@@ -62,7 +62,7 @@
         <!-- <ion-select [disabled]="stateStatus" formControlName="state" (ionChange)="stateSelected()" [selectOptions]="selectStateOptions">
           <ion-option *ngFor="let state of states | orderAreaByName" [value]="state.id">{{state.name}}</ion-option>
         </ion-select> -->
-        <ion-input type="text" value="" formControlName="state"></ion-input>
+        <ion-input type="text" value="" formControlName="state" [disabled]="stateStatus"></ion-input>
       </ion-item>
       <p class="error" *ngIf="userForm.controls.state.invalid && (userForm.controls.state.dirty || userForm.controls.state.touched)">
         Please enter State
@@ -76,7 +76,7 @@
         <!-- <ion-select [disabled]="districtStatus" formControlName="district" (ionChange)="districtSelected()" [selectOptions]="selectDistrictOptions">
           <ion-option *ngFor="let district of districts | orderAreaByName" [value]="district.id">{{district.name}}</ion-option>
         </ion-select> -->
-        <ion-input type="text" value="" formControlName="district"></ion-input>
+        <ion-input type="text" value="" formControlName="district" [disabled]="districtStatus"></ion-input>
       </ion-item>
       <p class="error" *ngIf="userForm.controls.district.invalid && (userForm.controls.district.dirty || userForm.controls.district.touched)">
         Please enter District
@@ -90,7 +90,7 @@
         <!-- <ion-select [disabled]="institutionStatus" formControlName="institution" (ionChange)="instituteSelected()" [selectOptions]="selectInstituteOptions">
           <ion-option *ngFor="let institute of institutes | orderAreaByName" [value]="institute.id">{{institute.name}}</ion-option>
         </ion-select> -->
-        <ion-input type="text" value="" formControlName="institution"></ion-input>
+        <ion-input type="text" value="" formControlName="institution"  [disabled]="institutionStatus"></ion-input>
       </ion-item>
       <p class="error" *ngIf="userForm.controls.institution.invalid && (userForm.controls.institution.dirty || userForm.controls.institution.touched)">
         Please enter Institution

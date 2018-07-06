@@ -340,4 +340,30 @@ export class AddNewPatientServiceProvider {
       });
     });
   }
+  
+  /**
+   * This method will check whether baby id is present or not
+   *
+   * @author Subhadarshani 
+   * @since 0.0.1
+   * @param babyCode
+   */
+  isBabyIdExistaOrNot(babyCode: string): Promise < Boolean > {
+    let promise: Promise < Boolean > = new Promise((resolve, reject) => {
+      this.storage
+        .get(ConstantProvider.dbKeyNames.patients)
+        .then(data => {
+          data = (data as IPatient[]).filter(d => d.babyCode === babyCode);
+          if(data.length>0)
+          resolve(true);
+          else{
+            resolve(false);
+          }
+        })
+        .catch(err => {
+          reject(err.message);
+        });
+    });
+    return promise;
+  }
 }

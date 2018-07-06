@@ -59,7 +59,7 @@ export class AddPatientPage implements OnInit{
   numberRegex: RegExp = /^[0-9]+(\.[0-9]*){0,1}$/;
   timeRegex: RegExp = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
   hasError: boolean = false;
-
+  babyIdFound :boolean =false
   /**
    * This property is going to tell us, whether the user is using PWA or android app
    * @author Jagat
@@ -113,6 +113,7 @@ export class AddPatientPage implements OnInit{
       control.markAsUntouched({onlySelf: true});
       control.markAsPristine({onlySelf: true});
     });
+    this.patientForm.controls.baby_id.setValue(null)
     this.patientForm.controls.hospital_baby_id.setValue(null)
     this.patientForm.controls.mother_name.setValue(null)
     this.patientForm.controls.mother_age.setValue(null)
@@ -261,7 +262,7 @@ export class AddPatientPage implements OnInit{
     });
 
     this.patientForm = new FormGroup({
-      baby_id: new FormControl(null),
+      baby_id: new FormControl(null,[Validators.required,Validators.pattern(this.alphaNumeric)]),
       hospital_baby_id: new FormControl(null, [Validators.pattern(this.alphaNumeric), Validators.maxLength(25)]),
       mother_name: new FormControl(null, [Validators.pattern(this.motherNameRegex), Validators.maxLength(30)]),
       mother_age: new FormControl(null),
@@ -389,8 +390,8 @@ export class AddPatientPage implements OnInit{
     * @author Jagat Bandhu
     * @since 0.0.1
     */
-    submit(){
-
+    async submit(){
+                                         
       if(this.patientForm.controls.delivery_date.value == null){
         document.getElementById('ddate').scrollIntoView({behavior: 'smooth'})
       } else if(this.patientForm.controls.delivery_time.value == null || (this.isWeb && !this.validateWebDeliveryTime())) {
@@ -404,61 +405,86 @@ export class AddPatientPage implements OnInit{
 
       this.outpatientAdmission();
       this.babyAdmitedToCheck();
-      if(this.validateDischargeDate()){
-        if(!this.patientForm.valid){
-          this.resetStatus = true;
-          Object.keys(this.patientForm.controls).forEach(field => {
-            const control = this.patientForm.get(field);
-            control.markAsTouched({ onlySelf: true });
-            // this.patientForm.controls.delivery_date.
-          });
-          this.messageService.showErrorToast(ConstantProvider.messages.allFieldMandatory)
-        } else {
-          this.resetStatus = false;
 
-          //Initialize the add new patient object
-          this.patient = {
-            babyCode: this.patientForm.controls.baby_id.value,
-            babyOf: this.patientForm.controls.mother_name.value,
-            mothersAge: this.patientForm.controls.mother_age.value==null?null:parseInt(this.patientForm.controls.mother_age.value),
-            deliveryDate: this.patientForm.controls.delivery_date.value,
-            deliveryTime: this.patientForm.controls.delivery_time.value,
-            deliveryMethod: this.patientForm.controls.delivery_method.value,
-            babyWeight: this.patientForm.controls.baby_weight.value==null?null:parseFloat(this.patientForm.controls.baby_weight.value),
-            gestationalAgeInWeek: this.patientForm.controls.gestational_age.value==null?null:parseInt(this.patientForm.controls.gestational_age.value),
-            mothersPrenatalIntent: this.patientForm.controls.intent_provide_milk.value,
-            parentsKnowledgeOnHmAndLactation: this.patientForm.controls.hm_lactation.value,
-            timeTillFirstExpressionInHour: this.patientForm.controls.first_exp_time_in_hour.value,
-            timeTillFirstExpressionInMinute: this.patientForm.controls.first_exp_time_in_minute.value,
-            inpatientOrOutPatient: this.patientForm.controls.inpatient_outpatient.value,
-            admissionDateForOutdoorPatients: this.patientForm.controls.admission_date.value,
-            babyAdmittedTo: this.patientForm.controls.baby_admitted.value,
-            nicuAdmissionReason: this.patientForm.controls.nicu_admission.value,
-            dischargeDate: this.patientForm.controls.discharge_date.value,
-            isSynced: false,
-            syncFailureMessage: null,
-            userId: this.userService.getUser().email,
-            createdDate: null,
-            updatedDate: null,
-            uuidNumber: null
+      //check for duplicate baby id
+      let patientData = await this.addNewPatientService.isBabyIdExistaOrNot(this.patientForm.controls.baby_id.value)   
+      if(patientData){
+      this.messageService.showErrorToast(ConstantProvider.messages.babyIdExistsMsg);
+      } else{
+        if(this.validateDischargeDate()){
+          if(!this.patientForm.valid){
+            this.resetStatus = true;
+            Object.keys(this.patientForm.controls).forEach(field => {
+              const control = this.patientForm.get(field);
+              control.markAsTouched({ onlySelf: true });
+              // this.patientForm.controls.delivery_date.
+            });
+            this.messageService.showErrorToast(ConstantProvider.messages.allFieldMandatory)
+          } else {
+            this.resetStatus = false;
+  
+            //Initialize the add new patient object
+            this.patient = {
+              babyCode: this.patientForm.controls.baby_id.value,
+              babyOf: this.patientForm.controls.mother_name.value,
+              mothersAge: this.patientForm.controls.mother_age.value==null?null:parseInt(this.patientForm.controls.mother_age.value),
+              deliveryDate: this.patientForm.controls.delivery_date.value,
+              deliveryTime: this.patientForm.controls.delivery_time.value,
+              deliveryMethod: this.patientForm.controls.delivery_method.value,
+              babyWeight: this.patientForm.controls.baby_weight.value==null?null:parseFloat(this.patientForm.controls.baby_weight.value),
+              gestationalAgeInWeek: this.patientForm.controls.gestational_age.value==null?null:parseInt(this.patientForm.controls.gestational_age.value),
+              mothersPrenatalIntent: this.patientForm.controls.intent_provide_milk.value,
+              parentsKnowledgeOnHmAndLactation: this.patientForm.controls.hm_lactation.value,
+              timeTillFirstExpressionInHour: this.patientForm.controls.first_exp_time_in_hour.value,
+              timeTillFirstExpressionInMinute: this.patientForm.controls.first_exp_time_in_minute.value,
+              inpatientOrOutPatient: this.patientForm.controls.inpatient_outpatient.value,
+              admissionDateForOutdoorPatients: this.patientForm.controls.admission_date.value,
+              babyAdmittedTo: this.patientForm.controls.baby_admitted.value,
+              nicuAdmissionReason: this.patientForm.controls.nicu_admission.value,
+              dischargeDate: this.patientForm.controls.discharge_date.value,
+              isSynced: false,
+              syncFailureMessage: null,
+              userId: this.userService.getUser().email,
+              createdDate: null,
+              updatedDate: null,
+              uuidNumber: null
+            }
+            //save and update the patient to the db
+            this.addNewPatientService.saveNewPatient(this.patient, this.uniquePatientId.idNumber)
+              .then(data=> {
+                if(this.forEdit){
+                  this.messageService.showSuccessToast(ConstantProvider.messages.updateSuccessfull);
+                }else{
+                  this.messageService.showSuccessToast(ConstantProvider.messages.submitSuccessfull);
+                }
+              this.navCtrl.pop();
+            })
+              .catch(err =>{
+              this.messageService.showErrorToast(err)
+            })
           }
-          //save and update the patient to the db
-          this.addNewPatientService.saveNewPatient(this.patient, this.uniquePatientId.idNumber)
-            .then(data=> {
-              if(this.forEdit){
-                this.messageService.showSuccessToast(ConstantProvider.messages.updateSuccessfull);
-              }else{
-                this.messageService.showSuccessToast(ConstantProvider.messages.submitSuccessfull);
-              }
-            this.navCtrl.pop();
-          })
-            .catch(err =>{
-            this.messageService.showErrorToast(err)
-          })
         }
       }
+      
+      
     }
-
+    /**
+     * This method will going to check baby id exists or not
+     *
+     * @author Jagat Bandhu Sahoo
+     * @since 0.0.1
+     */
+     isBabyIdExists() : boolean {
+       this.storage.get(ConstantProvider.dbKeyNames.patients).then(data=>{
+         for(let i=0;i<data.length;i++){
+          if(data[i].babyCode === this.patientForm.controls.baby_id.value ){       
+            this.babyIdFound = true;
+            break                                                       
+          }
+         }
+       })
+     return  this.babyIdFound
+  }
     /**
      * This method will set the value taken from the db to ui component.
      *
@@ -468,7 +494,7 @@ export class AddPatientPage implements OnInit{
     setFetchedDataToUi(){
 
       this.patientForm = new FormGroup({
-        baby_id: new FormControl(this.patient.babyCode),
+        baby_id: new FormControl(this.patient.babyCode,[Validators.required,Validators.pattern(this.alphaNumeric)]),
         mother_name: new FormControl(this.patient.babyOf, [Validators.pattern(this.motherNameRegex), Validators.maxLength(30)]),
         mother_age: new FormControl(this.patient.mothersAge),
         delivery_date: new FormControl(this.patient.deliveryDate,[Validators.required]),
