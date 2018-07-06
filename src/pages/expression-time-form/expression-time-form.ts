@@ -347,7 +347,7 @@ export class ExpressionTimeFormPage {
       this.messageService.showAlert('Alert', 'Are you sure you want to continue with this date')
       .then( data => {
         if(data) {
-          this.dataForBFEntryPage.selectedDate = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
+          this.dataForBFEntryPage.selectedDate = this.dateOfExpressions.concat()
           this.findExpressionsByBabyCodeAndDate()
         }
         else
@@ -358,15 +358,19 @@ export class ExpressionTimeFormPage {
     }
   }
 
-  showCalendar() {
-    let datePickerOption: DatePickerOption = {
-      maximumDate: new Date() // the maximum date selectable
-    };
-    const dateSelected =
-      this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
+  showCalendar(dateInput) {
+    if(this.dateOfExpressions === null || this.dateOfExpressions === '') {
+      let datePickerOption: DatePickerOption = {
+        maximumDate: new Date() // the maximum date selectable
+      };
+      const dateSelected =
+        this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
 
-    dateSelected.subscribe(date => {
-      this.dateOfExpressions = this.datePipe.transform(date,"dd-MM-yyyy")
-    });
+      dateSelected.subscribe(date => {
+        this.dateOfExpressions = this.datePipe.transform(date,"dd-MM-yyyy")
+        this.dateConfirmation()
+        dateInput.setFocus()
+      });
+    }
   }
 }

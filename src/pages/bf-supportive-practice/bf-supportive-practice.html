@@ -27,10 +27,7 @@
         </ion-label>
         <ion-input *ngIf="!isWeb" [disabled]="dateOfBfsp" [readonly]="true" [(ngModel)]="dateOfBfsp" (ionFocus)="datePickerDialog()"
           [ngModelOptions]="{standalone: true}"></ion-input>
-
-        <ion-datetime *ngIf="isWeb" [disabled]="dateOfBfsp" [(ngModel)]="dateOfBfsp" [ngModelOptions]="{standalone: true}" displayFormat="DD-MM-YYYY"
-          [min]="minDate" [max]="maxDate" (ionChange)="dateConfirmation()"></ion-datetime>
-        <!-- <ion-icon padding-top name="calendar" item-right></ion-icon> -->
+        <ion-input *ngIf="isWeb" [disabled]="dateOfBfsp" [readonly]="true" [(ngModel)]="dateOfBfsp" (click)="showCalendar(dateInput)" #dateInput></ion-input>
       </ion-col>
     </ion-row>
 

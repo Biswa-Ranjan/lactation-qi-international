@@ -26,7 +26,7 @@
           <span class="text-color"> *</span>
         </ion-label>
         <ion-input *ngIf="!isWeb" [disabled]="dateOfExpressions" [readonly]="true" [(ngModel)]="dateOfExpressions" (ionFocus)="datePickerDialog()" [ngModelOptions]="{standalone: true}"></ion-input>
-        <ion-input *ngIf="isWeb" [disabled]="dateOfExpressions" [readonly]="true" [(ngModel)]="dateOfExpressions" (click)="showCalendar()"></ion-input>
+        <ion-input *ngIf="isWeb" [disabled]="dateOfExpressions" [readonly]="true" [(ngModel)]="dateOfExpressions" (click)="showCalendar(dateInput)" #dateInput></ion-input>
         <!-- <ion-icon padding-top name="calendar" item-right></ion-icon> -->
       </ion-col>
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { BfSupportivePracticeServiceProvider } from '../../providers/bf-supportive-practice-service/bf-supportive-practice-service';
@@ -7,6 +7,7 @@ import { MessageProvider } from '../../providers/message/message';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { DatePicker } from '@ionic-native/date-picker';
 import { LactationProvider } from '../../providers/lactation/lactation';
+import { DatePickerProvider, DatePickerOption } from 'ionic2-date-picker';
 
 /**
  * This page will be used to enter the data of breast feeding supportive practice
@@ -49,12 +50,16 @@ export class BfSupportivePracticePage {
     title: 'Person who performed the BFSP'
   }
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
     private messageService: MessageProvider,
-    public formBuilder: FormBuilder, private datePipe: DatePipe,
+    public formBuilder: FormBuilder,
+    private datePipe: DatePipe,
     private bfspService: BfSupportivePracticeServiceProvider,
-    private datePicker: DatePicker, private lactationPlatform: LactationProvider
-    ) {}
+    private datePicker: DatePicker,
+    private lactationPlatform: LactationProvider,
+    private datePickerProvider: DatePickerProvider,
+    public modalCtrl: ModalController) {}
 
   /**
    * @author Naseem Akhtar (naseem@sdrc.co.in)
@@ -337,6 +342,22 @@ export class BfSupportivePracticePage {
         this.messageService.showErrorToast('No valid record to save')
     }else {
       this.messageService.showErrorToast("Please enter the date of bfsp and try saving again.")
+    }
+  }
+
+  showCalendar(dateInput) {
+    if(this.dateOfBfsp === null || this.dateOfBfsp === '') {
+      let datePickerOption: DatePickerOption = {
+        maximumDate: new Date() // the maximum date selectable
+      };
+      const dateSelected =
+        this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
+
+      dateSelected.subscribe(date => {
+        this.dateOfBfsp = this.datePipe.transform(date,"dd-MM-yyyy")
+        this.dateConfirmation()
+        dateInput.setFocus()
+      });
     }
   }
 
