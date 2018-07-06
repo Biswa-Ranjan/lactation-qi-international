@@ -2,7 +2,7 @@
  * Check out https://googlechromelabs.github.io/sw-toolbox/ for
  * more info on how to use sw-toolbox to custom configure your service worker.
  */
- //v1 11-06-2018 14:40
+ //v2 05-07-2018 19:38
 
 'use strict';
 importScripts('./build/sw-toolbox.js');

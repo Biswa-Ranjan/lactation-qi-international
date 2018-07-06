@@ -26,16 +26,8 @@
           <span class="text-color"> *</span>
         </ion-label>
         <ion-input *ngIf="!isWeb" [disabled]="dateOfExpressions" [readonly]="true" [(ngModel)]="dateOfExpressions" (ionFocus)="datePickerDialog()" [ngModelOptions]="{standalone: true}"></ion-input>
-        <ion-input *ngIf="isWeb" [disabled]="dateOfExpressions" [readonly]="true" [(ngModel)]="dateOfExpressions" (click)="showCalendar(dateInput)" #dateInput></ion-input>
-        <!-- <ion-icon padding-top name="calendar" item-right></ion-icon> -->
+        <ion-input *ngIf="isWeb" [disabled]="dateOfExpressionFlag" [readonly]="true" [(ngModel)]="dateOfExpressions" (click)="showCalendar()"></ion-input>
       </ion-col>
-
-      <!-- <ion-col col-12 col-sm-4>
-        <ion-item>
-          <ion-label stacked>Weight of baby (in grams)</ion-label>
-          <ion-input type="number"></ion-input>
-        </ion-item>
-      </ion-col> -->
     </ion-row>
 
     <div *ngFor="let item of bFExpressions | orderByTimeExpressionFrom; let i=index" margin class="form-border-box">
@@ -49,10 +41,13 @@
             [(ngModel)]="item.timeOfExpression" (ionFocus)="timePickerDialog(item)"
               [ngModelOptions]="{standalone: true}"></ion-input>
 
-          <ion-datetime *ngIf="isWeb" [disabled]="!dateOfExpressions" [(ngModel)]="item.timeOfExpression"
+          <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfExpressions" 
+            [(ngModel)]="item.timeOfExpression" (keypress)="_numberKeyPress($event);
+              _formatTime($event, item)" (ionBlur)="validateTime(item.timeOfExpression, item)"></ion-input>
+
+          <!-- <ion-datetime *ngIf="isWeb" [disabled]="!dateOfExpressions" [(ngModel)]="item.timeOfExpression"
             [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"
-            (ionChange)="validateTime(item.timeOfExpression, item)"></ion-datetime>
-          <!-- <ion-icon padding-top name="time" item-right></ion-icon> -->
+            (ionChange)="validateTime(item.timeOfExpression, item)"></ion-datetime> -->
         </ion-col>
 
         <ion-col col-9 col-sm-6 col-md-5 col-lg-2>

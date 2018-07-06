@@ -98,4 +98,5 @@ interface IMessage{
     emptyBabeAdmittedToFieldMsg : string
     editSuccessMessage : string
     recordFoundDeletionCanNotBeDoneMsg : string
+    invalidTimeFormat: string
 }
