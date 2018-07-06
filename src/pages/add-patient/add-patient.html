@@ -28,6 +28,9 @@
         </ion-label>
         <ion-input text-uppercase type="text"  formControlName="baby_id"></ion-input>
       </ion-item>
+      <p class="error" *ngIf="patientForm.controls.baby_id.invalid  && (patientForm.controls.baby_id.dirty || patientForm.controls.baby_id.touched) && resetStatus">
+        Please enter baby id
+      </p>
     </div>
     <!-- <div class="form-group">
       <ion-item>
