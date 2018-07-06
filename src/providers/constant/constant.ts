@@ -153,7 +153,7 @@ export class ConstantProvider {
     districtAlert: 'Please enter the state before entering district',
     institutionAlert: 'Please enter the district before entering insitution',
     saveSuccessfull: 'Saved successfully.',
-    info: 'Infomation',
+    info: 'Information',
     warning: 'Warning',
     deletePatient: 'Do you want to delete the selected Patient record?',
     duplicateTime: 'Record for this particular time exists. Please visit the record created for this time to edit.',
