@@ -353,12 +353,17 @@ export class AddNewPatientServiceProvider {
       this.storage
         .get(ConstantProvider.dbKeyNames.patients)
         .then(data => {
-          data = (data as IPatient[]).filter(d => d.babyCode === babyCode);
-          if(data.length>0)
-          resolve(true);
-          else{
+          if(data!=null && data.length>0 ){
+            data = (data as IPatient[]).filter(d => d.babyCode === babyCode);
+            if(data.length>0)
+            resolve(true);
+            else{
+              resolve(false);
+            }
+          }else{
             resolve(false);
           }
+         
         })
         .catch(err => {
           reject(err.message);
