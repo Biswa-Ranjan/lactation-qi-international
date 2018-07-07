@@ -231,11 +231,7 @@ export class ExpressionTimeFormPage {
     this.expressionBFdateService.findByBabyCodeAndDate(this.dataForBFEntryPage.babyCode,
       this.dateOfExpressions, this.dataForBFEntryPage.isNewExpression)
     .then(data => {
-      // if(data.length === 0) {
-      //   this.newExpression();
-      // }else {
         this.bFExpressions = data
-      // }
     })
     .catch(err => {
       this.messageService.showErrorToast(err)
