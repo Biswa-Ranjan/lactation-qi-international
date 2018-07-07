@@ -40,7 +40,7 @@ export class FeedPage {
   babyCode: string = null
   dateOfFeed: string = null
   babyWeight: number;
-
+  dateOfFeedFlag: boolean = false
   constructor(private feedExpressionService: FeedExpressionServiceProvider,
     private messageService: MessageProvider, private navParams: NavParams,
     private datePicker: DatePicker,
@@ -63,7 +63,9 @@ export class FeedPage {
     this.dataForFeedEntryPage = this.navParams.get('dataForFeedEntryPage');
     this.babyCode = this.dataForFeedEntryPage.babyCode
     this.dateOfFeed = this.dataForFeedEntryPage.selectedDate
-
+    if(this.dateOfFeed)
+      this.dateOfFeedFlag = true
+    
     if(this.dateOfFeed != null && this.isWeb) {
       let tempDateOfExpression = this.dataForFeedEntryPage.selectedDate.split('-')
       this.dateOfFeed = tempDateOfExpression[2] + '-' + tempDateOfExpression[1] + '-'
@@ -271,7 +273,7 @@ export class FeedPage {
     }).then(
       date => {
         feedExp.dateOfFeed = this.datePipe.transform(date,"dd-MM-yyyy")
-        this.validateTime(feedExp.timeOfFeed, feedExp)
+       // this.validateTime(feedExp.timeOfFeed, feedExp)
       },
       err => console.log('Error occurred while getting date: ', err)
     );
@@ -336,7 +338,11 @@ export class FeedPage {
    * @since - 0.0.1
   */
  validateTime(time: string, feedExp: IFeed){
-    if(feedExp.dateOfFeed === this.datePipe.transform(new Date(),'dd-MM-yyyy')
+  let timeSplit = time.split(':')
+  if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+    this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
+    feedExp.timeOfFeed = null
+  }else if(feedExp.dateOfFeed === this.datePipe.transform(new Date(),'dd-MM-yyyy')
       && time != null && time > this.datePipe.transform(new Date(),'HH:mm')){
         this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
         feedExp.timeOfFeed = null;
@@ -359,8 +365,16 @@ export class FeedPage {
     if(this.dateOfFeed != null) {
       this.messageService.showAlert('Alert', 'Are you sure you want to continue with this date')
       .then( data => {
-        if(!data)
-          this.dateOfFeed = null
+        // if(!data)
+        //   this.dateOfFeed = null
+          if(data) {
+            this.dataForFeedEntryPage.selectedDate = this.dateOfFeed.concat()
+            this.findExpressionsByBabyCodeAndDate()
+          }
+          else {
+            this.dateOfFeed = null
+            this.dateOfFeedFlag = false
+          }
       }).catch( error => {
         this.messageService.showErrorToast(error)
       })
@@ -453,10 +467,27 @@ export class FeedPage {
 
       dateSelected.subscribe(date => {
         this.dateOfFeed = this.datePipe.transform(date,"dd-MM-yyyy")
+        this.dateOfFeedFlag = true
         this.dateConfirmation()
-        dateInput.setFocus()
+        //dateInput.setFocus()
       });
     }
   }
-
+  _numberKeyPress(event: any) {
+    const pattern = /[0-9\ ]/
+    var a = event.charCode
+        if(a == 0) {return}
+    let inputChar = String.fromCharCode(event.charCode);
+    if (event.target["value"].length >= 8 || event.keyCode == 32) {
+      event.preventDefault()
+    }
+    if (!pattern.test(inputChar)) {
+      event.preventDefault()
+    }
+  }
+  _formatTime(event: any, feedExpression: IFeed) {
+    if (event.target["value"].length == 2) {
+      feedExpression.timeOfFeed = event.target["value"]+":"
+    }
+  }
 }
