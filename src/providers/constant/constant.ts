@@ -214,6 +214,7 @@ export class ConstantProvider {
     emptyBabeAdmittedToFieldMsg :'Please enter where baby is admitted to.',
     editSuccessMessage : 'Record edited successfully.',
     recordFoundDeletionCanNotBeDoneMsg :"Record found, deletion can not be done.You can edit it.",
+    invalidTimeFormat: 'Invalid time format',
     babyIdExistsMsg :"Baby Id already exists."
 
   };

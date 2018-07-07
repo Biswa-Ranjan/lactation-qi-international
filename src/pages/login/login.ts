@@ -1,31 +1,12 @@
-import {
-  Component
-} from '@angular/core';
-import {
-  IonicPage,
-  NavController,
-  NavParams,
-  Events,
-  Platform
-} from 'ionic-angular';
-import {
-  ConstantProvider
-} from '../../providers/constant/constant';
-import {
-  UserServiceProvider
-} from '../../providers/user-service/user-service';
-import {
-  MessageProvider
-} from '../../providers/message/message';
-import {
-  AppVersion
-} from '@ionic-native/app-version';
-import {
-  Storage
-} from '@ionic/storage';
-import {
-  SettingsServiceProvider
-} from '../../providers/settings-service/settings-service';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
+import { ConstantProvider } from '../../providers/constant/constant';
+import { UserServiceProvider } from '../../providers/user-service/user-service';
+import { MessageProvider } from '../../providers/message/message';
+import { AppVersion } from '@ionic-native/app-version';
+import { Storage } from '@ionic/storage';
+import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
+
 /**
  * This is used for Login page
  *

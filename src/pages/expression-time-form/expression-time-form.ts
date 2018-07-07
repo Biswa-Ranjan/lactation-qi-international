@@ -48,6 +48,7 @@ export class ExpressionTimeFormPage {
   locationWhereExpressionOccuredConfig: any = {
     title: 'Location where expression occured'
   }
+  dateOfExpressionFlag: boolean = false
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private addNewExpressionBfService: AddNewExpressionBfServiceProvider,
@@ -73,12 +74,19 @@ export class ExpressionTimeFormPage {
     this.dataForBFEntryPage = this.navParams.get('dataForBFEntryPage');
     //setting baby code and date of expressions as per the new requirement and design.
     this.babyCode = this.dataForBFEntryPage.babyCode
+
+    //using timeout to give time to DOM for renderring purpose
     this.dateOfExpressions = this.dataForBFEntryPage.selectedDate
-    if(this.dateOfExpressions != null && this.isWeb) {
-      let tempDateOfExpression = this.dataForBFEntryPage.selectedDate.split('-')
-      this.dateOfExpressions = tempDateOfExpression[2] + '-' + tempDateOfExpression[1] + '-'
-        + tempDateOfExpression[0]
-    }
+    if(this.dateOfExpressions)
+      this.dateOfExpressionFlag = true
+
+    // document.getElementById('').focus()
+    
+    // if(this.dateOfExpressions != null && this.isWeb) {
+    //   let tempDateOfExpression = this.dataForBFEntryPage.selectedDate.split('-')
+    //   this.dateOfExpressions = tempDateOfExpression[2] + '-' + tempDateOfExpression[1] + '-'
+    //     + tempDateOfExpression[0]
+    // }
 
     let x = this.dataForBFEntryPage.deliveryDate.split('-');
     this.deliveryDate = new Date(+x[2],+x[1]-1,+x[0]);
@@ -131,11 +139,11 @@ export class ExpressionTimeFormPage {
   saveExpression(bfExpression: IBFExpression) {
     let newData = bfExpression.createdDate === null ? true : false
     //set validations for all the fields
-    if(this.dateOfExpressions === null){
+    if(this.dateOfExpressions === null) {
       this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfExpression);
-    }else if(bfExpression.timeOfExpression === null){
+    }else if(bfExpression.timeOfExpression === null) {
       this.messageService.showErrorToast(ConstantProvider.messages.enterTimeOfExpression);
-    }else if(!this.validateDurationOfExpression(bfExpression)){
+    }else if(!this.validateDurationOfExpression(bfExpression)) {
       this.messageService.showErrorToast(ConstantProvider.messages.volumeOfMilkExpressedFromBreast);
     }else {
       // bfExpression.dateOfExpression = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
@@ -221,7 +229,7 @@ export class ExpressionTimeFormPage {
 
     //getting existing BF expression for given baby code and date
     this.expressionBFdateService.findByBabyCodeAndDate(this.dataForBFEntryPage.babyCode,
-      this.dataForBFEntryPage.selectedDate, this.dataForBFEntryPage.isNewExpression)
+      this.dateOfExpressions, this.dataForBFEntryPage.isNewExpression)
     .then(data => {
       // if(data.length === 0) {
       //   this.newExpression();
@@ -289,7 +297,12 @@ export class ExpressionTimeFormPage {
    * @since - 0.0.1
   */
  validateTime(time: string, bfExpForm: IBFExpression) {
-    if(bfExpForm.dateOfExpression === this.datePipe.transform(new Date(),'dd-MM-yyyy')
+    let timeSplit = time.split(':')
+    if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+      this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
+      bfExpForm.timeOfExpression = null
+    }
+    else if(bfExpForm.dateOfExpression === this.datePipe.transform(new Date(),'dd-MM-yyyy')
       && time != null && time > this.datePipe.transform(new Date(),'HH:mm')) {
         this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
         bfExpForm.timeOfExpression = null
@@ -350,15 +363,17 @@ export class ExpressionTimeFormPage {
           this.dataForBFEntryPage.selectedDate = this.dateOfExpressions.concat()
           this.findExpressionsByBabyCodeAndDate()
         }
-        else
+        else {
           this.dateOfExpressions = null
+          this.dateOfExpressionFlag = false
+        }
       }).catch( error => {
         this.messageService.showErrorToast(error)
       })
     }
   }
 
-  showCalendar(dateInput) {
+  showCalendar() {
     if(this.dateOfExpressions === null || this.dateOfExpressions === '') {
       let datePickerOption: DatePickerOption = {
         maximumDate: new Date() // the maximum date selectable
@@ -368,9 +383,28 @@ export class ExpressionTimeFormPage {
 
       dateSelected.subscribe(date => {
         this.dateOfExpressions = this.datePipe.transform(date,"dd-MM-yyyy")
+        this.dateOfExpressionFlag = true
         this.dateConfirmation()
-        dateInput.setFocus()
       });
+    }
+  }
+
+  _numberKeyPress(event: any) {
+    const pattern = /[0-9\ ]/
+    var a = event.charCode
+        if(a == 0) {return}
+    let inputChar = String.fromCharCode(event.charCode);
+    if (event.target["value"].length >= 8 || event.keyCode == 32) {
+      event.preventDefault()
+    }
+    if (!pattern.test(inputChar)) {
+      event.preventDefault()
+    }
+  }
+
+  _formatTime(event: any, bfExpression: IBFExpression) {
+    if (event.target["value"].length == 2) {
+      bfExpression.timeOfExpression = event.target["value"]+":"
     }
   }
 }

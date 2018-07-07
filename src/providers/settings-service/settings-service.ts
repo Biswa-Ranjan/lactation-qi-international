@@ -1,19 +1,8 @@
-import {
-  HttpClient,
-  HttpErrorResponse
-} from '@angular/common/http';
-import {
-  Injectable
-} from '@angular/core';
-import {
-  Observable
-} from 'rxjs';
-import {
-  ErrorObservable
-} from 'rxjs/observable/ErrorObservable';
-import {
-  File
-} from '@ionic-native/file'
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+
 /*
   Generated class for the SettingsServiceProvider provider.
 
@@ -23,14 +12,14 @@ import {
 @Injectable()
 export class SettingsServiceProvider {
 
-  constructor(public http: HttpClient, private file: File) {   
-  }
+  constructor(public http: HttpClient) {}
+  
   /**
    * This method should return baby admitted to lists
    *
    * @author Subhadarshani
    * @returns {Observable<any>}
-   * @memberof AddNewPatientServiceProvider
+   *
    */
   getDataFromAssetsFolder(): Observable < IData > {
     return this.http
