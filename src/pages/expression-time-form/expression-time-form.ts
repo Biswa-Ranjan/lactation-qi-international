@@ -362,8 +362,7 @@ export class ExpressionTimeFormPage {
         if(data) {
           this.dataForBFEntryPage.selectedDate = this.dateOfExpressions.concat()
           this.findExpressionsByBabyCodeAndDate()
-        }
-        else {
+        }else {
           this.dateOfExpressions = null
           this.dateOfExpressionFlag = false
         }

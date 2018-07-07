@@ -25,9 +25,10 @@
         <ion-label color="black" stacked>Date of feed
           <span class="text-color"> *</span>
         </ion-label>
-        <ion-input *ngIf="!isWeb" [disabled]="dateOfBfsp" [readonly]="true" [(ngModel)]="dateOfBfsp" (ionFocus)="datePickerDialog()"
-          [ngModelOptions]="{standalone: true}"></ion-input>
-        <ion-input *ngIf="isWeb" [disabled]="dateOfBfsp" [readonly]="true" [(ngModel)]="dateOfBfsp" (click)="showCalendar(dateInput)" #dateInput></ion-input>
+        <ion-input *ngIf="!isWeb" [disabled]="dateOfBfsp" [readonly]="true" [(ngModel)]="dateOfBfsp" 
+          (ionFocus)="datePickerDialog()" [ngModelOptions]="{standalone: true}"></ion-input>
+        <ion-input *ngIf="isWeb" [disabled]="dateOfBfspFlag" [readonly]="true" [(ngModel)]="dateOfBfsp" 
+          (click)="showCalendar()"></ion-input>
       </ion-col>
     </ion-row>
 
@@ -37,22 +38,25 @@
           <ion-label color="black" stacked>Time
             <span class="text-color"> *</span>
           </ion-label>
-          <ion-input *ngIf="!isWeb" [readonly]="true" [(ngModel)]="bfsp.timeOfBFSP" 
+          <ion-input *ngIf="!isWeb" [readonly]="true" [(ngModel)]="bfsp.timeOfBFSP" [disabled]="!dateOfBfsp"
             (ionFocus)="timePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
-          <ion-datetime *ngIf="isWeb" [(ngModel)]="bfsp.timeOfBFSP" [ngModelOptions]="{standalone: true}" 
-            displayFormat="HH:mm" (ionChange)="validateTime(bfsp.timeOfBFSP, bfsp)"></ion-datetime>
+          <!-- <ion-datetime *ngIf="isWeb" [(ngModel)]="bfsp.timeOfBFSP" [ngModelOptions]="{standalone: true}" 
+            displayFormat="HH:mm" (ionChange)="validateTime(bfsp.timeOfBFSP, bfsp)"></ion-datetime> -->
+          <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfBfsp" 
+            [(ngModel)]="bfsp.timeOfBFSP" (keypress)="_numberKeyPress($event);
+            _formatTime($event, bfsp)" (ionBlur)="validateTime(bfsp.timeOfBFSP, bfsp)"></ion-input>
         </ion-col>
 
-        <ion-col col col-sm-10 col-md-5 col-lg-3>
-          <ion-label color="black" stacked>Breastfeeding supportive practice performed</ion-label>
+        <ion-col col col-sm-10 col-md-6 col-lg-4>
+          <ion-label color="black" stacked>Supportive practice</ion-label>
           <ion-select [(ngModel)]="bfsp.bfspPerformed" [ngModelOptions]="{standalone: true}" 
             (ionChange)="setPersonWhoPerformed(bfsp)" [selectOptions]="bfspPerformedConfig">
             <ion-option *ngFor="let item of bfSupportivePracticePerformedList" [value]="item.id">{{item.name}}</ion-option>
           </ion-select>
         </ion-col>
 
-        <ion-col col col-sm-12 col-md-5 col-lg-3>
-          <ion-label color="black" stacked>Person who performed the BFSP</ion-label>
+        <ion-col col col-sm-12 col-md-4 col-lg-3>
+          <ion-label color="black" stacked>Person by</ion-label>
           <ion-select id="person+i" [(ngModel)]="bfsp.personWhoPerformedBFSP" 
             [ngModelOptions]="{standalone: true}" [selectOptions]="personWhoPerformedBfspConfig"
             [disabled]="bfsp.bfspPerformed === 54 ? true : false">
@@ -60,7 +64,7 @@
           </ion-select>
         </ion-col>
 
-        <ion-col col col-sm-8 col-md-6 col-lg-3>
+        <ion-col col col-sm-8 col-md-6 col-lg-2>
           <ion-label color="black" stacked>Duration (Min.)</ion-label>
           <ion-input type="number" [(ngModel)]="bfsp.bfspDuration" [pattern]="onlyNumberRegex" 
             [ngModelOptions]="{standalone: true}"  [disabled]="(bfsp.bfspPerformed === 54 || bfsp.bfspPerformed === 55)  ? true : false"></ion-input>
@@ -81,74 +85,7 @@
 
       </ion-row>
     </div>
-
-
   </ion-grid>
-  <!-- <h3 class="form-page-header" id="scrollHere">{{dataForBfspPage.selectedDate}}</h3>
-  <ion-list>
-    <div>
-      <ion-item class="item-stable timeList" *ngFor="let bfsp of bfspList | orderByTimeBfsp; let i=index" text-wrap>
-        <div>
-          <div class="acordion-title" (click)="toggleGroup(bfsp)" [ngClass]="{active: isGroupShown(bfsp)}">
-            <div>
-              {{bfsp.timeOfBFSP}}
-              <ion-icon color="success" style="float:right" [name]="isGroupShown(bfsp) ? 'md-remove' : 'md-add'"></ion-icon>
-            </div>
-          </div>
-
-          <div style="margin-top:15px" *ngIf="isGroupShown(bfsp)">
-
-            <ion-item>
-              <ion-label color="black" stacked>Date of BFSP
-                <span class="text-color"> *</span>
-              </ion-label>
-              <ion-input *ngIf="!isWeb" [readonly]="true" [(ngModel)]="bfsp.dateOfBFSP" (ionFocus)="datePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
-              <ion-datetime *ngIf="isWeb" [(ngModel)]="bfsp.dateOfBFSP" [ngModelOptions]="{standalone: true}" displayFormat="DD-MM-YYYY" [min]="minDate" [max]="maxDate"></ion-datetime>
-              <ion-icon padding-top name="calendar" item-right></ion-icon>
-            </ion-item>
-
-            <ion-item>
-              <ion-label color="black" stacked>Time at which BFSP occured
-                <span class="text-color"> *</span>
-              </ion-label>
-              <ion-input *ngIf="!isWeb" [readonly]="true" [(ngModel)]="bfsp.timeOfBFSP" (ionFocus)="timePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
-              <ion-datetime *ngIf="isWeb" [(ngModel)]="bfsp.timeOfBFSP" [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"></ion-datetime>
-              <ion-icon padding-top name="time" item-right></ion-icon>
-            </ion-item>
-            <p class="error" *ngIf="">
-              Please enter the time at which the BFSP occurred.
-            </p>
-            <ion-item>
-              <ion-label color="black" stacked>Breastfeeding supportive practice performed</ion-label>
-              <ion-select [(ngModel)]="bfsp.bfspPerformed" [ngModelOptions]="{standalone: true}" (ionChange)="setPersonWhoPerformed(bfsp)">
-                <ion-option *ngFor="let item of bfSupportivePracticePerformedList" [value]="item.id">{{item.name}}</ion-option>
-              </ion-select>
-            </ion-item>
-            <ion-item>
-              <ion-label color="black" stacked>Person who performed the BFSP</ion-label>
-              <ion-select id="person+i" [(ngModel)]="bfsp.personWhoPerformedBFSP" [ngModelOptions]="{standalone: true}" [disabled]="bfsp.bfspPerformed === 54 ? true : false">
-                <ion-option *ngFor="let item of personWhoPerformedBSFPList" [value]="item.id">{{item.name}}</ion-option>
-              </ion-select>
-            </ion-item>
-            <ion-item>
-              <ion-label color="black" stacked>Duration of BFSP performed in minutes</ion-label>
-              <ion-input type="number" [(ngModel)]="bfsp.bfspDuration" [pattern]="onlyNumberRegex" [ngModelOptions]="{standalone: true}"></ion-input>
-            </ion-item>
-
-            <ion-row padding>
-              <ion-col>
-                <button class="login-button" [disabled]="bfsp.id === null" ion-button block (click)="delete(bfsp)">Delete</button>
-              </ion-col>
-              <ion-col>
-                <button class="login-button" ion-button block (click)="save(bfsp, i)">{{bfsp.id === null ? 'Save' : 'Update'}}</button>
-              </ion-col>
-            </ion-row>
-
-          </div>
-        </div>
-      </ion-item>
-    </div>
-  </ion-list> -->
 </ion-content>
 
 <ion-footer ion-row align-center>

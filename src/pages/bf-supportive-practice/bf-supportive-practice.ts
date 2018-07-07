@@ -49,6 +49,7 @@ export class BfSupportivePracticePage {
   personWhoPerformedBfspConfig: any = {
     title: 'Person who performed the BFSP'
   }
+  dateOfBfspFlag: boolean = false
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -75,12 +76,8 @@ export class BfSupportivePracticePage {
     this.dataForBfspPage = this.navParams.get('dataForBfspPage');
     this.babyCode = this.dataForBfspPage.babyCode
     this.dateOfBfsp = this.dataForBfspPage.selectedDate
-
-    if(this.dateOfBfsp != null && this.isWeb) {
-      let tempDateOfExpression = this.dataForBfspPage.selectedDate.split('-')
-      this.dateOfBfsp = tempDateOfExpression[2] + '-' + tempDateOfExpression[1] + '-'
-        + tempDateOfExpression[0]
-    }
+    if(this.dateOfBfsp)
+      this.dateOfBfspFlag = true
 
     //splitting delivery date to use it new date for min date of datepicker
     let x = this.dataForBfspPage.deliveryDate.split('-')
@@ -137,7 +134,7 @@ export class BfSupportivePracticePage {
   }
 
   save(bfsp: IBFSP, index) {
-    let newData = bfsp.id === null ? true : false
+    let newData = bfsp.createdDate === null ? true : false
     if(this.dateOfBfsp === null) {
       this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfBfsp);
     }else if(bfsp.timeOfBFSP === null) {
@@ -173,9 +170,6 @@ export class BfSupportivePracticePage {
     this.bfspService.findByBabyCodeAndDate(this.dataForBfspPage.babyCode,
       this.dataForBfspPage.selectedDate, this.dataForBfspPage.isNewBfsp)
       .then(data => {
-        // if(this.bfspList.length === 0)
-        //   this.newBFSPForm()
-        // else
           this.bfspList = data
       })
       .catch(err => {
@@ -218,10 +212,14 @@ export class BfSupportivePracticePage {
    * @param bfsp - the object in the front-end for which the user is entering the data
    * @since - 0.0.1
    */
-  setPersonWhoPerformed(bfsp: IBFSP){
+  setPersonWhoPerformed(bfsp: IBFSP) {
     bfsp.personWhoPerformedBFSP = null;
-    if(bfsp.bfspPerformed === 54){
+    if(bfsp.bfspPerformed === 54) {
       setTimeout(d => bfsp.personWhoPerformedBFSP = 56, 100)
+    }
+
+    if(bfsp.bfspPerformed != 53) {
+      setTimeout( () => bfsp.bfspDuration = null, 100)
     }
    
   }
@@ -284,7 +282,12 @@ export class BfSupportivePracticePage {
    * @since - 0.0.1
   */
   validateTime(time: string, bfsp: IBFSP) {
-    if(bfsp.dateOfBFSP === this.datePipe.transform(new Date(),'dd-MM-yyyy')
+    let timeSplit = time.split(':')
+    if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+      this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
+      bfsp.timeOfBFSP = null
+    }
+    else if(bfsp.dateOfBFSP === this.datePipe.transform(new Date(),'dd-MM-yyyy')
       && time != null && time > this.datePipe.transform(new Date(),'HH:mm')){
         this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
         bfsp.timeOfBFSP = null;
@@ -311,8 +314,13 @@ export class BfSupportivePracticePage {
     if(this.dateOfBfsp != null) {
       this.messageService.showAlert('Alert', 'Are you sure you want to continue with this date')
       .then( data => {
-        if(!data)
+        if(data){
+          this.dataForBfspPage.selectedDate = this.dateOfBfsp.concat()
+          this.findExpressionsByBabyCodeAndDate()
+        }else {
           this.dateOfBfsp = null
+          this.dateOfBfspFlag = false
+        }
       }).catch( error => {
         this.messageService.showErrorToast(error)
       })
@@ -345,7 +353,7 @@ export class BfSupportivePracticePage {
     }
   }
 
-  showCalendar(dateInput) {
+  showCalendar() {
     if(this.dateOfBfsp === null || this.dateOfBfsp === '') {
       let datePickerOption: DatePickerOption = {
         maximumDate: new Date() // the maximum date selectable
@@ -355,9 +363,28 @@ export class BfSupportivePracticePage {
 
       dateSelected.subscribe(date => {
         this.dateOfBfsp = this.datePipe.transform(date,"dd-MM-yyyy")
+        this.dateOfBfspFlag = true
         this.dateConfirmation()
-        dateInput.setFocus()
       });
+    }
+  }
+
+  _numberKeyPress(event: any) {
+    const pattern = /[0-9\ ]/
+    var a = event.charCode
+        if(a == 0) {return}
+    let inputChar = String.fromCharCode(event.charCode);
+    if (event.target["value"].length >= 8 || event.keyCode == 32) {
+      event.preventDefault()
+    }
+    if (!pattern.test(inputChar)) {
+      event.preventDefault()
+    }
+  }
+
+  _formatTime(event: any, bfsp: IBFSP) {
+    if (event.target["value"].length == 2) {
+      bfsp.timeOfBFSP = event.target["value"]+":"
     }
   }
 
