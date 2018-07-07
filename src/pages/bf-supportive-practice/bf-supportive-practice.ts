@@ -142,7 +142,7 @@ export class BfSupportivePracticePage {
     }else if(bfsp.bfspDuration === undefined || !this.checkForOnlyNumber(bfsp.bfspDuration)) {
       this.messageService.showErrorToast(ConstantProvider.messages.durationOfBfsp);
     }else{
-      bfsp.dateOfBFSP = this.datePipe.transform(this.dateOfBfsp.concat(), 'dd-MM-yyyy')
+      bfsp.dateOfBFSP = this.dateOfBfsp.concat()
       this.bfspService.saveNewBreastFeedingSupportivePracticeForm(bfsp, newData)
       .then(data => {
         this.findExpressionsByBabyCodeAndDate();
@@ -282,8 +282,8 @@ export class BfSupportivePracticePage {
    * @since - 0.0.1
   */
   validateTime(time: string, bfsp: IBFSP) {
-    let timeSplit = time.split(':')
-    if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+    let timeSplit = time != null ? time.split(':') : null
+    if(timeSplit != null && (parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59)) {
       this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
       bfsp.timeOfBFSP = null
     }

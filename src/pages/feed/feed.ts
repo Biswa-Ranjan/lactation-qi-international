@@ -41,6 +41,13 @@ export class FeedPage {
   dateOfFeed: string = null
   babyWeight: number;
   dateOfFeedFlag: boolean = false
+  methodConfig: any = {
+    title: 'Method'
+  };
+  locationConfig: any = {
+    title: 'Location'
+  }
+
   constructor(private feedExpressionService: FeedExpressionServiceProvider,
     private messageService: MessageProvider, private navParams: NavParams,
     private datePicker: DatePicker,
@@ -65,12 +72,6 @@ export class FeedPage {
     this.dateOfFeed = this.dataForFeedEntryPage.selectedDate
     if(this.dateOfFeed)
       this.dateOfFeedFlag = true
-    
-    if(this.dateOfFeed != null && this.isWeb) {
-      let tempDateOfExpression = this.dataForFeedEntryPage.selectedDate.split('-')
-      this.dateOfFeed = tempDateOfExpression[2] + '-' + tempDateOfExpression[1] + '-'
-        + tempDateOfExpression[0]
-    }
 
     let x = this.dataForFeedEntryPage.deliveryDate.split('-');
     // -1 is done in the second argument, because in new Date(), january is taken a 0.
@@ -156,12 +157,12 @@ export class FeedPage {
 
   // This method will be called when the user clicks on save of a particular entry.
   saveExpression(feedExpression: IFeed) {
-    let newData: boolean = feedExpression.id === null ? true : false
+    let newData: boolean = feedExpression.createdDate === null ? true : false
     feedExpression.babyWeight = this.babyWeight
-    feedExpression.dateOfFeed = this.dateOfFeed
-    this.feedExpressionService.saveFeedExpression(feedExpression, this.existingDate, this.existingTime)
+    feedExpression.dateOfFeed = this.dateOfFeed.concat()
+    this.feedExpressionService.saveFeedExpression(feedExpression, newData)
       .then(data=> {
-        this.dataForFeedEntryPage.isNewExpression = false;
+        // this.dataForFeedEntryPage.isNewExpression = false;
         this.findExpressionsByBabyCodeAndDate();
         if(newData)
           this.messageService.showSuccessToast(ConstantProvider.messages.saveSuccessfull)
@@ -220,9 +221,6 @@ export class FeedPage {
       this.dataForFeedEntryPage.selectedDate, this.dataForFeedEntryPage.isNewExpression)
     .then(data=> {
       this.feedExpressions = data
-      // if(this.feedExpressions.length === 0){
-      //   this.newExpression();
-      // }
     })
     .catch(err=> {
       this.messageService.showErrorToast(err)
@@ -337,12 +335,12 @@ export class FeedPage {
    * @author - Naseem Akhtar
    * @since - 0.0.1
   */
- validateTime(time: string, feedExp: IFeed){
-  let timeSplit = time.split(':')
-  if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
-    this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
-    feedExp.timeOfFeed = null
-  }else if(feedExp.dateOfFeed === this.datePipe.transform(new Date(),'dd-MM-yyyy')
+ validateTime(time: string, feedExp: IFeed) {
+    let timeSplit = time != null ? time.split(':') : null
+    if(timeSplit != null && (parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59)) {
+      this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
+      feedExp.timeOfFeed = null
+    }else if(feedExp.dateOfFeed === this.datePipe.transform(new Date(),'dd-MM-yyyy')
       && time != null && time > this.datePipe.transform(new Date(),'HH:mm')){
         this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
         feedExp.timeOfFeed = null;

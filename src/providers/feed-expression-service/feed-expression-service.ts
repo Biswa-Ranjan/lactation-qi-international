@@ -56,7 +56,6 @@ export class FeedExpressionServiceProvider {
    * @memberof FeedExpressionServiceProvider
    */
   getLocationOfFeedings(): Observable<ITypeDetails[]> {
-
     return this.http.get("./assets/data.json").map((response: Response) => {
                return (response as any).typeDetails.filter(d => d.typeId === ConstantProvider.FeedingTypeIds.locationOfFeeding)
            })
@@ -85,11 +84,7 @@ export class FeedExpressionServiceProvider {
    *
    */
 
-  saveFeedExpression(feedExpression: IFeed, existingDate: string, existingTime: string): Promise<any>{
-    // if(existingDate != null && this.isWeb){
-    //   existingDate = existingDate.substring(0,10)
-    //   existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
-    // }
+  saveFeedExpression(feedExpression: IFeed, newData: boolean): Promise<any> {
     let promise = new Promise((resolve, reject) => {
       feedExpression.isSynced = false;
       feedExpression.createdDate = feedExpression.createdDate === null ?
@@ -105,9 +100,11 @@ export class FeedExpressionServiceProvider {
           let index = feedExpressions.findIndex(d=> d.babyCode === feedExpression.babyCode && d.dateOfFeed === feedExpression.dateOfFeed &&
             d.timeOfFeed === feedExpression.timeOfFeed)
           if(index < 0) {
-            index = feedExpressions.findIndex(d=>d.babyCode === feedExpression.babyCode &&
-              d.dateOfFeed === existingDate && d.timeOfFeed === existingTime)
-            feedExpressions = this.validateNewEntryAndUpdate(feedExpressions, feedExpression, index)
+            // index = feedExpressions.findIndex(d=>d.babyCode === feedExpression.babyCode &&
+            //   d.dateOfFeed === existingDate && d.timeOfFeed === existingTime)
+            // feedExpressions = this.validateNewEntryAndUpdate(feedExpressions, feedExpression, index)
+            feedExpression.id = this.getNewFeedExpressionId(feedExpression.babyCode)
+            feedExpressions.push(feedExpression)
             this.storage.set(ConstantProvider.dbKeyNames.feedExpressions, feedExpressions)
               .then(data=>{
                 resolve()
@@ -115,9 +112,10 @@ export class FeedExpressionServiceProvider {
               .catch(err=>{
                 reject(err.message);
               })
-          }else{
-            if(feedExpression.dateOfFeed === existingDate && feedExpression.timeOfFeed === existingTime) {
-              feedExpressions = this.validateNewEntryAndUpdate(feedExpressions, feedExpression, index)
+          }else {
+            if(!newData) {
+              feedExpressions.splice(index, 1, feedExpression)
+              // feedExpressions = this.validateNewEntryAndUpdate(feedExpressions, feedExpression, index)
               this.storage.set(ConstantProvider.dbKeyNames.feedExpressions, feedExpressions)
                 .then(data=>{
                   resolve()

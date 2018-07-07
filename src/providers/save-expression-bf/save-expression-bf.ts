@@ -46,10 +46,6 @@ export class SaveExpressionBfProvider {
    * @author - Naseem Akhtar
    */
   saveBfExpression(bfExpression: IBFExpression, newData: boolean): Promise<any>{
-    // if(existingDate != null && this.isWeb){
-    //   existingDate = existingDate.substring(0,10)
-    //   existingDate = existingDate.replace(/(\d*)-(\d*)-(\d*)/,'$3-$2-$1')
-    // }
     let promise = new Promise((resolve, reject) => {
       bfExpression.isSynced = false;
       bfExpression.createdDate = bfExpression.createdDate === null ?
@@ -92,7 +88,7 @@ export class SaveExpressionBfProvider {
             }else
               reject(ConstantProvider.messages.duplicateTime);
           }
-        }else{
+        }else {
           bfExpression.id = this.getNewBfExpressionId(bfExpression.babyCode)
           bfExpressions.push(bfExpression)
           this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)

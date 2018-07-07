@@ -293,8 +293,8 @@ export class ExpressionTimeFormPage {
    * @since - 0.0.1
   */
  validateTime(time: string, bfExpForm: IBFExpression) {
-    let timeSplit = time.split(':')
-    if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+    let timeSplit = time != null ? time.split(':') : null
+    if(timeSplit != null && (parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59)) {
       this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
       bfExpForm.timeOfExpression = null
     }
