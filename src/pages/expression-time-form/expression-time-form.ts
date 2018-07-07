@@ -312,7 +312,7 @@ export class ExpressionTimeFormPage {
     }else {
       bfExpForm.timeOfExpression = time
       bfExpForm.id = bfExpForm.id != null ? bfExpForm.id : 
-        this.bfExpressionTimeService.getNewBfExpressionId(bfExpForm.babyCode)
+      this.bfExpressionTimeService.getNewBfExpressionId(bfExpForm.babyCode)
     }
   }
 
