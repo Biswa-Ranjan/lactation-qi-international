@@ -278,12 +278,14 @@ export class ExpressionTimeFormPage {
 
   /**
    * This method will be called on change in selection of method of expression.
-   * If the method of expression is Breastfeed, then volume of milk expressed will be hidden.
+   * If the method of expression is Breastfeed, then volume of milk expressed will be disabled and 
+   * cleared off.
    * @author - Naseem Akhtar
    * @param bfExpform - the form which user is editing
    */
   checkVolumeOfMilkExpressed(bfExpform: IBFExpression) {
       bfExpform.volOfMilkExpressedFromLR = null;
+      bfExpform.methodOfExpressionOthers = null;
   }
 
   /**
@@ -294,25 +296,26 @@ export class ExpressionTimeFormPage {
   */
  validateTime(time: string, bfExpForm: IBFExpression) {
     let timeSplit = time != null ? time.split(':') : null
-    if(timeSplit != null && (parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59)) {
-      this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
-      bfExpForm.timeOfExpression = null
-    }
-    else if(bfExpForm.dateOfExpression === this.datePipe.transform(new Date(),'dd-MM-yyyy')
-      && time != null && time > this.datePipe.transform(new Date(),'HH:mm')) {
-        this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
+    if(timeSplit != null) {
+      if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+        this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
         bfExpForm.timeOfExpression = null
-    }else if(bfExpForm.dateOfExpression === this.dataForBFEntryPage.deliveryDate && time != null
-      && time < this.dataForBFEntryPage.deliveryTime) {
-        this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
+      }else if(bfExpForm.dateOfExpression === this.datePipe.transform(new Date(),'dd-MM-yyyy')
+        && time > this.datePipe.transform(new Date(),'HH:mm')) {
+          this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
+          bfExpForm.timeOfExpression = null
+      }else if(bfExpForm.dateOfExpression === this.dataForBFEntryPage.deliveryDate
+        && time < this.dataForBFEntryPage.deliveryTime) {
+          this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
+          bfExpForm.timeOfExpression = null
+      }else if(this.bFExpressions.filter( d => d.timeOfExpression === time).length > 1) {
+        this.messageService.showErrorToast(ConstantProvider.messages.duplicateTime)
         bfExpForm.timeOfExpression = null
-    }else if(this.bFExpressions.filter( d => d.timeOfExpression === time).length > 1) {
-      this.messageService.showErrorToast(ConstantProvider.messages.duplicateTime)
-      bfExpForm.timeOfExpression = null
-    }else {
-      bfExpForm.timeOfExpression = time
-      bfExpForm.id = bfExpForm.id != null ? bfExpForm.id : 
-      this.bfExpressionTimeService.getNewBfExpressionId(bfExpForm.babyCode)
+      }else {
+        bfExpForm.timeOfExpression = time
+        bfExpForm.id = bfExpForm.id != null ? bfExpForm.id : 
+        this.bfExpressionTimeService.getNewBfExpressionId(bfExpForm.babyCode)
+      }
     }
   }
 
@@ -371,7 +374,8 @@ export class ExpressionTimeFormPage {
   showCalendar() {
     if(this.dateOfExpressions === null || this.dateOfExpressions === '') {
       let datePickerOption: DatePickerOption = {
-        maximumDate: new Date() // the maximum date selectable
+        minimumDate: this.deliveryDate,
+        maximumDate: this.dischargeDate
       };
       const dateSelected =
         this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
@@ -401,5 +405,18 @@ export class ExpressionTimeFormPage {
     if (event.target["value"].length == 2) {
       bfExpression.timeOfExpression = event.target["value"]+":"
     }
+  }
+
+  /**
+   * This method is used to restrict the special character in the input field
+   *
+   * @author Naseem Akhtar
+   * @since 0.0.1
+   * @param event
+   */
+  omit_aplha_special_char(event) {
+    var k;
+    k = event.charCode;  //k = event.keyCode;  (Both can be used)
+    return(k >= 48 && k <= 57);
   }
 }

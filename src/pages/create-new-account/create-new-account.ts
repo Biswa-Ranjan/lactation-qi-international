@@ -1,27 +1,9 @@
-import {
-  Component
-} from '@angular/core';
-import {
-  IonicPage,
-  NavController,
-  NavParams,
-  MenuController,
-  AlertController
-} from 'ionic-angular';
-import {
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
-import {
-  MessageProvider
-} from '../../providers/message/message';
-import {
-  NewAccountServiceProvider
-} from '../../providers/new-account-service/new-account-service';
-import {
-  ConstantProvider
-} from '../../providers/constant/constant';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, MenuController, AlertController } from 'ionic-angular';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MessageProvider } from '../../providers/message/message';
+import { NewAccountServiceProvider } from '../../providers/new-account-service/new-account-service';
+import { ConstantProvider } from '../../providers/constant/constant';
 import { UtilServiceProvider } from '../../providers/util-service/util-service';
 
 /**
@@ -74,9 +56,13 @@ export class CreateNewAccountPage {
   selectDistrictOptions: any;
   selectInstituteOptions: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,public menuCtrl: MenuController,
-    private messageService: MessageProvider, public createNewAccountService: NewAccountServiceProvider,
-    private alertCtrl: AlertController, public utilService: UtilServiceProvider) {}
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    public menuCtrl: MenuController,
+    private messageService: MessageProvider,
+    public createNewAccountService: NewAccountServiceProvider,
+    private alertCtrl: AlertController,
+    public utilService: UtilServiceProvider) {}
 
 
   /**
@@ -207,7 +193,7 @@ export class CreateNewAccountPage {
   omit_special_char(event){
     var k;
     k = event.charCode;  //         k = event.keyCode;  (Both can be used)
-    return((k > 64 && k < 91) || (k > 96 && k < 123) || k == 8 || k == 32 || (k >= 48 && k <= 57));
+    return((k > 64 && k < 91) || (k > 96 && k < 123) || k == 8 || k == 32 || k == 46 || (k >= 48 && k <= 57));
   }
 
   /**

@@ -68,8 +68,8 @@ export class AddPatientPage implements OnInit{
    * @since 2.0.0
    */
   isWeb : boolean = false;
-  maxDate: string;
-  minDate: string;
+  maxDate: Date;
+  minDate: Date;
   private uniquePatientId : IUniquePatientId = {
     id: null,
     idNumber: null
@@ -179,8 +179,11 @@ export class AddPatientPage implements OnInit{
   */
   ngOnInit() {
     this.isWeb = this.lactationPlatform.getPlatform().isWebPWA
-    this.maxDate=this.datePipe.transform(new Date().valueOf(),"yyyy-MM-dd")
-    this.minDate = this.datePipe.transform(new Date(new Date().getFullYear(),(new Date().getMonth()),(new Date().getDate())-89).valueOf(),"yyyy-MM-dd")
+    // this.maxDate=this.datePipe.transform(new Date().valueOf(),"yyyy-MM-dd")
+    // this.minDate = this.datePipe.transform(new Date(new Date().getFullYear(),(new Date().getMonth()),(new Date().getDate())-89).valueOf(),"yyyy-MM-dd")
+    this.maxDate = new Date()
+    this.minDate = new Date(new Date().getFullYear(),(new Date().getMonth()),(new Date().getDate())-89)
+
     if(!(this.navParams.get('babyCode') == undefined)){
 
       this.headerTitle = "Edit Patient"
@@ -406,11 +409,6 @@ export class AddPatientPage implements OnInit{
       this.outpatientAdmission();
       this.babyAdmitedToCheck();
 
-      //check for duplicate baby id
-      let patientData = await this.addNewPatientService.isBabyIdExistaOrNot(this.patientForm.controls.baby_id.value)   
-      if(patientData){
-      this.messageService.showErrorToast(ConstantProvider.messages.babyIdExistsMsg);
-      } else{
         if(this.validateDischargeDate()){
           if(!this.patientForm.valid){
             this.resetStatus = true;
@@ -425,7 +423,7 @@ export class AddPatientPage implements OnInit{
   
             //Initialize the add new patient object
             this.patient = {
-              babyCode: this.patientForm.controls.baby_id.value,
+              babyCode: this.patientForm.controls.baby_id.value.toUpperCase(),
               babyOf: this.patientForm.controls.mother_name.value,
               mothersAge: this.patientForm.controls.mother_age.value==null?null:parseInt(this.patientForm.controls.mother_age.value),
               deliveryDate: this.patientForm.controls.delivery_date.value,
@@ -449,6 +447,7 @@ export class AddPatientPage implements OnInit{
               updatedDate: null,
               uuidNumber: null
             }
+
             //save and update the patient to the db
             this.addNewPatientService.saveNewPatient(this.patient, this.uniquePatientId.idNumber)
               .then(data=> {
@@ -464,7 +463,7 @@ export class AddPatientPage implements OnInit{
             })
           }
         }
-      }
+      // }
       
       
     }
@@ -759,32 +758,57 @@ export class AddPatientPage implements OnInit{
   }
 
   showCalendar(type: string) {
-    if(!this.forEdit){
-      let datePickerOption: DatePickerOption = {
-        maximumDate: new Date() // the maximum date selectable
-      };
-      const dateSelected =
-        this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
+    let datePickerOption: DatePickerOption = {
+      minimumDate: this.minDate, // minimum date selectable
+      maximumDate: this.maxDate // the maximum date selectable
+    };
 
-      dateSelected.subscribe(date =>{
-        switch(type){
-          case ConstantProvider.datePickerType.deliveryDate:
-            this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
-          break;
-          case ConstantProvider.datePickerType.addmissionDate:
-            this.patientForm.controls.admission_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
-          break;
-          case ConstantProvider.datePickerType.dischargeDate:
-            this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
-          break;
-        }
-      });
+    if(type === ConstantProvider.datePickerType.addmissionDate &&
+       this.patientForm.controls.delivery_date.value != null) {
+        let tempDate = this.patientForm.controls.delivery_date.value.split('-')
+        datePickerOption.maximumDate = new Date(tempDate[2], tempDate[1] - 1, tempDate[0])
+    }else if(type === ConstantProvider.datePickerType.dischargeDate &&
+      this.patientForm.controls.delivery_date.value != null) {
+        let tempDate = this.patientForm.controls.delivery_date.value.split('-')
+        datePickerOption.minimumDate = new Date(tempDate[2], tempDate[1] - 1, tempDate[0])
     }
+
+    const dateSelected = this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
+
+    dateSelected.subscribe(date => {
+      switch(type){
+        case ConstantProvider.datePickerType.deliveryDate:
+          this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
+        break;
+        case ConstantProvider.datePickerType.addmissionDate:
+          this.patientForm.controls.admission_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
+        break;
+        case ConstantProvider.datePickerType.dischargeDate:
+          this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
+        break;
+      }
+    });
   }
 
-  _formatTime(event: any){
+  _formatTime(event: any) {
     if (event.target["value"].length == 2){
       this.patientForm.controls.delivery_time.setValue(event.target["value"]+":")
     }
   }
+
+  showCalendarForDeliveryDate(type: string) {
+    if(!this.forEdit)
+      this.showCalendar(type)
+  }
+
+  async checkBabyId() {
+    //check for duplicate baby id
+    let patientData = await this.addNewPatientService.isBabyIdExistaOrNot(this.patientForm.controls.baby_id.value.toUpperCase())   
+    if(patientData){
+      this.messageService.showErrorToast(ConstantProvider.messages.babyIdExistsMsg);
+      this.patientForm.controls.baby_id.setValue(null)
+    }
+  }
+
+
 }

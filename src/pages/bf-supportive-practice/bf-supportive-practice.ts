@@ -283,24 +283,26 @@ export class BfSupportivePracticePage {
   */
   validateTime(time: string, bfsp: IBFSP) {
     let timeSplit = time != null ? time.split(':') : null
-    if(timeSplit != null && (parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59)) {
-      this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
-      bfsp.timeOfBFSP = null
-    }
-    else if(bfsp.dateOfBFSP === this.datePipe.transform(new Date(),'dd-MM-yyyy')
-      && time != null && time > this.datePipe.transform(new Date(),'HH:mm')){
-        this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
-        bfsp.timeOfBFSP = null;
-    }else if (bfsp.dateOfBFSP === this.dataForBfspPage.deliveryDate && time != null &&
-      time < this.dataForBfspPage.deliveryTime){
-        this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
-        bfsp.timeOfBFSP = null;
-    }else if(this.bfspList.filter( d => d.timeOfBFSP === time).length > 1) {
-      this.messageService.showErrorToast(ConstantProvider.messages.duplicateTime)
-      bfsp.timeOfBFSP = null
-    }else{
-      bfsp.timeOfBFSP = time
-      bfsp.id = bfsp.id != null ? bfsp.id : this.bfspService.getNewBfspId(bfsp.babyCode)
+    if(timeSplit != null){
+      if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+        this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
+        bfsp.timeOfBFSP = null
+      }
+      else if(bfsp.dateOfBFSP === this.datePipe.transform(new Date(),'dd-MM-yyyy')
+        && time > this.datePipe.transform(new Date(),'HH:mm')) {
+          this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
+          bfsp.timeOfBFSP = null;
+      }else if (bfsp.dateOfBFSP === this.dataForBfspPage.deliveryDate &&
+        time < this.dataForBfspPage.deliveryTime) {
+          this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
+          bfsp.timeOfBFSP = null;
+      }else if(this.bfspList.filter( d => d.timeOfBFSP === time).length > 1) {
+        this.messageService.showErrorToast(ConstantProvider.messages.duplicateTime)
+        bfsp.timeOfBFSP = null
+      }else{
+        bfsp.timeOfBFSP = time
+        bfsp.id = bfsp.id != null ? bfsp.id : this.bfspService.getNewBfspId(bfsp.babyCode)
+      }
     }
   }
 
@@ -356,7 +358,8 @@ export class BfSupportivePracticePage {
   showCalendar() {
     if(this.dateOfBfsp === null || this.dateOfBfsp === '') {
       let datePickerOption: DatePickerOption = {
-        maximumDate: new Date() // the maximum date selectable
+        minimumDate: this.deliveryDate,
+        maximumDate: this.dischargeDate // the maximum date selectable
       };
       const dateSelected =
         this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);

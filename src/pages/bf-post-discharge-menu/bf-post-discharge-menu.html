@@ -8,15 +8,33 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding scrollbar-y-auto>
-  <h3 class="form-page-header">Baby ID - {{babyCode}}</h3>
-  <ion-card *ngFor="let item of menu">
-    <ion-card-content (click)='goToPostDischargeForm(item.id)'>
-      <ion-row>
-        <ion-col>
-          <div>{{item.name}}</div>
-        </ion-col>
-      </ion-row>
-    </ion-card-content>
-  </ion-card>
+<ion-content padding>
+  <ion-grid>
+    <h3 class="form-page-header">Baby ID - {{babyCode}}</h3>
+    <!-- <ion-card *ngFor="let item of timePoint">
+      <ion-card-content (click)='goToPostDischargeForm(item.id)'>
+        <ion-row>
+          <ion-col>
+            <div>{{item.name}}</div>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card> -->
+
+    <ion-row margin-top>
+      <ion-col col-6  class="sps-exclusive-bf-header">Time point</ion-col>
+      <ion-col col-6 text-right class="sps-exclusive-bf-header">Breastfeeding status post discharge</ion-col>
+    </ion-row>
+
+    <ion-row margin-top padding-bottom *ngFor="let item of timePointList">
+      <ion-col col-6  class="border-b"> {{item.name}}</ion-col>
+
+        <ion-select ion-col col-6 text-right [(ngModel)]="bfpd.status" class="border-b"
+          [ngModelOptions]="{standalone: true}" [selectOptions]="statusPostDischargeConfig">
+          <ion-option *ngFor="let status of bfStatusPostDischargeList" text-wrap [value]="status.id">
+            {{status.name}}
+          </ion-option>
+        </ion-select>
+    </ion-row>
+  </ion-grid>
 </ion-content>

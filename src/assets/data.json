@@ -384,22 +384,22 @@
     },
     {
       "id": 67,
-      "name": "2 weeks post discharge",
+      "name": "At Hospital discharge",
       "typeId": 12
     },
     {
       "id": 68,
-      "name": "1 month post discharge",
+      "name": "2 weeks post discharge",
       "typeId": 12
     },
     {
       "id": 69,
-      "name": "3 months of life",
+      "name": "1 month post discharge",
       "typeId": 12
     },
     {
       "id": 70,
-      "name": "6 months of life",
+      "name": "3 months of life",
       "typeId": 12
     },
     {
@@ -409,12 +409,12 @@
     },
     {
       "id": 72,
-      "name": "Partial",
+      "name": "Predominant",
       "typeId": 13
     },
     {
       "id": 73,
-      "name": "None",
+      "name": "Partial",
       "typeId": 13
     },
     {
@@ -429,13 +429,23 @@
     },
     {
       "id": 76,
-      "name": "Predominant",
+      "name": "None",
       "typeId": 13
     },
     {
       "id": 77,
       "name": "Not assessed",
       "typeId": 2
+    },
+    {
+      "id": 78,
+      "name": "6 months of life",
+      "typeId": 12
+    },
+    {
+      "id": 79,
+      "name": "Not assessed",
+      "typeId": 13
     }
   ]
   

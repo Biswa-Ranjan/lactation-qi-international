@@ -32,6 +32,26 @@ export class BfPostDischargeMenuServiceProvider {
   }
 
   /**
+   * This method will return all the possible breast feeding post discharge status's
+   * for display in the drop down.
+   * 
+   * @author - Naseem Akhtar (naseem@sdrc.co.in)
+   * @since - 0.0.1
+   */
+  getBreastfeedingStatusPostDischarge(): Observable < ITypeDetails[] > {
+    return this.http.get("./assets/data.json")
+      .map((response: Response) => {
+        return (response as any).typeDetails.
+          filter(d => d.typeId === ConstantProvider.BFStatusPostDischargeTypeId.bfStatusPostDischargeTypeId)
+      })
+      .catch(this.handleError);
+  };
+  
+  getBfpdDataFromDB() {
+    
+  }
+
+  /**
    * @author - Ratikanta
    * @param error - this returns the error that occured while making http call
    * 

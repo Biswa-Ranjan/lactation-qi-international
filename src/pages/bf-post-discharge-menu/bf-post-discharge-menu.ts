@@ -18,23 +18,47 @@ import { MessageProvider } from '../../providers/message/message';
 export class BfPostDischargeMenuPage {
 
   babyCode: string;
-  menu: ITypeDetails[];
-
-  constructor(public navCtrl: NavController, public navParams: NavParams,
-    private bfPostDischargeMenuService: BfPostDischargeMenuServiceProvider,
-    private messageService: MessageProvider) {
-    
+  timePointList: ITypeDetails[];
+  bfStatusPostDischargeList: ITypeDetails[];
+  bfpdList: IBFPD[];
+  statusPostDischargeConfig: any = {
+    title: 'Breastfeeding status post discharge'
+  };
+  bfpd: IBFPD = {
+    babyCode: null,
+    breastFeedingStatus: null,
+    createdDate: null,
+    dateOfBreastFeeding: null,
+    id: null,
+    isSynced: null,
+    syncFailureMessage: null,
+    timeOfBreastFeeding: null,
+    updatedDate: null,
+    userId: null,
+    uuidNumber: null
   }
 
-  ngOnInit(){
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    private bfPostDischargeMenuService: BfPostDischargeMenuServiceProvider,
+    private messageService: MessageProvider) {}
 
+  ngOnInit() {
     this.babyCode = this.navParams.data.babyCode;
+    this.bfPostDischargeMenuService.getBfpdDataFromDB()
     this.bfPostDischargeMenuService.getPostDischargeMenu()
-      .subscribe(data => {
-        this.menu = data;
+      .subscribe( (timePoints: ITypeDetails[]) => {
+        this.timePointList = timePoints;
       }, error => {
         this.messageService.showErrorToast(error);
       })
+
+    this.bfPostDischargeMenuService.getBreastfeedingStatusPostDischarge()
+      .subscribe( (status: ITypeDetails[]) => {
+        this.bfStatusPostDischargeList = status;
+      }, error => {
+        this.messageService.showErrorToast(error);
+      });
   };
 
   goToPostDischargeForm(menuId: number){
@@ -44,6 +68,7 @@ export class BfPostDischargeMenuPage {
       deliveryDate: this.navParams.data.deliveryDate,
       dischargeDate: this.navParams.data.dischargeDate
     };
+    
     this.navCtrl.push('BfPostDischargePage', dataForPostDischarge);
   }
 

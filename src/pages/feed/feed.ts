@@ -337,19 +337,21 @@ export class FeedPage {
   */
  validateTime(time: string, feedExp: IFeed) {
     let timeSplit = time != null ? time.split(':') : null
-    if(timeSplit != null && (parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59)) {
-      this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
-      feedExp.timeOfFeed = null
-    }else if(feedExp.dateOfFeed === this.datePipe.transform(new Date(),'dd-MM-yyyy')
-      && time != null && time > this.datePipe.transform(new Date(),'HH:mm')){
-        this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
+    if(timeSplit != null) {
+      if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+        this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
+        feedExp.timeOfFeed = null
+      }else if(feedExp.dateOfFeed === this.datePipe.transform(new Date(),'dd-MM-yyyy')
+        && time > this.datePipe.transform(new Date(),'HH:mm')){
+          this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
+          feedExp.timeOfFeed = null;
+      }else if(feedExp.dateOfFeed === this.dataForFeedEntryPage.deliveryDate
+        && time < this.dataForFeedEntryPage.deliveryTime){
+        this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
         feedExp.timeOfFeed = null;
-    }else if(feedExp.dateOfFeed === this.dataForFeedEntryPage.deliveryDate && time != null
-      && time < this.dataForFeedEntryPage.deliveryTime){
-      this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
-      feedExp.timeOfFeed = null;
-    }else{
-      feedExp.timeOfFeed = time
+      }else{
+        feedExp.timeOfFeed = time
+      }
     }
   }
 
@@ -455,10 +457,11 @@ export class FeedPage {
     }
   }
 
-  showCalendar(dateInput) {
+  showCalendar() {
     if(this.dateOfFeed === null || this.dateOfFeed === '') {
       let datePickerOption: DatePickerOption = {
-        maximumDate: new Date() // the maximum date selectable
+        minimumDate: this.deliveryDate,
+        maximumDate: this.dischargeDate // the maximum date selectable
       };
       const dateSelected =
         this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);

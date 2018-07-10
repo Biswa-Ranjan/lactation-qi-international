@@ -229,10 +229,7 @@ export class AddNewPatientServiceProvider {
    * @param patient incoming patient
    * @returns IPatient[] modified patient
    */
-  private validateNewEntryAndUpdate(
-    patients: IPatient[],
-    patient: IPatient
-  ): IPatient[] {
+  private validateNewEntryAndUpdate(patients: IPatient[], patient: IPatient): IPatient[] {
     let index = patients.findIndex(d => d.babyCode === patient.babyCode);
     if (index >= 0) {
       //record found, need to splice and enter new
