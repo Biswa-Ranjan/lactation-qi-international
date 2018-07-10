@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { BfPostDischargeMenuServiceProvider } from '../../providers/bf-post-discharge-menu-service/bf-post-discharge-menu-service';
 import { MessageProvider } from '../../providers/message/message';
+import { ConstantProvider } from '../../providers/constant/constant';
 
 /**
  * This page will be used to navigate to bf post discharge form with the selected time of 
@@ -24,19 +25,6 @@ export class BfPostDischargeMenuPage {
   statusPostDischargeConfig: any = {
     title: 'Breastfeeding status post discharge'
   };
-  bfpd: IBFPD = {
-    babyCode: null,
-    breastFeedingStatus: null,
-    createdDate: null,
-    dateOfBreastFeeding: null,
-    id: null,
-    isSynced: null,
-    syncFailureMessage: null,
-    timeOfBreastFeeding: null,
-    updatedDate: null,
-    userId: null,
-    uuidNumber: null
-  }
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -45,21 +33,8 @@ export class BfPostDischargeMenuPage {
 
   ngOnInit() {
     this.babyCode = this.navParams.data.babyCode;
-    this.bfPostDischargeMenuService.getBfpdDataFromDB()
-    this.bfPostDischargeMenuService.getPostDischargeMenu()
-      .subscribe( (timePoints: ITypeDetails[]) => {
-        this.timePointList = timePoints;
-      }, error => {
-        this.messageService.showErrorToast(error);
-      })
-
-    this.bfPostDischargeMenuService.getBreastfeedingStatusPostDischarge()
-      .subscribe( (status: ITypeDetails[]) => {
-        this.bfStatusPostDischargeList = status;
-      }, error => {
-        this.messageService.showErrorToast(error);
-      });
-  };
+    this.initiateFetchProcess()
+  }
 
   goToPostDischargeForm(menuId: number){
     let dataForPostDischarge: IDataForPostDischargePage = {
@@ -70,6 +45,36 @@ export class BfPostDischargeMenuPage {
     };
     
     this.navCtrl.push('BfPostDischargePage', dataForPostDischarge);
+  }
+
+  initiateFetchProcess() {
+    this.bfPostDischargeMenuService.getPostDischargeMenu()
+      .subscribe( (timePoints: ITypeDetails[]) => {
+        this.timePointList = timePoints;
+        this.bfPostDischargeMenuService.getBreastfeedingStatusPostDischarge()
+          .subscribe( (status: ITypeDetails[]) => {
+            this.bfStatusPostDischargeList = status;
+
+            this.bfPostDischargeMenuService.getBfpdDataFromDB(this.babyCode, this.timePointList,
+              this.bfStatusPostDischargeList)
+              .then( data => {
+                this.bfpdList = data
+              },error => console.log(error))
+          }, error => {
+            this.messageService.showErrorToast(error);
+          });
+      }, error => {
+        this.messageService.showErrorToast(error);
+      })
+  }
+
+  save() {
+    this.bfPostDischargeMenuService.saveUpdateBfpd(this.bfpdList, this.babyCode)
+      .then( data => {
+        if(data)
+          this.messageService.showSuccessToast(ConstantProvider.messages.saveAllString)
+      }, error => this.messageService.showErrorToast(error))
+      .catch( error => this.messageService.showErrorToast(error))
   }
 
 }

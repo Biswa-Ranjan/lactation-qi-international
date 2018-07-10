@@ -26,10 +26,10 @@
       <ion-col col-6 text-right class="sps-exclusive-bf-header">Breastfeeding status post discharge</ion-col>
     </ion-row>
 
-    <ion-row margin-top padding-bottom *ngFor="let item of timePointList">
-      <ion-col col-6  class="border-b"> {{item.name}}</ion-col>
+    <ion-row margin-top padding-bottom *ngFor="let item of bfpdList">
+      <ion-col col-6  class="border-b"> {{item.timeOfBfName}}</ion-col>
 
-        <ion-select ion-col col-6 text-right [(ngModel)]="bfpd.status" class="border-b"
+        <ion-select ion-col col-6 text-right [(ngModel)]="item.breastFeedingStatus" class="border-b"
           [ngModelOptions]="{standalone: true}" [selectOptions]="statusPostDischargeConfig">
           <ion-option *ngFor="let status of bfStatusPostDischargeList" text-wrap [value]="status.id">
             {{status.name}}
@@ -38,3 +38,9 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+
+<ion-footer ion-row align-center>
+  <ion-col>
+    <button ion-button block (click)="save()">Save</button>
+  </ion-col>
+</ion-footer>

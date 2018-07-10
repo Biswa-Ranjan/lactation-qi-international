@@ -17,4 +17,5 @@ interface IBFPD{
     createdDate: string;
     updatedDate: string;
     uuidNumber: string;
+    timeOfBfName?: string;
 }
