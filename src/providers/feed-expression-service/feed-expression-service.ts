@@ -231,13 +231,13 @@ export class FeedExpressionServiceProvider {
  * @returns {IFeed[]} The final appended list
  * @memberof FeedExpressionServiceProvider
  */
-appendNewRecordAndReturn(data: IFeed[], babyCode: string, count: number, date?: string): IFeed[] {
+  async appendNewRecordAndReturn(data: IFeed[], babyCode: string, count: number, date?: string) {
     if(data === null) {
       data = []
     }
     else {
       for (let index = 0; index <= count; index++) {
-        data.push(this.getNewFeedExpressionEntry(babyCode, date))
+        data.push(await this.getNewFeedExpressionEntry(babyCode, date))
       }
     }
 
@@ -521,14 +521,14 @@ appendNewRecordAndReturn(data: IFeed[], babyCode: string, count: number, date?: 
    * This method will check the length of the expressions array and will adjust the 
    * array to always display 8 records at minimum.
    */
-  defaultDisplayOfEntries(feedExpressions: IFeed[], count: number, babyCode: string, date: string) {
+  async defaultDisplayOfEntries(feedExpressions: IFeed[], count: number, babyCode: string, date: string) {
     for (let index = 0; index < count; index++) {
-      feedExpressions.push(this.getNewFeedExpressionEntry(babyCode, date))
+      feedExpressions.push(await this.getNewFeedExpressionEntry(babyCode, date))
     }
     return feedExpressions
   }
 
-  getNewFeedExpressionEntry(babyCode: string, date: string) {
+  async getNewFeedExpressionEntry(babyCode: string, date: string) {
     //The blank feed object
     let feed: IFeed = {
       id: null,
@@ -551,6 +551,7 @@ appendNewRecordAndReturn(data: IFeed[], babyCode: string, count: number, date?: 
       uuidNumber: null
     }
 
+    await setTimeout( () => feed.id = this.getNewFeedExpressionId(babyCode))
     return feed
   }
 

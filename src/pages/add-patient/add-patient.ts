@@ -779,6 +779,7 @@ export class AddPatientPage implements OnInit{
       switch(type){
         case ConstantProvider.datePickerType.deliveryDate:
           this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
+          this.patientForm.controls.delivery_date.markAsUntouched()
         break;
         case ConstantProvider.datePickerType.addmissionDate:
           this.patientForm.controls.admission_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))

@@ -198,7 +198,7 @@ export class BfSupportivePracticeServiceProvider {
     }
 
     if (data != null) {
-      (data as IBFSP[]).splice(0, 0, bf);
+      (data as IBFSP[]).push(bf);
     } else {
       data = [];
       data.push(bf)

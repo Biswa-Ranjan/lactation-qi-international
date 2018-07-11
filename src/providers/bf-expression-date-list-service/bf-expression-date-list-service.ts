@@ -115,7 +115,7 @@ export class BFExpressionDateListProvider {
     if(data === null) {
       data = []
     }else {
-      for (let index = 0; index <= count; index++) {
+      for (let index = 0; index < count; index++) {
         data.push(this.getNewBfExpressionEntry(babyCode, date))
       }
     }

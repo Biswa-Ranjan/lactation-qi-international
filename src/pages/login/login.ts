@@ -70,7 +70,7 @@ export class LoginPage {
     if (data == null || data == undefined) {
       // this.settingsService.getDataFromAssetsFolder()
       //   .subscribe(data => {
-          let len = 15
+          let len = 14
           //save new record to local database  
           for (let i = 0; i < this.babyAdmittedToNameList.length; i++) {
             let obj = {

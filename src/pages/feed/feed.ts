@@ -113,10 +113,10 @@ export class FeedPage {
       this.messageService.showErrorToast(err)
     });
 
-    if(this.isWeb){
-      this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
-      this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
-    }
+    // if(this.isWeb){
+    //   this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
+    //   this.maxDate=this.datePipe.transform(this.dischargeDate.valueOf(),"yyyy-MM-dd")
+    // }
   }
 
 /**
@@ -150,7 +150,7 @@ export class FeedPage {
     else if(!this.checkForOnlyNumber(feedExpression, 'otherVolume')) {
       this.messageService.showErrorToast(ConstantProvider.messages.otherVolume)
     }
-    else{
+    else {
       this.saveExpression(feedExpression);
     }
   }
@@ -203,8 +203,8 @@ export class FeedPage {
  *
  * @memberof FeedPage
  */
-  newExpression() {
-    this.feedExpressions = this.feedExpressionService.appendNewRecordAndReturn(this.feedExpressions,
+  async newExpression() {
+    this.feedExpressions = await this.feedExpressionService.appendNewRecordAndReturn(this.feedExpressions,
       this.dataForFeedEntryPage.babyCode, 1, this.dataForFeedEntryPage.selectedDate);
     // setTimeout( data => this.toggleGroup(this.feedExpressions[0]), 100);
     // document.getElementById('scrollHere').scrollIntoView({behavior: 'smooth'})
