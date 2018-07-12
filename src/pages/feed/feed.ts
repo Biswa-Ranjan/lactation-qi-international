@@ -221,6 +221,9 @@ export class FeedPage {
       this.dataForFeedEntryPage.selectedDate, this.dataForFeedEntryPage.isNewExpression)
     .then(data=> {
       this.feedExpressions = data
+
+      if(data != null && data.length > 0)
+        this.babyWeight = data[0].babyWeight
     })
     .catch(err=> {
       this.messageService.showErrorToast(err)
@@ -260,7 +263,7 @@ export class FeedPage {
    * @since - 0.0.1
    */
 
-  datePickerDialog(feedExp: IFeed) {
+  datePickerDialog() {
     this.datePicker.show({
     date: this.defaultSelectedDate,
     minDate: this.deliveryDate.valueOf(),
@@ -270,8 +273,8 @@ export class FeedPage {
     androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
     }).then(
       date => {
-        feedExp.dateOfFeed = this.datePipe.transform(date,"dd-MM-yyyy")
-       // this.validateTime(feedExp.timeOfFeed, feedExp)
+        this.dateOfFeed = this.datePipe.transform(date,"dd-MM-yyyy")
+        this.dateOfFeedFlag = true
       },
       err => console.log('Error occurred while getting date: ', err)
     );
@@ -388,7 +391,7 @@ export class FeedPage {
    */
   saveAllFeeds() {
     if(this.dateOfFeed != null) {
-      let date = this.datePipe.transform(this.dateOfFeed.concat(), 'dd-MM-yyyy')
+      let date = this.dateOfFeed.concat()
       let finalExpressions: IFeed[] = []
 
       this.feedExpressions.forEach(feedExpression => {

@@ -231,7 +231,7 @@ export class BfSupportivePracticePage {
    * @since - 0.0.1
    */
 
-  datePickerDialog(bfsp: IBFSP){
+  datePickerDialog(){
     this.datePicker.show({
     date: this.defaultSelectedDate,
     minDate: this.deliveryDate.valueOf(),
@@ -240,8 +240,8 @@ export class BfSupportivePracticePage {
     androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
     }).then(
       date => {
-        bfsp.dateOfBFSP = this.datePipe.transform(date,"dd-MM-yyyy")
-        // this.validateTime(bfsp.timeOfBFSP, bfsp)
+        this.dateOfBfsp = this.datePipe.transform(date,"dd-MM-yyyy")
+        this.dateOfBfspFlag = true
       },
       err => console.log('Error occurred while getting date: ', err)
     );
@@ -331,7 +331,7 @@ export class BfSupportivePracticePage {
 
   saveAllExpressions() {
     if(this.dateOfBfsp != null) {
-      let date = this.datePipe.transform(this.dateOfBfsp.concat(), 'dd-MM-yyyy')
+      let date = this.dateOfBfsp.concat()
       let finalBfspList: IBFSP[] = []
 
       this.bfspList.forEach( bfsp => {

@@ -25,7 +25,7 @@
         <ion-label color="black" stacked>Date of BFSP
           <span class="text-color"> *</span>
         </ion-label>
-        <ion-input *ngIf="!isWeb" [disabled]="dateOfBfsp" [readonly]="true" [(ngModel)]="dateOfBfsp" 
+        <ion-input *ngIf="!isWeb" [disabled]="dateOfBfspFlag" [readonly]="true" [(ngModel)]="dateOfBfsp" 
           (ionFocus)="datePickerDialog()" [ngModelOptions]="{standalone: true}"></ion-input>
         <ion-input *ngIf="isWeb" [disabled]="dateOfBfspFlag" [readonly]="true" [(ngModel)]="dateOfBfsp" 
           (click)="showCalendar()"></ion-input>
@@ -39,9 +39,8 @@
             <span class="text-color"> *</span>
           </ion-label>
           <ion-input *ngIf="!isWeb" [readonly]="true" [(ngModel)]="bfsp.timeOfBFSP" [disabled]="!dateOfBfsp"
-            (ionFocus)="timePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"></ion-input>
-          <!-- <ion-datetime *ngIf="isWeb" [(ngModel)]="bfsp.timeOfBFSP" [ngModelOptions]="{standalone: true}" 
-            displayFormat="HH:mm" (ionChange)="validateTime(bfsp.timeOfBFSP, bfsp)"></ion-datetime> -->
+            (ionFocus)="timePickerDialog(bfsp)" [ngModelOptions]="{standalone: true}"
+            (ionBlur)="validateTime(bfsp.timeOfBFSP, bfsp)"></ion-input>
           <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfBfsp" 
             [(ngModel)]="bfsp.timeOfBFSP" (keypress)="_numberKeyPress($event);
             _formatTime($event, bfsp)" (ionBlur)="validateTime(bfsp.timeOfBFSP, bfsp)"></ion-input>

@@ -256,6 +256,7 @@ export class ExpressionTimeFormPage {
     }).then(
       date => {
         this.dateOfExpressions = this.datePipe.transform(date,"dd-MM-yyyy")
+        this.dateOfExpressionFlag = true
         // this.validateTime(bfExpForm.timeOfExpression, bfExpForm)
       },
       err => console.log('Error occurred while getting date: ', err)
@@ -321,7 +322,7 @@ export class ExpressionTimeFormPage {
 
   saveAllExpressions() {
     if(this.dateOfExpressions != null) {
-      let date = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
+      let date = this.dateOfExpressions.concat()
       let finalExpressions: IBFExpression[] = []
 
       this.bFExpressions.forEach(bfExpression => {

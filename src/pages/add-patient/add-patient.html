@@ -64,10 +64,10 @@
         </ion-label>
         <ion-input *ngIf="!isWeb" formControlName="delivery_date" [disabled]="forEdit" (click)="deliveryDatePicker('deliveryDate')"
           (ionFocus)="deliveryDatePicker('deliveryDate')" [readonly]="true"></ion-input>
-        <ion-input *ngIf="isWeb" formControlName="delivery_date" [disabled]="forEdit" (click)="showCalendarForDeliveryDate('deliveryDate')" (ionFocus)="showCalendarForDeliveryDate('deliveryDate')"></ion-input>
+        <ion-input *ngIf="isWeb" formControlName="delivery_date" [disabled]="forEdit" (click)="showCalendarForDeliveryDate('deliveryDate')"></ion-input>
         <ion-icon padding-top name="calendar" item-right></ion-icon>
       </ion-item>
-      <p class="error" *ngIf="patientForm.controls.delivery_date.invalid  && (patientForm.controls.delivery_date.dirty || patientForm.controls.delivery_date.touched) && resetStatus">
+      <p class="error" *ngIf="patientForm.controls.delivery_date.value === null  && (patientForm.controls.delivery_date.dirty || patientForm.controls.delivery_date.touched) && resetStatus">
         Please enter the delivery date
       </p>
     </div>

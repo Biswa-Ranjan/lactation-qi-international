@@ -441,7 +441,7 @@ export class FeedExpressionServiceProvider {
       this.storage.get(ConstantProvider.dbKeyNames.feedExpressions)
       .then( data => {
         if(data != null && data.length > 0 && data.filter(d => d.babyCode === babyCode 
-          && d.dateOfExpression === date).length > 0) {
+          && d.dateOfFeed === date).length > 0) {
           let validatedExpressions = this.validateMultipleExpressions(data, feedExpressions, babyCode, date)
           this.storage.set(ConstantProvider.dbKeyNames.feedExpressions, validatedExpressions)
           .then( d => resolve() )

@@ -25,8 +25,11 @@
         <ion-label color="black" stacked>Date of expression
           <span class="text-color"> *</span>
         </ion-label>
-        <ion-input *ngIf="!isWeb" [disabled]="dateOfExpressions" [readonly]="true" [(ngModel)]="dateOfExpressions" (ionFocus)="datePickerDialog()" [ngModelOptions]="{standalone: true}"></ion-input>
-        <ion-input *ngIf="isWeb" [disabled]="dateOfExpressionFlag" [readonly]="true" [(ngModel)]="dateOfExpressions" (click)="showCalendar()"></ion-input>
+        <ion-input *ngIf="!isWeb" [disabled]="dateOfExpressionFlag" [readonly]="true" 
+          [(ngModel)]="dateOfExpressions" (ionFocus)="datePickerDialog()" 
+          [ngModelOptions]="{standalone: true}"></ion-input>
+        <ion-input *ngIf="isWeb" [disabled]="dateOfExpressionFlag" [readonly]="true" 
+          [(ngModel)]="dateOfExpressions" (click)="showCalendar()"></ion-input>
       </ion-col>
     </ion-row>
 
@@ -39,7 +42,8 @@
 
           <ion-input *ngIf="!isWeb" [disabled]="!dateOfExpressions" [readonly]="true"
             [(ngModel)]="item.timeOfExpression" (ionFocus)="timePickerDialog(item)"
-              [ngModelOptions]="{standalone: true}"></ion-input>
+            (ionBlur)="validateTime(item.timeOfExpression, item)" 
+            [ngModelOptions]="{standalone: true}"></ion-input>
 
           <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfExpressions" 
             [(ngModel)]="item.timeOfExpression" (keypress)="_numberKeyPress($event);

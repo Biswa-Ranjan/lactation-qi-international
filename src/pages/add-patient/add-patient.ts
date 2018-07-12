@@ -269,7 +269,7 @@ export class AddPatientPage implements OnInit{
       hospital_baby_id: new FormControl(null, [Validators.pattern(this.alphaNumeric), Validators.maxLength(25)]),
       mother_name: new FormControl(null, [Validators.pattern(this.motherNameRegex), Validators.maxLength(30)]),
       mother_age: new FormControl(null),
-      delivery_date: new FormControl(null,[Validators.required]),
+      delivery_date: new FormControl(null),
       delivery_time: new FormControl(null,[Validators.required,Validators.pattern(this.timeRegex)]),
       delivery_method: new FormControl(null),
       baby_weight: new FormControl(null),
@@ -779,7 +779,7 @@ export class AddPatientPage implements OnInit{
       switch(type){
         case ConstantProvider.datePickerType.deliveryDate:
           this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
-          this.patientForm.controls.delivery_date.markAsUntouched()
+          // this.patientForm.controls.delivery_date.markAsTouched()
         break;
         case ConstantProvider.datePickerType.addmissionDate:
           this.patientForm.controls.admission_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
@@ -798,7 +798,7 @@ export class AddPatientPage implements OnInit{
   }
 
   showCalendarForDeliveryDate(type: string) {
-    if(!this.forEdit)
+    if(!this.forEdit && !this.hasError)
       this.showCalendar(type)
   }
 
