@@ -7,10 +7,10 @@ interface IUser{
     firstName: string;
     lastName: string;
     email: string;
-    country: number;
-    state: number;
-    institution: number;
-    district: number;
+    country: string;
+    state: string;
+    institution: string;
+    district: string;
     syncFailureMessage: string;
     isSynced: boolean;
     createdDate: string;

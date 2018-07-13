@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Device } from '@ionic-native/device';
+import { Storage } from '../../../node_modules/@ionic/storage';
+import { ConstantProvider } from '../constant/constant';
 
 /**
  * This service is going help us in common util stuffs
@@ -12,10 +14,13 @@ import { Device } from '@ionic-native/device';
 @Injectable()
 export class UtilServiceProvider {
 
-  typeDetails: ITypeDetails[] = [];
-  areas: IArea[] = [];
-  uuidNumber: string;
-  constructor(private http: HttpClient,private device: Device){}
+  typeDetails: ITypeDetails[] = []
+  areas: IArea[] = []
+  uuidNumber: string
+
+  constructor(private http: HttpClient,
+    private device: Device,
+    private storage: Storage){}
 
 
 
@@ -92,4 +97,5 @@ export class UtilServiceProvider {
   setUuid() {
     this.uuidNumber = this.device.uuid
   }
+
 }

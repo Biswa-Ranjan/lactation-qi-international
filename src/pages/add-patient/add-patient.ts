@@ -804,10 +804,12 @@ export class AddPatientPage implements OnInit{
 
   async checkBabyId() {
     //check for duplicate baby id
-    let patientData = await this.addNewPatientService.isBabyIdExistaOrNot(this.patientForm.controls.baby_id.value.toUpperCase())   
-    if(patientData){
-      this.messageService.showErrorToast(ConstantProvider.messages.babyIdExistsMsg);
-      this.patientForm.controls.baby_id.setValue(null)
+    if(this.patientForm.controls.baby_id.value) {
+      let patientData = await this.addNewPatientService.isBabyIdExistaOrNot(this.patientForm.controls.baby_id.value.toUpperCase())   
+      if(patientData){
+        this.messageService.showErrorToast(ConstantProvider.messages.babyIdExistsMsg);
+        this.patientForm.controls.baby_id.setValue(null)
+      }
     }
   }
 
