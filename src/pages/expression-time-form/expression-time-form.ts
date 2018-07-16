@@ -49,6 +49,7 @@ export class ExpressionTimeFormPage {
     title: 'Location where expression occured'
   }
   dateOfExpressionFlag: boolean = false
+  hasError: boolean = false
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private addNewExpressionBfService: AddNewExpressionBfServiceProvider,
@@ -137,29 +138,36 @@ export class ExpressionTimeFormPage {
    * @since 0.0.1
    */
   saveExpression(bfExpression: IBFExpression) {
-    let newData = bfExpression.createdDate === null ? true : false
-    //set validations for all the fields
-    if(this.dateOfExpressions === null) {
-      this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfExpression);
-    }else if(bfExpression.timeOfExpression === null) {
-      this.messageService.showErrorToast(ConstantProvider.messages.enterTimeOfExpression);
-    }else if(!this.validateDurationOfExpression(bfExpression)) {
-      this.messageService.showErrorToast(ConstantProvider.messages.volumeOfMilkExpressedFromBreast);
+    if(!this.hasError) {
+      let newData = bfExpression.createdDate === null ? true : false
+      //set validations for all the fields
+      if(this.dateOfExpressions === null) {
+        this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfExpression);
+      }else if(bfExpression.timeOfExpression === null) {
+        this.messageService.showErrorToast(ConstantProvider.messages.enterTimeOfExpression);
+      }else if(!this.validateDurationOfExpression(bfExpression)) {
+        this.messageService.showErrorToast(ConstantProvider.messages.volumeOfMilkExpressedFromBreast);
+      }else {
+        // bfExpression.dateOfExpression = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
+        bfExpression.dateOfExpression = this.dateOfExpressions.concat()
+        this.bfExpressionTimeService.saveBfExpression(bfExpression, newData)
+        .then(data => {
+          this.findExpressionsByBabyCodeAndDate();
+          if(newData)
+            this.messageService.showSuccessToast(ConstantProvider.messages.saveSuccessfull)
+          else
+            this.messageService.showSuccessToast(ConstantProvider.messages.updateSuccessfull);
+        })
+        .catch(err => {
+          bfExpression.createdDate = null;
+          this.messageService.showOkAlert('Warning', err);
+        })
+      }
     }else {
-      // bfExpression.dateOfExpression = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
-      bfExpression.dateOfExpression = this.dateOfExpressions.concat()
-      this.bfExpressionTimeService.saveBfExpression(bfExpression, newData)
-      .then(data => {
-        this.findExpressionsByBabyCodeAndDate();
-        if(newData)
-          this.messageService.showSuccessToast(ConstantProvider.messages.saveSuccessfull)
-        else
-          this.messageService.showSuccessToast(ConstantProvider.messages.updateSuccessfull);
-      })
-      .catch(err => {
-        bfExpression.createdDate = null;
-        this.messageService.showOkAlert('Warning', err);
-      })
+      if(this.dateOfExpressions === null)
+        this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfExpression);
+      else
+        this.hasError = false
     }
   }
 
@@ -257,6 +265,7 @@ export class ExpressionTimeFormPage {
       date => {
         this.dateOfExpressions = this.datePipe.transform(date,"dd-MM-yyyy")
         this.dateOfExpressionFlag = true
+        this.findExpressionsByBabyCodeAndDate()
         // this.validateTime(bfExpForm.timeOfExpression, bfExpForm)
       },
       err => console.log('Error occurred while getting date: ', err)
@@ -298,14 +307,15 @@ export class ExpressionTimeFormPage {
  validateTime(time: string, bfExpForm: IBFExpression) {
     let timeSplit = time != null ? time.split(':') : null
     if(timeSplit != null) {
-      if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+      this.hasError = true
+      if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59 || time.length != 5) {
         this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
         bfExpForm.timeOfExpression = null
-      }else if(bfExpForm.dateOfExpression === this.datePipe.transform(new Date(),'dd-MM-yyyy')
+      }else if(this.dateOfExpressions === this.datePipe.transform(new Date(),'dd-MM-yyyy')
         && time > this.datePipe.transform(new Date(),'HH:mm')) {
           this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
           bfExpForm.timeOfExpression = null
-      }else if(bfExpForm.dateOfExpression === this.dataForBFEntryPage.deliveryDate
+      }else if(this.dateOfExpressions === this.dataForBFEntryPage.deliveryDate
         && time < this.dataForBFEntryPage.deliveryTime) {
           this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
           bfExpForm.timeOfExpression = null
@@ -313,6 +323,7 @@ export class ExpressionTimeFormPage {
         this.messageService.showErrorToast(ConstantProvider.messages.duplicateTime)
         bfExpForm.timeOfExpression = null
       }else {
+        this.hasError = false
         bfExpForm.timeOfExpression = time
         bfExpForm.id = bfExpForm.id != null ? bfExpForm.id : 
         this.bfExpressionTimeService.getNewBfExpressionId(bfExpForm.babyCode)

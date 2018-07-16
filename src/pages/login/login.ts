@@ -28,11 +28,15 @@ export class LoginPage {
   babyAdmittedToNameList = ["Level 3 NICU/High Dependency", "Level 2 SNCU/Low Dependency", "Level 1 NICU", "Step-down unit","KMC unit", "Maternity ward"];
   babyAdmissionList = []
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
     private userService: UserServiceProvider,
-    private messageService: MessageProvider, private events: Events,
-    private appVersion: AppVersion, private platform: Platform,
-    private storage: Storage, private settingsService: SettingsServiceProvider) {
+    private messageService: MessageProvider,
+    private events: Events,
+    private appVersion: AppVersion,
+    private platform: Platform,
+    private storage: Storage) {
+
     this.platform.ready().then((readySource) => {
       if (this.platform.is('android') && this.platform.is('cordova')) {
         this.appVersion.getVersionNumber()
@@ -40,8 +44,8 @@ export class LoginPage {
             this.appVersionNumber = data
           })
       }
-
     });
+    
   }
 
   /**

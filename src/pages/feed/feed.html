@@ -48,13 +48,13 @@
             <span class="text-color"> *</span>
           </ion-label>
 
-          <ion-input *ngIf="!isWeb" [disabled]="!dateOfFeed" [readonly]="true"
+          <ion-input *ngIf="!isWeb" [disabled]="!dateOfFeed" [readonly]="true" placeholder="hh:mm"
             [(ngModel)]="feedExpression.timeOfFeed" (ionFocus)="timePickerDialog(feedExpression)"
               [ngModelOptions]="{standalone: true}"></ion-input>
 
-              <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfFeed" 
-              [(ngModel)]="feedExpression.timeOfFeed" (keypress)="_numberKeyPress($event);
-                _formatTime($event, feedExpression)" (ionBlur)="validateTime(feedExpression.timeOfFeed, feedExpression)"></ion-input>
+          <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfFeed" placeholder="hh:mm" 
+            [(ngModel)]="feedExpression.timeOfFeed" (keypress)="_numberKeyPress($event);
+              _formatTime($event, feedExpression)" (ionBlur)="validateTime(feedExpression.timeOfFeed, feedExpression)"></ion-input>
 
           <!-- <ion-datetime *ngIf="isWeb" [disabled]="!dateOfFeed" [(ngModel)]="feedExpression.timeOfFeed"
             [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"

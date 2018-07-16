@@ -58,8 +58,10 @@ export class SaveExpressionBfProvider {
         this.pppServiceProvider.deleteSpsRecord(bfExpression.babyCode)
         if(val != null && val.length > 0) {
           bfExpressions = val;
-          let index = bfExpressions.findIndex(d=>d.babyCode === bfExpression.babyCode && d.dateOfExpression === bfExpression.dateOfExpression
-              && d.timeOfExpression === bfExpression.timeOfExpression)
+          // let index = bfExpressions.findIndex(d=>d.babyCode === bfExpression.babyCode && d.dateOfExpression === bfExpression.dateOfExpression
+          //     && d.timeOfExpression === bfExpression.timeOfExpression)
+
+          let index = bfExpressions.findIndex(d=>d.id === bfExpression.id)
 
           if(index < 0) {
             // index = bfExpressions.findIndex(d=>d.babyCode === bfExpression.babyCode && d.dateOfExpression === existingDate
@@ -72,7 +74,7 @@ export class SaveExpressionBfProvider {
                 resolve()
               })
               .catch(err=> {
-                reject(err.message);
+                reject(err.message)
               })
           }else {
             if(!newData) {
@@ -241,9 +243,10 @@ export class SaveExpressionBfProvider {
     let recordsToRemoveIndex: number[] = []
     for (let dbIndex = 0; dbIndex < dbExpressions.length; dbIndex++) {
       for (let index = 0; index < expressionsToBeSaved.length; index++) {
-        if(dbExpressions[dbIndex].babyCode === babyCode && dbExpressions[dbIndex].dateOfExpression === date
-          && expressionsToBeSaved[index].dateOfExpression === date
-          && dbExpressions[dbIndex].timeOfExpression === expressionsToBeSaved[index].timeOfExpression)
+        // if(dbExpressions[dbIndex].babyCode === babyCode && dbExpressions[dbIndex].dateOfExpression === date
+        //   && expressionsToBeSaved[index].dateOfExpression === date
+        //   && dbExpressions[dbIndex].timeOfExpression === expressionsToBeSaved[index].timeOfExpression)
+        if(dbExpressions[dbIndex].id === expressionsToBeSaved[index].id)
             recordsToRemoveIndex.push(dbIndex)
       }
     }

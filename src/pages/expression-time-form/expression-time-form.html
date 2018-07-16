@@ -40,12 +40,11 @@
             <span class="text-color"> *</span>
           </ion-label>
 
-          <ion-input *ngIf="!isWeb" [disabled]="!dateOfExpressions" [readonly]="true"
+          <ion-input *ngIf="!isWeb" [disabled]="!dateOfExpressions" [readonly]="true" placeholder="hh:mm"
             [(ngModel)]="item.timeOfExpression" (ionFocus)="timePickerDialog(item)"
-            (ionBlur)="validateTime(item.timeOfExpression, item)" 
             [ngModelOptions]="{standalone: true}"></ion-input>
 
-          <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfExpressions" 
+          <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfExpressions" placeholder="hh:mm"
             [(ngModel)]="item.timeOfExpression" (keypress)="_numberKeyPress($event);
               _formatTime($event, item)" (ionBlur)="validateTime(item.timeOfExpression, item)"></ion-input>
 

@@ -50,6 +50,7 @@ export class BfSupportivePracticePage {
     title: 'Person who performed the BFSP'
   }
   dateOfBfspFlag: boolean = false
+  hasError: boolean = false
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -134,27 +135,34 @@ export class BfSupportivePracticePage {
   }
 
   save(bfsp: IBFSP, index) {
-    let newData = bfsp.createdDate === null ? true : false
-    if(this.dateOfBfsp === null) {
-      this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfBfsp);
-    }else if(bfsp.timeOfBFSP === null) {
-      this.messageService.showErrorToast(ConstantProvider.messages.enterTimeOfBfsp);
-    }else if(bfsp.bfspDuration === undefined || !this.checkForOnlyNumber(bfsp.bfspDuration)) {
-      this.messageService.showErrorToast(ConstantProvider.messages.durationOfBfsp);
-    }else{
-      bfsp.dateOfBFSP = this.dateOfBfsp.concat()
-      this.bfspService.saveNewBreastFeedingSupportivePracticeForm(bfsp, newData)
-      .then(data => {
-        this.findExpressionsByBabyCodeAndDate();
-        if(newData)
-          this.messageService.showSuccessToast(ConstantProvider.messages.saveSuccessfull);
-        else
-          this.messageService.showSuccessToast(ConstantProvider.messages.updateSuccessfull);
-      })
-      .catch(err => {
-        bfsp.createdDate = null
-        this.messageService.showOkAlert('Warning', err);
-      })
+    if(!this.hasError) {
+      let newData = bfsp.createdDate === null ? true : false
+      if(this.dateOfBfsp === null) {
+        this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfBfsp);
+      }else if(bfsp.timeOfBFSP === null) {
+        this.messageService.showErrorToast(ConstantProvider.messages.enterTimeOfBfsp);
+      }else if(bfsp.bfspDuration === undefined || !this.checkForOnlyNumber(bfsp.bfspDuration)) {
+        this.messageService.showErrorToast(ConstantProvider.messages.durationOfBfsp);
+      }else{
+        bfsp.dateOfBFSP = this.dateOfBfsp.concat()
+        this.bfspService.saveNewBreastFeedingSupportivePracticeForm(bfsp, newData)
+        .then(data => {
+          this.findExpressionsByBabyCodeAndDate();
+          if(newData)
+            this.messageService.showSuccessToast(ConstantProvider.messages.saveSuccessfull);
+          else
+            this.messageService.showSuccessToast(ConstantProvider.messages.updateSuccessfull);
+        })
+        .catch(err => {
+          bfsp.createdDate = null
+          this.messageService.showOkAlert('Warning', err);
+        })
+      }
+    }else {
+      if(this.dateOfBfsp === null)
+        this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfBfsp);
+      else
+        this.hasError = false
     }
   }
 
@@ -168,7 +176,7 @@ export class BfSupportivePracticePage {
     //getting existing feed expression for given baby code and date
 
     this.bfspService.findByBabyCodeAndDate(this.dataForBfspPage.babyCode,
-      this.dataForBfspPage.selectedDate, this.dataForBfspPage.isNewBfsp)
+      this.dateOfBfsp, this.dataForBfspPage.isNewBfsp)
       .then(data => {
           this.bfspList = data
       })
@@ -242,6 +250,7 @@ export class BfSupportivePracticePage {
       date => {
         this.dateOfBfsp = this.datePipe.transform(date,"dd-MM-yyyy")
         this.dateOfBfspFlag = true
+        this.findExpressionsByBabyCodeAndDate()
       },
       err => console.log('Error occurred while getting date: ', err)
     );
@@ -254,7 +263,7 @@ export class BfSupportivePracticePage {
     is24Hour: true,
     androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_LIGHT
     }).then(time => {
-      this.validateTime(this.datePipe.transform(time, 'HH:mm'), bfsp)
+        this.validateTime(this.datePipe.transform(time, 'HH:mm'), bfsp)
       },
       err => console.log('Error occurred while getting time: ', err)
     );
@@ -284,22 +293,24 @@ export class BfSupportivePracticePage {
   validateTime(time: string, bfsp: IBFSP) {
     let timeSplit = time != null ? time.split(':') : null
     if(timeSplit != null){
-      if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59) {
+      this.hasError = true
+      if(parseInt(timeSplit[0]) > 23 || parseInt(timeSplit[1]) > 59 || time.length != 5) {
         this.messageService.showErrorToast(ConstantProvider.messages.invalidTimeFormat)
         bfsp.timeOfBFSP = null
       }
-      else if(bfsp.dateOfBFSP === this.datePipe.transform(new Date(),'dd-MM-yyyy')
+      else if(this.dateOfBfsp === this.datePipe.transform(new Date(),'dd-MM-yyyy')
         && time > this.datePipe.transform(new Date(),'HH:mm')) {
           this.messageService.showErrorToast(ConstantProvider.messages.futureTime)
-          bfsp.timeOfBFSP = null;
-      }else if (bfsp.dateOfBFSP === this.dataForBfspPage.deliveryDate &&
+          bfsp.timeOfBFSP = null
+      }else if (this.dateOfBfsp === this.dataForBfspPage.deliveryDate &&
         time < this.dataForBfspPage.deliveryTime) {
           this.messageService.showErrorToast(ConstantProvider.messages.pastTime)
-          bfsp.timeOfBFSP = null;
+          bfsp.timeOfBFSP = null
       }else if(this.bfspList.filter( d => d.timeOfBFSP === time).length > 1) {
         this.messageService.showErrorToast(ConstantProvider.messages.duplicateTime)
         bfsp.timeOfBFSP = null
       }else{
+        this.hasError = false
         bfsp.timeOfBFSP = time
         bfsp.id = bfsp.id != null ? bfsp.id : this.bfspService.getNewBfspId(bfsp.babyCode)
       }

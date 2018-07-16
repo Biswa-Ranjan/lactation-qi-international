@@ -1,33 +1,9 @@
-import {
-  Component
-} from '@angular/core';
-import {
-  IonicPage,
-  NavController,
-  NavParams,
-  AlertController
-} from 'ionic-angular';
-import {
-  MessageProvider
-} from '../../providers/message/message';
-import {
-  Storage
-} from '@ionic/storage';
-import {
-  ConstantProvider
-} from '../../providers/constant/constant';
-import {
-  AddNewExpressionBfServiceProvider
-} from '../../providers/add-new-expression-bf-service/add-new-expression-bf-service';
-import {
-  AddNewPatientServiceProvider
-} from '../../providers/add-new-patient-service/add-new-patient-service';
-import {
-  SettingsPageModule
-} from './settings.module';
-import {
-  SettingsServiceProvider
-} from '../../providers/settings-service/settings-service';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { MessageProvider } from '../../providers/message/message';
+import { Storage } from '@ionic/storage';
+import { ConstantProvider } from '../../providers/constant/constant';
+import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
 
 /**
  * Generated class for the SettingsPage page.
@@ -46,8 +22,11 @@ export class SettingsPage {
   babyAdmissionList: ITypeDetails[];
   lastTypedetailsID: number
   isRecordFound: boolean = true;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private messageService: MessageProvider,
-    private storage: Storage, private addNewPatientService: AddNewPatientServiceProvider, private settingsService: SettingsServiceProvider,
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    private messageService: MessageProvider,
+    private storage: Storage,
+    private settingsService: SettingsServiceProvider,
     private alertController: AlertController) {
 
   }

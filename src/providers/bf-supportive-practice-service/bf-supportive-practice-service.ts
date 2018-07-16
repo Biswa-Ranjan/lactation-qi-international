@@ -81,8 +81,9 @@ export class BfSupportivePracticeServiceProvider {
           this.pppServiceProvider.deleteSpsRecord(bfspForm.babyCode)
           if (val != null && val.length > 0) {
             bfspForms = val;
-            let index = bfspForms.findIndex(d=>d.babyCode === bfspForm.babyCode && d.dateOfBFSP === bfspForm.dateOfBFSP
-              && d.timeOfBFSP === bfspForm.timeOfBFSP)
+            // let index = bfspForms.findIndex(d=>d.babyCode === bfspForm.babyCode && d.dateOfBFSP === bfspForm.dateOfBFSP
+            //   && d.timeOfBFSP === bfspForm.timeOfBFSP)
+            let index = bfspForms.findIndex(d=>d.id === bfspForm.id)
             if(index < 0) {
               bfspForm.id = this.getNewBfspId(bfspForm.babyCode)
               bfspForms.push(bfspForm)
@@ -381,9 +382,10 @@ export class BfSupportivePracticeServiceProvider {
     let recordsToRemoveIndex: number[] = []
     for (let dbIndex = 0; dbIndex < dbBfspList.length; dbIndex++) {
       for (let index = 0; index < bfspListToBeSaved.length; index++) {
-        if(dbBfspList[dbIndex].babyCode === babyCode && dbBfspList[dbIndex].dateOfBFSP === date
-          && bfspListToBeSaved[index].dateOfBFSP === date 
-          && dbBfspList[dbIndex].timeOfBFSP === bfspListToBeSaved[index].timeOfBFSP)
+        // if(dbBfspList[dbIndex].babyCode === babyCode && dbBfspList[dbIndex].dateOfBFSP === date
+        //   && bfspListToBeSaved[index].dateOfBFSP === date 
+        //   && dbBfspList[dbIndex].timeOfBFSP === bfspListToBeSaved[index].timeOfBFSP)
+        if(dbBfspList[dbIndex].id === bfspListToBeSaved[index].id)
             recordsToRemoveIndex.push(dbIndex)
       }
     }

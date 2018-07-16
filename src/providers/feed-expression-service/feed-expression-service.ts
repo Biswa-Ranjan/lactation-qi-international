@@ -97,8 +97,9 @@ export class FeedExpressionServiceProvider {
         this.pppServiceProvider.deleteSpsRecord(feedExpression.babyCode)
         if(val != null && val.length > 0) {
           feedExpressions = val
-          let index = feedExpressions.findIndex(d=> d.babyCode === feedExpression.babyCode && d.dateOfFeed === feedExpression.dateOfFeed &&
-            d.timeOfFeed === feedExpression.timeOfFeed)
+          // let index = feedExpressions.findIndex(d=> d.babyCode === feedExpression.babyCode && d.dateOfFeed === feedExpression.dateOfFeed &&
+          //   d.timeOfFeed === feedExpression.timeOfFeed)
+          let index = feedExpressions.findIndex(d=> d.id === feedExpression.id)
           if(index < 0) {
             // index = feedExpressions.findIndex(d=>d.babyCode === feedExpression.babyCode &&
             //   d.dateOfFeed === existingDate && d.timeOfFeed === existingTime)
@@ -496,10 +497,11 @@ export class FeedExpressionServiceProvider {
     let recordsToRemoveIndex: number[] = []
     for (let dbIndex = 0; dbIndex < dbExpressions.length; dbIndex++) {
       for (let index = 0; index < expressionsToBeSaved.length; index++) {
-        if(dbExpressions[dbIndex].babyCode === babyCode && dbExpressions[dbIndex].dateOfFeed === date
-          && expressionsToBeSaved[index].dateOfFeed === date
-          && dbExpressions[dbIndex].timeOfFeed === expressionsToBeSaved[index].timeOfFeed)
-            recordsToRemoveIndex.push(dbIndex)
+        // if(dbExpressions[dbIndex].babyCode === babyCode && dbExpressions[dbIndex].dateOfFeed === date
+        //   && expressionsToBeSaved[index].dateOfFeed === date
+        //   && dbExpressions[dbIndex].timeOfFeed === expressionsToBeSaved[index].timeOfFeed)
+        if(dbExpressions[dbIndex].id === expressionsToBeSaved[index].id)
+          recordsToRemoveIndex.push(dbIndex)
       }
     }
 

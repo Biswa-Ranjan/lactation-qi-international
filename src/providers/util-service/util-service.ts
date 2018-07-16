@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Device } from '@ionic-native/device';
-import { Storage } from '../../../node_modules/@ionic/storage';
-import { ConstantProvider } from '../constant/constant';
 
 /**
  * This service is going help us in common util stuffs
@@ -19,8 +17,7 @@ export class UtilServiceProvider {
   uuidNumber: string
 
   constructor(private http: HttpClient,
-    private device: Device,
-    private storage: Storage){}
+    private device: Device){}
 
 
 

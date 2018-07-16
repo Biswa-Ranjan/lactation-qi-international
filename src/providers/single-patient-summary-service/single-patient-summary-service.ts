@@ -1043,21 +1043,21 @@ export class SinglePatientSummaryServiceProvider {
     }
 
     //Adding hospital discharge exclusively as it is not present in the above list
-    let hospitalDischarge: IExclusiveBf = {
-      name: 'Hospital discharge',
-      date: null,
-      status: null
-    }
+    // let hospitalDischarge: IExclusiveBf = {
+    //   name: 'Hospital discharge',
+    //   date: null,
+    //   status: null
+    // }
 
-    if(babyDetails.dischargeDate != null && babyDetails.dischargeDate != ''){
-      hospitalDischarge.date = babyDetails.dischargeDate
-      this.feedExpressionService.getHospitalDischargeDataForExclusiveBf(babyDetails.babyCode,
-        babyDetails.dischargeDate)
-        .then(data => hospitalDischarge.status = data)
-        .catch(error => this.messageService.showErrorToast(error))
-    }
+    // if(babyDetails.dischargeDate != null && babyDetails.dischargeDate != ''){
+    //   hospitalDischarge.date = babyDetails.dischargeDate
+    //   this.feedExpressionService.getHospitalDischargeDataForExclusiveBf(babyDetails.babyCode,
+    //     babyDetails.dischargeDate)
+    //     .then(data => hospitalDischarge.status = data)
+    //     .catch(error => this.messageService.showErrorToast(error))
+    // }
 
-    exclusiveBfList.splice(0,0,hospitalDischarge)
+    // exclusiveBfList.splice(0,0,hospitalDischarge)
 
     return exclusiveBfList;
   }
