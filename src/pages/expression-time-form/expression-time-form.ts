@@ -388,15 +388,20 @@ export class ExpressionTimeFormPage {
       let datePickerOption: DatePickerOption = {
         minimumDate: this.deliveryDate,
         maximumDate: this.dischargeDate
-      };
+      }
       const dateSelected =
         this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
 
       dateSelected.subscribe(date => {
-        this.dateOfExpressions = this.datePipe.transform(date,"dd-MM-yyyy")
-        this.dateOfExpressionFlag = true
-        this.dateConfirmation()
-      });
+        let tempDate = this.datePipe.transform(date,"dd-MM-yyyy")
+        if(this.validateDate(tempDate)) {
+          this.dateOfExpressions = tempDate
+          this.dateOfExpressionFlag = true
+          this.dateConfirmation()
+        }else {
+          this.messageService.showErrorToast(ConstantProvider.messages.invalidDate)
+        }
+      })
     }
   }
 
@@ -430,5 +435,15 @@ export class ExpressionTimeFormPage {
     var k;
     k = event.charCode;  //k = event.keyCode;  (Both can be used)
     return(k >= 48 && k <= 57);
+  }
+
+  validateDate(selectedDate: string) {
+    let x = selectedDate.split('-')
+    let date = new Date(+x[2], +x[1]-1, +x[0])
+
+    if(date > this.dischargeDate)
+      return false
+    else
+      return true
   }
 }

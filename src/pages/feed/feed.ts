@@ -484,13 +484,19 @@ export class FeedPage {
         this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
 
       dateSelected.subscribe(date => {
-        this.dateOfFeed = this.datePipe.transform(date,"dd-MM-yyyy")
-        this.dateOfFeedFlag = true
-        this.dateConfirmation()
-        //dateInput.setFocus()
+        let tempDate = this.datePipe.transform(date,"dd-MM-yyyy")
+        if(this.validateDate(tempDate)) {
+          this.dateOfFeed = tempDate
+          this.dateOfFeedFlag = true
+          this.dateConfirmation()
+          //dateInput.setFocus()
+        }else {
+          this.messageService.showErrorToast(ConstantProvider.messages.invalidDate)
+        }
       });
     }
   }
+
   _numberKeyPress(event: any) {
     const pattern = /[0-9\ ]/
     var a = event.charCode
@@ -503,9 +509,20 @@ export class FeedPage {
       event.preventDefault()
     }
   }
+
   _formatTime(event: any, feedExpression: IFeed) {
     if (event.target["value"].length == 2) {
       feedExpression.timeOfFeed = event.target["value"]+":"
     }
+  }
+
+  validateDate(selectedDate: string) {
+    let x = selectedDate.split('-')
+    let date = new Date(+x[2], +x[1]-1, +x[0])
+
+    if(date > this.dischargeDate)
+      return false
+    else
+      return true
   }
 }

@@ -215,7 +215,8 @@ export class ConstantProvider {
     editSuccessMessage : 'Record edited successfully.',
     recordFoundDeletionCanNotBeDoneMsg :"Record found, deletion can not be done.You can edit it.",
     invalidTimeFormat: 'Invalid time format',
-    babyIdExistsMsg :"Baby Id already exists."
+    babyIdExistsMsg :"Baby Id already exists.",
+    invalidDate: 'Invalid date.'
 
   };
 

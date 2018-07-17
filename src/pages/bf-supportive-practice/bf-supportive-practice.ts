@@ -376,9 +376,14 @@ export class BfSupportivePracticePage {
         this.datePickerProvider.showCalendar(this.modalCtrl,datePickerOption);
 
       dateSelected.subscribe(date => {
-        this.dateOfBfsp = this.datePipe.transform(date,"dd-MM-yyyy")
-        this.dateOfBfspFlag = true
-        this.dateConfirmation()
+        let tempDate = this.datePipe.transform(date,"dd-MM-yyyy")
+        if(this.validateDate(tempDate)) {
+          this.dateOfBfsp = tempDate
+          this.dateOfBfspFlag = true
+          this.dateConfirmation()
+        }else {
+          this.messageService.showErrorToast(ConstantProvider.messages.invalidDate)
+        }
       });
     }
   }
@@ -400,6 +405,16 @@ export class BfSupportivePracticePage {
     if (event.target["value"].length == 2) {
       bfsp.timeOfBFSP = event.target["value"]+":"
     }
+  }
+
+  validateDate(selectedDate: string) {
+    let x = selectedDate.split('-')
+    let date = new Date(+x[2], +x[1]-1, +x[0])
+
+    if(date > this.dischargeDate)
+      return false
+    else
+      return true
   }
 
 }

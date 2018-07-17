@@ -56,8 +56,8 @@ export class LoginPage {
    */
   ngOnInit() {
     this.loginData = {
-      username: '',
-      password: ''
+      username: 'na@g.com',
+      password: 'na@123#!'
     }
     this.setDataForBabyAdmittedToField()
   }

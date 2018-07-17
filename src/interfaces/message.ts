@@ -100,4 +100,5 @@ interface IMessage{
     recordFoundDeletionCanNotBeDoneMsg : string
     invalidTimeFormat: string
     babyIdExistsMsg: string
+    invalidDate: string
 }
