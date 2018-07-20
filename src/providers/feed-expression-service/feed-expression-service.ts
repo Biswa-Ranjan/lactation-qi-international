@@ -441,6 +441,7 @@ export class FeedExpressionServiceProvider {
     let promise = new Promise((resolve, reject) => {
       this.storage.get(ConstantProvider.dbKeyNames.feedExpressions)
       .then( data => {
+        this.pppServiceProvider.deleteSpsRecord(babyCode)
         if(data != null && data.length > 0 && data.filter(d => d.babyCode === babyCode 
           && d.dateOfFeed === date).length > 0) {
           let validatedExpressions = this.validateMultipleExpressions(data, feedExpressions, babyCode, date)

@@ -9,6 +9,7 @@ import { OrderAreaByNamePipe } from './order-area-by-name/order-area-by-name';
 import { OrderByTimeBfspAscPipe } from './order-by-time-bfsp-asc/order-by-time-bfsp-asc';
 import { OrderByTimeExpressionFormAscPipe } from './order-by-time-expression-form-asc/order-by-time-expression-form-asc';
 import { OrderByTimeAscPipe } from './order-by-time-asc/order-by-time-asc';
+import { OrderByDateAscPipe } from './order-by-date-asc/order-by-date-asc';
 @NgModule({
 	declarations: [OrderByDatePipe,
     OrderByTimePipe,
@@ -19,7 +20,8 @@ import { OrderByTimeAscPipe } from './order-by-time-asc/order-by-time-asc';
     OrderAreaByNamePipe,
     OrderByTimeBfspAscPipe,
     OrderByTimeExpressionFormAscPipe,
-    OrderByTimeAscPipe],
+    OrderByTimeAscPipe,
+    OrderByDateAscPipe],
 	imports: [],
 	exports: [OrderByDatePipe,
     OrderByTimePipe,
@@ -30,6 +32,7 @@ import { OrderByTimeAscPipe } from './order-by-time-asc/order-by-time-asc';
     OrderAreaByNamePipe,
     OrderByTimeBfspAscPipe,
     OrderByTimeExpressionFormAscPipe,
-    OrderByTimeAscPipe]
+    OrderByTimeAscPipe,
+    OrderByDateAscPipe]
 })
 export class PipesModule {}

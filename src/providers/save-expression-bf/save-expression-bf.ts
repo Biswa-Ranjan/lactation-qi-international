@@ -187,6 +187,7 @@ export class SaveExpressionBfProvider {
     let promise = new Promise((resolve, reject) => {
       this.storage.get(ConstantProvider.dbKeyNames.bfExpressions)
       .then( data => {
+        this.pppServiceProvider.deleteSpsRecord(babyCode)
         if(data != null && data.length > 0 && data.filter(d => d.babyCode === babyCode 
           && d.dateOfExpression === date).length > 0) {
           let validatedExpressions = this.validateMultipleExpressions(data, bfExpressions, babyCode, date)

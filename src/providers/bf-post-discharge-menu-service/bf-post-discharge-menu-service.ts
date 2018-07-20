@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { DatePipe } from '@angular/common';
 import { UtilServiceProvider } from '../util-service/util-service';
 import { UserServiceProvider } from '../user-service/user-service';
+import { PppServiceProvider } from '../ppp-service/ppp-service';
 
 /**
  * @author - Naseem Akhtar (naseem@sdrc.co.in)
@@ -23,7 +24,8 @@ export class BfPostDischargeMenuServiceProvider {
     private storage: Storage,
     private datePipe: DatePipe,
     private utilService: UtilServiceProvider,
-    private userService: UserServiceProvider) {}
+    private userService: UserServiceProvider,
+    private pppServiceProvider: PppServiceProvider) {}
 
   /**
    * This function will fetch the menu for post discarge menu.
@@ -124,6 +126,7 @@ export class BfPostDischargeMenuServiceProvider {
 
   saveUpdateBfpd(bfpdList: IBFPD[], babyCode: string): Promise<any> {
     let promise = new Promise( (resolve, reject) => {
+      this.pppServiceProvider.deleteSpsRecord(babyCode)
       let tempBfpdList: IBFPD[] = []
       bfpdList.forEach( bfpd => {
         if(bfpd.breastFeedingStatus != null) {

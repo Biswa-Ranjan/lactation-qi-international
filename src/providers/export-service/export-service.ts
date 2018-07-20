@@ -213,7 +213,7 @@ export class ExportServiceProvider {
     row.push('Inpatient/Outpatient')
     row.push('Admission date (Outpatient)')
     row.push('Baby is admitted to')
-    row.push('Reason for NICU admission')
+    row.push('Reason for admission')
     row.push('Date of discharge')
     row.push('Created by')
     // row.push('Created date')

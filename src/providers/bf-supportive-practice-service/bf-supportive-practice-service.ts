@@ -326,6 +326,7 @@ export class BfSupportivePracticeServiceProvider {
     let promise = new Promise((resolve, reject) => {
       this.storage.get(ConstantProvider.dbKeyNames.bfsps)
       .then( (data: IBFSP[]) => {
+        this.pppServiceProvider.deleteSpsRecord(babyCode)
         if(data != null && data.length > 0 && data.filter(d => d.babyCode === babyCode 
           && d.dateOfBFSP === date).length > 0) {
           let validatedExpressions = this.validateMultipleExpressions(data, bfspList, babyCode, date)
