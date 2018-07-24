@@ -21,7 +21,7 @@ export class MotherRelatedPage {
 
   motherRelatedDataList: IMotherRelatedData[]
   babyDetails: IBabyBasicDetails
-  comeToVolume7Day: string
+  // comeToVolume7Day: string
   comeToVolume14Day: string
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
@@ -56,7 +56,7 @@ export class MotherRelatedPage {
   async getMotherRelatedDataList(){
     let obj  = await this.spsService.getMotherRelatedData();
     this.motherRelatedDataList = obj.motherRelatedList
-    this.comeToVolume7Day = obj.comeToVolume7Day
+    // this.comeToVolume7Day = obj.comeToVolume7Day
     this.comeToVolume14Day = obj.comeToVolume14Day
   }
 

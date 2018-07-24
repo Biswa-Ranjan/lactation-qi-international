@@ -5,6 +5,6 @@
  */
 interface IBasic{
   motherRelatedList: any;
-  comeToVolume7Day: string;
+  // comeToVolume7Day: string;
   comeToVolume14Day: string;
 }

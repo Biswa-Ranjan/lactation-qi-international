@@ -101,4 +101,6 @@ interface IMessage{
     invalidTimeFormat: string
     babyIdExistsMsg: string
     invalidDate: string
+    spsContentColorOrange: string
+    spsContentColorGrey: string
 }

@@ -194,6 +194,8 @@ export class ConstantProvider {
     spsContentColorRed: 'sps-content-color-red',
     spsContentColorGreen: 'sps-content-color-green',
     spsContentColorYellow: 'sps-content-color-yellow',
+    spsContentColorOrange: 'sps-content-color-orange',
+    spsContentColorGrey: 'sps-content-color-grey',
     syncingPleaseWait: 'Syncing, please wait...',
     syncUnsuccessfull: 'Sync unsuccessfull',
     syncSuccessfull: 'Sync successfull',

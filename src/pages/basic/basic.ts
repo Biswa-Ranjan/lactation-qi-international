@@ -63,17 +63,30 @@ export class BasicPage {
    * @author Jagat Bandhu
    * @since 1.1.0
    */
-  getBgColorForTypeOfTimeTillFirstExp(){
-    let timeInHrs = Number(this.babyDetails.timeTillFirstExpression.split(':')[0])
-    let timeInMinutes = Number(this.babyDetails.timeTillFirstExpression.split(':')[1])
-    if(timeInHrs > 0 && timeInHrs < 7){
-      if(timeInHrs === 6 && timeInMinutes > 0)
-        return ConstantProvider.messages.spsContentColorRed
-      else
+  getBgColorForTypeOfTimeTillFirstExp() {
+    if(this.babyDetails.timeTillFirstExpression) {
+      let timeInHrs = Number(this.babyDetails.timeTillFirstExpression.split(':')[0])
+      let timeInMinutes = Number(this.babyDetails.timeTillFirstExpression.split(':')[1])
+      
+      if(timeInHrs < 3)
+        return ConstantProvider.messages.spsContentColorGreen
+      else if(timeInHrs >= 3 && timeInHrs < 6)
         return ConstantProvider.messages.spsContentColorYellow
-    }
-    else if(timeInHrs > 6)
-      return ConstantProvider.messages.spsContentColorRed
+      else if(timeInHrs >= 6 &&  timeInHrs <=12)
+        return ConstantProvider.messages.spsContentColorOrange
+      else if(timeInHrs > 12)
+        return ConstantProvider.messages.spsContentColorRed
+
+      // if(timeInHrs > 0 && timeInHrs < 7) {
+      //   if(timeInHrs === 6 && timeInMinutes > 0)
+      //     return ConstantProvider.messages.spsContentColorRed
+      //   else
+      //     return ConstantProvider.messages.spsContentColorYellow
+      // }
+      // else if(timeInHrs > 6)
+      //   return ConstantProvider.messages.spsContentColorRed
+    }else 
+      return ConstantProvider.messages.spsContentColorGrey
   }
 
   /**

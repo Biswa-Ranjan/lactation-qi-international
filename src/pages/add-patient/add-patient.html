@@ -77,8 +77,10 @@
           <span class="text-color"> *</span>
         </ion-label>
         <ion-input *ngIf="!isWeb" formControlName="delivery_time" [disabled]="forEdit" (click)="timePickerDialog()" (ionFocus)="timePickerDialog()"
-          [readonly]="true"></ion-input>
-        <ion-input *ngIf="isWeb" type="tel" maxlength="5" formControlName="delivery_time" [disabled]="forEdit" (keypress)="_numberKeyPress($event);_formatTime($event)"></ion-input>
+          [readonly]="true" placeholder="hh:mm"></ion-input>
+        <ion-input *ngIf="isWeb" type="tel" maxlength="5" formControlName="delivery_time"
+          [disabled]="forEdit" (keypress)="_numberKeyPress($event);_formatTime($event)"
+          placeholder="hh:mm"></ion-input>
         <!-- <ion-icon padding-top name="time" item-right></ion-icon> -->
       </ion-item>
       <p class="error" *ngIf="patientForm.controls.delivery_time.invalid  && (patientForm.controls.delivery_time.dirty || patientForm.controls.delivery_time.touched) && resetStatus">
@@ -102,7 +104,7 @@
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Gestational age in weeks</ion-label>
-        <ion-input type="tel" (keyup)="_numberKeyPress($event)" (focusout)="validateGestational()" maxlength="2" formControlName="gestational_age"></ion-input>
+        <ion-input type="tel" (keypress)="_numberKeyPress($event)" (focusout)="validateGestational()" maxlength="2" formControlName="gestational_age"></ion-input>
       </ion-item>
     </div>
     <div class="form-group">

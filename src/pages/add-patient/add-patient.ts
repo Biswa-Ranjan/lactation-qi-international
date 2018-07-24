@@ -11,9 +11,7 @@ import { DatePicker } from '@ionic-native/date-picker';
 import { LactationProvider } from '../../providers/lactation/lactation';
 import { DatePickerProvider } from 'ionic2-date-picker';
 import { DatePickerOption } from 'ionic2-date-picker';
-import {
-  Storage
-} from '@ionic/storage';
+import { Storage } from '@ionic/storage';
 /**
  * This page is used to add new patient details, view the patient and edit the patient record.
  *
@@ -31,8 +29,8 @@ import {
 
 export class AddPatientPage implements OnInit{
 
-  @ViewChild('ddate') ddate ;
-  @ViewChild('dtime') dtime ;
+  @ViewChild('ddate') ddate
+  @ViewChild('dtime') dtime
   public patientForm: FormGroup;
   headerTitle: any;
   first_exp_time;
@@ -766,7 +764,14 @@ export class AddPatientPage implements OnInit{
     if(type === ConstantProvider.datePickerType.addmissionDate &&
        this.patientForm.controls.delivery_date.value != null) {
         let tempDate = this.patientForm.controls.delivery_date.value.split('-')
-        datePickerOption.maximumDate = new Date(tempDate[2], tempDate[1] - 1, tempDate[0])
+        datePickerOption.minimumDate = new Date(tempDate[2], tempDate[1] - 1, tempDate[0])
+
+        if(this.patientForm.controls.discharge_date.value) {
+          let splitDischargeDate = this.patientForm.controls.discharge_date.value.split('-')
+          let tempDischargeDate = new Date(splitDischargeDate[2], splitDischargeDate[1]-1, splitDischargeDate[0])
+          if(tempDischargeDate < this.maxDate)
+            datePickerOption.maximumDate = tempDischargeDate
+        }
     }else if(type === ConstantProvider.datePickerType.dischargeDate &&
       this.patientForm.controls.delivery_date.value != null) {
         let tempDate = this.patientForm.controls.delivery_date.value.split('-')
@@ -786,6 +791,14 @@ export class AddPatientPage implements OnInit{
         break;
         case ConstantProvider.datePickerType.dischargeDate:
           this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
+          let splitAdmissionDate = this.patientForm.controls.admission_date.value.split('-')
+          let tempAdmissionDate = new Date(splitAdmissionDate[2], splitAdmissionDate[1]-1, splitAdmissionDate[0])
+          let splitDischargeDate = this.patientForm.controls.discharge_date.value.split('-')
+          let tempDischargeDate = new Date(splitDischargeDate[2], splitDischargeDate[1]-1, splitDischargeDate[0])
+          if(tempDischargeDate < tempAdmissionDate) {
+            this.patientForm.controls.admission_date.setValue(null)
+            this.messageService.showErrorToast('Admission date for outdoor patients cannot be greater than discharge date')
+          }
         break;
       }
     });
@@ -812,6 +825,19 @@ export class AddPatientPage implements OnInit{
       }
     }
   }
+
+  /**
+   * This method is used to restrict the special character in the input field
+   *
+   * @author Naseem Akhtar
+   * @since 0.0.1
+   * @param event
+   */
+  // omit_aplha_special_char(event) {
+  //   var k;
+  //   k = event.charCode;  //k = event.keyCode;  (Both can be used)
+  //   return(k >= 48 && k <= 57);
+  // }
 
 
 }

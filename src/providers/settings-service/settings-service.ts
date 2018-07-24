@@ -2,6 +2,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { Storage } from '../../../node_modules/@ionic/storage';
+import { ConstantProvider } from '../constant/constant';
+import { resolveDefinition } from '../../../node_modules/@angular/core/src/view/util';
 
 /*
   Generated class for the SettingsServiceProvider provider.
@@ -12,7 +15,8 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 @Injectable()
 export class SettingsServiceProvider {
 
-  constructor(public http: HttpClient) {}
+  constructor(public http: HttpClient,
+    private storage: Storage) {}
   
   /**
    * This method should return baby admitted to lists
@@ -29,6 +33,37 @@ export class SettingsServiceProvider {
       })
       .catch(this.handleError);
   }
+
+  /**
+   * @author Naseem Akhtar
+   * @since 0.0.1
+   * 
+   * This method will fetch the baby details from the DB and return it
+   * to the settings component page.
+   */
+  async getBabyAdmittedToDataFromDB() {
+    return await this.storage.get(ConstantProvider.dbKeyNames.babyAdmittedTo)
+  }
+
+  /**
+   * @author Naseem Akhtar
+   * @since 0.0.1
+   * 
+   * This method will save all the options in the DB after the
+   * user is done with editing.
+   */
+  saveAll(babyAdmissionList: ITypeDetails[]): Promise<any> {
+    let promise = new Promise( (resolve, reject) => {
+      this.storage.set(ConstantProvider.dbKeyNames.babyAdmittedTo, babyAdmissionList)
+        .then( data => {
+          resolve(true)
+        }, error => reject(error))
+        .catch( error => reject(error))
+    })
+    return promise
+  }
+
+
   /**
    * @author - Subhadarshani
    * @param error - this returns the error that occured while making http call

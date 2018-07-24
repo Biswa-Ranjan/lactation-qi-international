@@ -194,7 +194,7 @@ export class ExportServiceProvider {
 
     //setting header
     let row: any[] = []
-    row.push('Date')
+    row.push('Date(dd-mm-yyyy)')
     row.push('Country')
     row.push('State')
     row.push('District')
@@ -202,8 +202,8 @@ export class ExportServiceProvider {
     row.push('Baby Id')
     row.push("Baby of (mother's name)")
     row.push("Mother's age")
-    row.push('Delivery date')
-    row.push('Delivery time')
+    row.push('Delivery Date(dd-mm-yyyy)')
+    row.push('Delivery Time(hhmm)')
     row.push('Delivery method')
     row.push("Baby's weight in grams")
     row.push('Gestational age in weeks')
@@ -214,7 +214,7 @@ export class ExportServiceProvider {
     row.push('Admission date (Outpatient)')
     row.push('Baby is admitted to')
     row.push('Reason for admission')
-    row.push('Date of discharge')
+    row.push('Date of Discharge(dd-mm-yyyy)')
     row.push('Created by')
     // row.push('Created date')
     row.push('Updated date')
@@ -294,8 +294,8 @@ export class ExportServiceProvider {
     
     //setting headers
     row.push('Baby Id')
-    row.push('Date of expression')
-    row.push('Time of expression')
+    row.push('Date of Expression(dd-mm-yyyy)')
+    row.push('Time of Expression(hhmm)')
     row.push('Method of expression')
     row.push('If Others Please specify')
     row.push('Location where expression occurred')
@@ -348,8 +348,8 @@ export class ExportServiceProvider {
     //setting header
     let row: any[] = []
     row.push('Baby Id')
-    row.push('Date of BFSP')
-    row.push('Time of BFSP')
+    row.push('Date of BFSP(dd-mm-yyyy)')
+    row.push('Time of BFSP(hhmm)')
     row.push('Breast feeding supportive practice performed')
     row.push('Person who performed the BFSP')
     row.push('Duration of BFSP performed in minutes')
@@ -402,14 +402,14 @@ export class ExportServiceProvider {
     //setting header
     let row: any[] = []
     row.push('Baby Id')
-    row.push('Date')
-    row.push('Time')
+    row.push('Date(dd-mm-yyyy)')
+    row.push('Time(hhmm)')
     row.push('Method of feed')
-    row.push('Volume OMM')
-    row.push('Volume DHM')
-    row.push('Volume Formula')
-    row.push('Volume Animal Milk')
-    row.push('Volume Other')
+    row.push('Volume OMM(in ml)')
+    row.push('Volume DHM(in ml)')
+    row.push('Volume Formula(in ml)')
+    row.push('Volume Animal Milk(in ml)')
+    row.push('Volume Other(in ml)')
     row.push('Location of feeding')
     row.push('Weight of baby in grams')
     row.push('Created by')

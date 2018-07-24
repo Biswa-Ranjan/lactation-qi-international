@@ -8,12 +8,11 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Storage } from '@ionic/storage';
 import { DatePipe } from '@angular/common';
 import { UserServiceProvider } from '../user-service/user-service';
-import { OrderByTimePipe } from '../../pipes/order-by-time/order-by-time';
 import { MessageProvider } from '../message/message';
-import { OrderByDatePipe } from '../../pipes/order-by-date/order-by-date';
 import { PppServiceProvider } from '../ppp-service/ppp-service';
 import { UtilServiceProvider } from '../util-service/util-service';
 import { LactationProvider } from '../lactation/lactation';
+import { OrderByTimeAscPipe } from '../../pipes/order-by-time-asc/order-by-time-asc';
 
 /**
  * This service will only provide service to Feed component
@@ -321,22 +320,23 @@ export class FeedExpressionServiceProvider {
             })
           }
 
-          let dateArray = []
-          feedData.forEach(d => dateArray.push(d.dateOfFeed))
-          dateArray = new OrderByDatePipe(this.datePipe).transform(dateArray)
-          feedData = feedData.filter(d => d.dateOfFeed === dateArray[dateArray.length -1]
-            && (d.methodOfFeed === ConstantProvider.typeDetailsIds.parenteralEnteral
+          // let dateArray = []
+          // feedData.forEach(d => dateArray.push(d.dateOfFeed))
+          // dateArray = new OrderByDateAscPipe(this.datePipe).transform(dateArray)
+          feedData = feedData.filter(d => 
+                 d.methodOfFeed === ConstantProvider.typeDetailsIds.parenteralEnteral
               || d.methodOfFeed === ConstantProvider.typeDetailsIds.enteralOnly
-              || d.methodOfFeed === ConstantProvider.typeDetailsIds.enteralOral))
+              || d.methodOfFeed === ConstantProvider.typeDetailsIds.enteralOral)
 
-          feedData = new OrderByTimePipe().transform(feedData);
+          feedData = new OrderByTimeAscPipe().transform(feedData);
 
-          if(feedData.length > 0){
+          if(feedData.length > 0) {
             let dateOfFeed;
             let timeOfFeed;
 
-            dateOfFeed = feedData[feedData.length - 1].dateOfFeed;
-            timeOfFeed = feedData[feedData.length - 1].timeOfFeed;
+            // let firstEnteralFeedData = feedData.find(d => )
+            dateOfFeed = feedData[0].dateOfFeed;
+            timeOfFeed = feedData[0].timeOfFeed;
 
             let a = deliveryDate.split('-')
             let b = deliveryTime.split(':')
@@ -352,15 +352,15 @@ export class FeedExpressionServiceProvider {
 
             //Calculating composition of first enteral feed.
             let compositionOfFirstEf = '';
-            if(feedData[feedData.length - 1].ommVolume)
+            if(feedData[0].ommVolume)
               compositionOfFirstEf += 'OMM, '
-            if(feedData[feedData.length - 1].dhmVolume)
+            if(feedData[0].dhmVolume)
               compositionOfFirstEf += 'DHM, '
-            if(feedData[feedData.length - 1].formulaVolume)
+            if(feedData[0].formulaVolume)
               compositionOfFirstEf += 'Formula, '
-            if(feedData[feedData.length - 1].animalMilkVolume)
+            if(feedData[0].animalMilkVolume)
               compositionOfFirstEf += 'Animal Milk, '
-            if(feedData[feedData.length - 1].otherVolume)
+            if(feedData[0].otherVolume)
               compositionOfFirstEf += 'Other, '
 
             let result = {

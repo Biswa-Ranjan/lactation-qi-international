@@ -27,28 +27,27 @@ export class SettingsPage {
     private messageService: MessageProvider,
     private storage: Storage,
     private settingsService: SettingsServiceProvider,
-    private alertController: AlertController) {
+    private alertController: AlertController) {}
 
-  }
   ngOnInit() {
     this.getData()
   }
+
   /**
    * This method get the baby Admitted to List from local db   *
    * @author Subhadarshani
    * @since 0.0.1
    */
   async getData() {
-    let data = await this.storage.get(ConstantProvider.dbKeyNames.babyAdmittedTo)
-    console.log(data)
+    let data = await this.settingsService.getBabyAdmittedToDataFromDB()
     if (data != null && data.length > 0) {
       this.babyAdmissionList = data
-      this.isRecordFound = false;
-    } else {
-      this.isRecordFound = true;
+      this.isRecordFound = false
+    }else {
+      this.isRecordFound = true
       this.babyAdmissionList = []
     }
-    console.log(this.isRecordFound)
+    // console.log(this.isRecordFound)
   }
 
 
@@ -61,6 +60,7 @@ export class SettingsPage {
   save(item: ITypeDetails, type) {
     this.showlertForSave(item, type)
   }
+
   /**
    * This method is helps in  deleting a particular record from the baby admittedto database
    *
@@ -81,8 +81,8 @@ export class SettingsPage {
     }else{
       this.showWarningAlertForDelete(item);
     }
-   
   }
+
 /**
    * This method is going to show a alert if the selected record is found in registered baby id profiles.
    *
@@ -259,9 +259,36 @@ export class SettingsPage {
         }
 
       }
+    }
+  }
 
+  async saveAll() {
+    let proceedToSave: boolean = true
+    for (let index = 0; index < this.babyAdmissionList.length; index++) {
+      let indexElement = this.babyAdmissionList[index].name
+      let duplicateValueExists: boolean = false
+
+      for (let index1 = index+1; index1 < this.babyAdmissionList.length; index1++) {
+        if(indexElement === this.babyAdmissionList[index1].name)
+          duplicateValueExists = true
+      }
+
+      if(duplicateValueExists) {
+        this.messageService.showErrorToast('Duplicate value found, please try again.')
+        proceedToSave = false
+        return false
+      }
     }
 
-
+    if(proceedToSave) {
+      this.settingsService.saveAll(this.babyAdmissionList)
+        .then( data => {
+          if(data)
+            this.messageService.showSuccessToast('Saved successfully')
+          else
+            this.messageService.showSuccessToast('Save unsuccessfull')
+        })
+        .catch( error => this.messageService.showErrorToast('Save unsuccessfull' + error) )
+    }    
   }
 }

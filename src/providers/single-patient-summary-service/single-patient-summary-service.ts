@@ -28,7 +28,7 @@ export class SinglePatientSummaryServiceProvider {
   spsData: ISps[] = [];
   basicData : IBasic = {
     motherRelatedList: null,
-    comeToVolume7Day: null,
+    // comeToVolume7Day: null,
     comeToVolume14Day: null
   }
   togetherDataList : ITogetherData[] = [];
@@ -170,9 +170,9 @@ export class SinglePatientSummaryServiceProvider {
         expressions = bfExpressions.filter(d => d.babyCode === babyCode)
 
       //declaring variables
-      let comeToVolume7Day = 'No';
+      // let comeToVolume7Day = 'No';
       let comeToVolume14Day = 'No';
-      let comeToVolume7DayCount = 0;
+      // let comeToVolume7DayCount = 0;
       let comeToVolume14DayCount = 0;
 
       let dummyData: IMotherRelatedData = {
@@ -296,10 +296,10 @@ export class SinglePatientSummaryServiceProvider {
             motherRelatedData.ofWhichBf = String(noOfBfExpression)
             motherRelatedData.nightExp = String(nightExpressionCount)
 
-            if(index >3 && index < 7){
-              if(totalVolumeMilk > 350)
-                comeToVolume7DayCount++
-            }
+            // if(index >3 && index < 7){
+            //   if(totalVolumeMilk > 350)
+            //     comeToVolume7DayCount++
+            // }
 
             if(index > 3 && index < 14 && comeToVolume14DayCount < 3) {
               if(totalVolumeMilk > 500)
@@ -329,17 +329,17 @@ export class SinglePatientSummaryServiceProvider {
           motherRelatedData.ofWhichBf = '-'
           motherRelatedData.totalDailyVolume = '-';
           motherRelatedData.nightExp = '-';
-          comeToVolume7Day = '-';
+          // comeToVolume7Day = '-';
           comeToVolume14Day = '-';
         }
 
-        if(comeToVolume7DayCount > 2){
-          comeToVolume7Day = 'Yes'
-        }else{
-          if((index+2) > 7)
-            if(!this.isVulnerableStatus && comeToVolume7Day == 'No')
-              this.isVulnerableStatus = true;
-        }
+        // if(comeToVolume7DayCount > 2){
+        //   comeToVolume7Day = 'Yes'
+        // }else{
+        //   if((index+2) > 7)
+        //     if(!this.isVulnerableStatus && comeToVolume7Day == 'No')
+        //       this.isVulnerableStatus = true;
+        // }
 
 
         if(comeToVolume14DayCount > 2){
@@ -354,7 +354,8 @@ export class SinglePatientSummaryServiceProvider {
 
         //preparing two new object in an array to push into mother related data array for
         //come to volume option
-        if(index === 6 || index === 13)
+        // if(index === 6 || index === 13)
+        if(index === 13)
           motherRelatedDataList.push(dummyData)
       }
 
@@ -370,7 +371,8 @@ export class SinglePatientSummaryServiceProvider {
 
       let basicData : IBasic= {
         motherRelatedList: motherRelatedDataList,
-        comeToVolume7Day: comeToVolume7Day,
+        // comeToVolume7Day: null,
+        // comeToVolume7Day: comeToVolume7Day,
         comeToVolume14Day: comeToVolume14Day
       }
 

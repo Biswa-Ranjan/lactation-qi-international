@@ -61,6 +61,7 @@ export class LoginPage {
     }
     this.setDataForBabyAdmittedToField()
   }
+  
   /**
    * This method will going to set the records for baby admitted to dropdown which is present in 
    * Add Patient Page.If the table BabyAdmittedTo is empty then only it is going to set the initial values to the table 
@@ -80,6 +81,7 @@ export class LoginPage {
             let obj = {
               id: len,
               name: this.babyAdmittedToNameList[i],
+              originalName: this.babyAdmittedToNameList[i],
               typeId: ConstantProvider.BabyAdmittedToTypeIds.babyAdmittedToTypeId
             }
             this.babyAdmissionList.push(obj)

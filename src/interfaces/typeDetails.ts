@@ -6,5 +6,6 @@
 interface ITypeDetails{
     id: number,
     name: string,
-    typeId: number
+    typeId: number,
+    originalName?: string
 }
