@@ -54,11 +54,19 @@ export class FeedExpressionServiceProvider {
    * @returns {Observable<ITypeDetails[]>}
    * @memberof FeedExpressionServiceProvider
    */
-  getLocationOfFeedings(): Observable<ITypeDetails[]> {
-    return this.http.get("./assets/data.json").map((response: Response) => {
-               return (response as any).typeDetails.filter(d => d.typeId === ConstantProvider.FeedingTypeIds.locationOfFeeding)
-           })
-        .catch(this.handleError);
+  getLocationOfFeedings(): Promise<any> {
+    // return this.http.get("./assets/data.json").map((response: Response) => {
+    //            return (response as any).typeDetails.filter(d => d.typeId === ConstantProvider.FeedingTypeIds.locationOfFeeding)
+    //        })
+    //     .catch(this.handleError);
+    let promise = new Promise( (resolve, reject) => {
+      this.storage.get(ConstantProvider.dbKeyNames.babyAdmittedTo)
+        .then( (data: ITypeDetails[]) =>{
+          resolve(data)
+        }, error => reject(error))
+        .catch(error => reject(error))
+    })
+    return promise
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -52,6 +52,9 @@
   <!-- </div> -->
 
   <p class="empty" *ngIf="isRecordFound">No Record Found.</p>
+  <p *ngIf="!isRecordFound">
+    Note: If the fields are left blank, then default texts will be applied for them.
+  </p>
   <!-- <ion-fab bottom right >
     <button ion-fab (click)="save(item,'new')"> <ion-icon name="add"></ion-icon></button>
   </ion-fab> -->

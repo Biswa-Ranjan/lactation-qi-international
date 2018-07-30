@@ -108,11 +108,12 @@ export class FeedPage {
 
     //Getting location of feeding type details
     this.feedExpressionService.getLocationOfFeedings()
-    .subscribe(data =>{
-      this.locationOfFeedings = data
-    }, err => {
-      this.messageService.showErrorToast(err)
-    });
+      .then(data => {
+        this.locationOfFeedings = data
+      }, err => {
+        this.messageService.showErrorToast(err)
+      })
+      .catch(error => this.messageService.showErrorToast(error))
 
     // if(this.isWeb){
     //   this.minDate=this.datePipe.transform(this.deliveryDate.valueOf(),"yyyy-MM-dd")
@@ -524,5 +525,21 @@ export class FeedPage {
       return false
     else
       return true
+  }
+
+  /**
+   * This method is used to restrict the special character in the input field
+   *
+   * @author Naseem Akhtar
+   * @since 0.0.1
+   * @param event
+   */
+  _omit_aplha_special_char(event) {
+    var k;
+    k = event.charCode;  //k = event.keyCode;  (Both can be used)
+    if(event.target["value"].length <= 3)
+      return(k >= 48 && k <= 57);
+    else
+      event.preventDefault()
   }
 }

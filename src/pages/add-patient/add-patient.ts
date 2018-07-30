@@ -839,5 +839,9 @@ export class AddPatientPage implements OnInit{
   //   return(k >= 48 && k <= 57);
   // }
 
+  _preventManualEntry(event) {
+    event.preventDefault()
+  }
+
 
 }

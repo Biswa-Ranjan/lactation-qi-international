@@ -264,6 +264,11 @@ export class SettingsPage {
 
   async saveAll() {
     let proceedToSave: boolean = true
+    this.babyAdmissionList.forEach(d => {
+      if(d.name === null || d.name.trim() === '')
+        d.name = d.originalName
+    })
+    
     for (let index = 0; index < this.babyAdmissionList.length; index++) {
       let indexElement = this.babyAdmissionList[index].name
       let duplicateValueExists: boolean = false

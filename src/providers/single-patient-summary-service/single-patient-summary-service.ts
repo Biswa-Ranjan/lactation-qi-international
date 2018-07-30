@@ -831,15 +831,16 @@ export class SinglePatientSummaryServiceProvider {
     }
 
       //checking if time in hour and time in minute are present then only display the time
-    let tempTimeTillFirstExpHrs = '00'
-    let tempTimeTillFirstExpMin = '00'
+    let tempTimeTillFirstExpHrs = ''
+    let tempTimeTillFirstExpMin = ''
     if(babyDetails.timeTillFirstExpressionInHour != null && babyDetails.timeTillFirstExpressionInHour != '')
       tempTimeTillFirstExpHrs = babyDetails.timeTillFirstExpressionInHour
 
     if(babyDetails.timeTillFirstExpressionInMinute != null && babyDetails.timeTillFirstExpressionInMinute != '')
       tempTimeTillFirstExpMin = babyDetails.timeTillFirstExpressionInMinute
 
-    this.babyBasicDetails.timeTillFirstExpression = tempTimeTillFirstExpHrs + ':' + tempTimeTillFirstExpMin
+    this.babyBasicDetails.timeTillFirstExpression = tempTimeTillFirstExpHrs != '' ||
+      tempTimeTillFirstExpMin != '' ? tempTimeTillFirstExpHrs + ':' + tempTimeTillFirstExpMin : ''
 
 
     if(!this.isVulnerableStatus)

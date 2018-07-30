@@ -5,7 +5,6 @@ import { UserServiceProvider } from '../../providers/user-service/user-service';
 import { MessageProvider } from '../../providers/message/message';
 import { AppVersion } from '@ionic-native/app-version';
 import { Storage } from '@ionic/storage';
-import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
 
 /**
  * This is used for Login page
@@ -29,7 +28,7 @@ export class LoginPage {
   babyAdmissionList = []
 
   constructor(public navCtrl: NavController,
-    public navParams: NavParams,
+    public  navParams: NavParams,
     private userService: UserServiceProvider,
     private messageService: MessageProvider,
     private events: Events,

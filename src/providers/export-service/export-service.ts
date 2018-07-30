@@ -213,7 +213,7 @@ export class ExportServiceProvider {
     row.push('Inpatient/Outpatient')
     row.push('Admission date (Outpatient)')
     row.push('Baby is admitted to')
-    row.push('Reason for admission')
+    row.push('Reason for NICU admission')
     row.push('Date of Discharge(dd-mm-yyyy)')
     row.push('Created by')
     // row.push('Created date')
@@ -421,6 +421,7 @@ export class ExportServiceProvider {
 
     //getting log feed from database
     let feedExpressions: IFeed[] = await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions);
+    let locationOfFeeding: ITypeDetails[] = await this.storage.get(ConstantProvider.dbKeyNames.babyAdmittedTo)
     feedExpressions = new OrderByTimePipe().transform(feedExpressions)
     if (feedExpressions != null) {
 
@@ -437,7 +438,8 @@ export class ExportServiceProvider {
         row.push(feedExpression.formulaVolume ? feedExpression.formulaVolume: '')
         row.push(feedExpression.animalMilkVolume ? feedExpression.animalMilkVolume: '')
         row.push(feedExpression.otherVolume ? feedExpression.otherVolume: '')
-        row.push(feedExpression.locationOfFeeding ? this.utilService.getTypeDetailName(feedExpression.locationOfFeeding): '')
+        row.push(feedExpression.locationOfFeeding ? locationOfFeeding.filter(d => 
+          d.id === feedExpression.locationOfFeeding)[0].name: '')
         row.push(feedExpression.babyWeight ? feedExpression.babyWeight: '')
         row.push(feedExpression.userId)
         row.push(this.datePipe.transform(new Date(feedExpression.createdDate), 'dd-MM-yyyy HH:mm'))
