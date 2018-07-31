@@ -307,6 +307,13 @@ export class FeedExpressionServiceProvider {
       this.storage.get(ConstantProvider.dbKeyNames.feedExpressions)
       .then(data=>{
         if(data !=null){
+
+          let result = {
+            timeTillFirstEnteralFeed: null,
+            compositionOfFirstEnteralFeed: null,
+            timeSpentInNICU: null
+          }
+
           let feedData = (data as IFeed[]).filter(d=> d.babyCode === babyCode);
 
           /**
@@ -327,6 +334,8 @@ export class FeedExpressionServiceProvider {
               }
             })
           }
+
+          result.timeSpentInNICU = timeSpentInNicuData
 
           // let dateArray = []
           // feedData.forEach(d => dateArray.push(d.dateOfFeed))
@@ -371,14 +380,13 @@ export class FeedExpressionServiceProvider {
             if(feedData[0].otherVolume)
               compositionOfFirstEf += 'Other, '
 
-            let result = {
-              timeTillFirstEnteralFeed: hours+":"+minutes,
-              compositionOfFirstEnteralFeed: compositionOfFirstEf.slice(0, compositionOfFirstEf.length-2),
-              timeSpentInNICU: timeSpentInNicuData > 0 ? timeSpentInNicuData : null
-            }
+            result.timeTillFirstEnteralFeed = hours+":"+minutes,
+            result.compositionOfFirstEnteralFeed = 
+              compositionOfFirstEf.slice(0, compositionOfFirstEf.length-2),
+              
             resolve(result)
           }else{
-            resolve()
+            resolve(result)
           }
         }else{
           resolve()

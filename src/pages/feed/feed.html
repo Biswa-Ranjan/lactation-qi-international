@@ -35,7 +35,7 @@
         <ion-item>
           <ion-label stacked>Weight of baby (in grams)</ion-label>
           <ion-input type="number" [(ngModel)]="babyWeight" (keypress)="_omit_aplha_special_char($event)"
-            (ionBlur)="validateBabyWeight()" maxlength="4"></ion-input>
+            (ionBlur)="validateBabyWeight()" maxlength="4" onpaste="return false"></ion-input>
         </ion-item>
       </ion-col>
 
