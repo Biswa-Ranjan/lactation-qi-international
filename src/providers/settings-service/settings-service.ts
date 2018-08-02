@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Storage } from '../../../node_modules/@ionic/storage';
 import { ConstantProvider } from '../constant/constant';
-import { resolveDefinition } from '../../../node_modules/@angular/core/src/view/util';
 
 /*
   Generated class for the SettingsServiceProvider provider.

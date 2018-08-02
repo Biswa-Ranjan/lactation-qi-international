@@ -41,6 +41,7 @@
 
     </ion-row>
 
+    <p margin>Note: OMM, DHM, Formula, Animal Milk, Other volume fields to be filled in ml (0-300)</p>
     <div *ngFor="let feedExpression of feedExpressions | orderByTimeAsc; let i=index"  margin class="form-border-box">
       <ion-row>
 
@@ -73,7 +74,7 @@
         <!-- Volume OMM -->
         <ion-col col-3 col-sm-3 col-md-2 col-lg-1>
           <ion-label color="black" stacked>OMM</ion-label>
-          <ion-input type="tel" [pattern]="onlyNumberRegex" [(ngModel)]="feedExpression.ommVolume"
+          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.ommVolume"
             [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
             feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
         </ion-col>
@@ -81,7 +82,7 @@
         <!-- Volume DHM -->
         <ion-col col-3 col-sm-3 col-md-2 col-lg-1>
           <ion-label color="black" stacked>DHM</ion-label>
-          <ion-input type="tel" [pattern]="onlyNumberRegex" [(ngModel)]="feedExpression.dhmVolume"
+          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.dhmVolume"
             [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
             feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
         </ion-col>
@@ -89,7 +90,7 @@
         <!-- Volume Formula -->
         <ion-col col-3 col-sm-4 col-md-2 col-lg-1>
           <ion-label color="black" stacked>Formula</ion-label>
-          <ion-input type="tel" [pattern]="onlyNumberRegex" [(ngModel)]="feedExpression.formulaVolume"
+          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.formulaVolume"
             [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
             feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
         </ion-col>
@@ -97,7 +98,7 @@
         <!-- Volume Animal Milk -->
         <ion-col col-3 col-sm-4 col-md-2 col-lg-1>
           <ion-label color="black" stacked>Animal Milk</ion-label>
-          <ion-input type="tel" [pattern]="onlyNumberRegex" [(ngModel)]="feedExpression.animalMilkVolume"
+          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.animalMilkVolume"
             [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
             feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
         </ion-col>
@@ -105,7 +106,7 @@
         <!-- Volume Other -->
         <ion-col col-3 col-sm-4 col-md-2 col-lg-1>
           <ion-label color="black" stacked>Other</ion-label>
-          <ion-input type="tel" [pattern]="onlyNumberRegex" [(ngModel)]="feedExpression.otherVolume"
+          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.otherVolume"
             [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
             feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
         </ion-col>

@@ -434,7 +434,7 @@ export class ExpressionTimeFormPage {
   omit_aplha_special_char(event) {
     var k;
     k = event.charCode;  //k = event.keyCode;  (Both can be used)
-    return(k >= 48 && k <= 57);
+    return(k === 0 || (k >= 48 && k <= 57));
   }
 
   validateDate(selectedDate: string) {

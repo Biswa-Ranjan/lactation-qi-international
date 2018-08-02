@@ -393,11 +393,12 @@ export class AddPatientPage implements OnInit{
     */
     async submit(){
                                          
-      if(this.patientForm.controls.delivery_date.value == null){
+      if(!this.patientForm.controls.baby_id.value) {
+        document.getElementById('babyId').scrollIntoView({behavior: 'smooth'})
+      }else if(this.patientForm.controls.delivery_date.value == null){
         document.getElementById('ddate').scrollIntoView({behavior: 'smooth'})
       } else if(this.patientForm.controls.delivery_time.value == null || (this.isWeb && !this.validateWebDeliveryTime())) {
         document.getElementById('dtime').scrollIntoView({behavior: 'smooth'})
-        return
       }
 
       // if(this.isWeb){
@@ -761,7 +762,15 @@ export class AddPatientPage implements OnInit{
       maximumDate: this.maxDate // the maximum date selectable
     };
 
-    if(type === ConstantProvider.datePickerType.addmissionDate &&
+    if(type === ConstantProvider.datePickerType.deliveryDate) {
+      if(this.patientForm.controls.admission_date.value) {
+        let tempDate = this.patientForm.controls.admission_date.value.split('-')
+        datePickerOption.maximumDate = new Date(tempDate[2], tempDate[1] - 1, tempDate[0])
+      }else if(this.patientForm.controls.discharge_date.value) {
+        let tempDate = this.patientForm.controls.discharge_date.value.split('-')
+        datePickerOption.maximumDate = new Date(tempDate[2], tempDate[1] - 1, tempDate[0])
+      }
+    }else if(type === ConstantProvider.datePickerType.addmissionDate &&
        this.patientForm.controls.delivery_date.value != null) {
         let tempDate = this.patientForm.controls.delivery_date.value.split('-')
         datePickerOption.minimumDate = new Date(tempDate[2], tempDate[1] - 1, tempDate[0])
@@ -784,6 +793,26 @@ export class AddPatientPage implements OnInit{
       switch(type){
         case ConstantProvider.datePickerType.deliveryDate:
           this.patientForm.controls.delivery_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
+          let splitDeliveryDate = this.patientForm.controls.delivery_date.value.split('-')
+          let tempDeliveryDate = new Date(splitDeliveryDate[2], splitDeliveryDate[1]-1, splitDeliveryDate[0])
+          
+          if(this.patientForm.controls.admission_date.value) {
+            let splitAdmissionDate = this.patientForm.controls.admission_date.value.split('-')
+            let tempAdmissionDate = new Date(splitAdmissionDate[2], splitAdmissionDate[1]-1, splitAdmissionDate[0])
+
+            if(tempDeliveryDate > tempAdmissionDate) {
+              this.patientForm.controls.delivery_date.setValue(null)
+              this.messageService.showErrorToast('Outpatient\'s delivery date cannot be greater than admission date')
+            }
+          }else if(this.patientForm.controls.discharge_date.value) {
+            let splitDischargeDate = this.patientForm.controls.discharge_date.value.split('-')
+            let tempDishcargeDate = new Date(splitDischargeDate[2], splitDischargeDate[1]-1, splitDischargeDate[0])
+
+            if(tempDeliveryDate > tempDishcargeDate) {
+              this.patientForm.controls.delivery_date.setValue(null)
+              this.messageService.showErrorToast('Delivery date cannot be greater than discharge date')
+            }
+          }
           // this.patientForm.controls.delivery_date.markAsTouched()
         break;
         case ConstantProvider.datePickerType.addmissionDate:
@@ -791,13 +820,15 @@ export class AddPatientPage implements OnInit{
         break;
         case ConstantProvider.datePickerType.dischargeDate:
           this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
-          let splitAdmissionDate = this.patientForm.controls.admission_date.value.split('-')
-          let tempAdmissionDate = new Date(splitAdmissionDate[2], splitAdmissionDate[1]-1, splitAdmissionDate[0])
-          let splitDischargeDate = this.patientForm.controls.discharge_date.value.split('-')
-          let tempDischargeDate = new Date(splitDischargeDate[2], splitDischargeDate[1]-1, splitDischargeDate[0])
-          if(tempDischargeDate < tempAdmissionDate) {
-            this.patientForm.controls.admission_date.setValue(null)
-            this.messageService.showErrorToast('Admission date for outdoor patients cannot be greater than discharge date')
+          if(this.patientForm.controls.admission_date.value) {
+            let splitAdmissionDate = this.patientForm.controls.admission_date.value.split('-')
+            let tempAdmissionDate = new Date(splitAdmissionDate[2], splitAdmissionDate[1]-1, splitAdmissionDate[0])
+            let splitDischargeDate = this.patientForm.controls.discharge_date.value.split('-')
+            let tempDischargeDate = new Date(splitDischargeDate[2], splitDischargeDate[1]-1, splitDischargeDate[0])
+            if(tempDischargeDate < tempAdmissionDate) {
+              this.patientForm.controls.admission_date.setValue(null)
+              this.messageService.showErrorToast('Admission date for outdoor patients cannot be greater than discharge date')
+            }
           }
         break;
       }

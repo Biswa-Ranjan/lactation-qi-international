@@ -86,7 +86,7 @@ export class LoginPage {
             this.babyAdmissionList.push(obj)
             len = len + 1
           }
-          console.log(this.babyAdmissionList);
+          // console.log(this.babyAdmissionList);
           await this.storage.set(ConstantProvider.dbKeyNames.babyAdmittedTo, this.babyAdmissionList)
         // }, err => {
         //   this.messageService.showErrorToast(err)

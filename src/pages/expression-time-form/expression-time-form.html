@@ -78,8 +78,8 @@
         <ion-col col-8 col-sm-4 col-md-4 col-lg-2>
           <ion-label color="black" stacked>EBM (in ml,range 0-300)</ion-label>
           <ion-input type="tel" [disabled]="!item.methodOfExpression || item.methodOfExpression === 43" 
-            [pattern]="onlyNumberRegex" [(ngModel)]="item.volOfMilkExpressedFromLR"
-            (keypress)="omit_aplha_special_char($event)"></ion-input>
+            [pattern]="onlyNumberRegex" [(ngModel)]="item.volOfMilkExpressedFromLR" maxlength="3"
+            (keypress)="omit_aplha_special_char($event)" onpaste="return false"></ion-input>
         </ion-col>
 
         <ion-col col-3 col-sm-4 col-md-2 col-lg-1 class="save_margin">

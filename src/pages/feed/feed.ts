@@ -538,7 +538,20 @@ export class FeedPage {
     var k;
     k = event.charCode;  //k = event.keyCode;  (Both can be used)
     if(event.target["value"].length <= 3)
-      return(k >= 48 && k <= 57);
+      return(k===0 || (k>7 && k<10) || k===1 || (k >= 48 && k <= 57));
+    else if(event.target["value"].length === 4)
+      return(k===0 || k===8 || k===127)
+    else
+      event.preventDefault()
+  }
+
+  _threeDigitWithDecimalRestriction(event) {
+    var k;
+    k = event.charCode;  //k = event.keyCode;  (Both can be used)
+    if(event.target["value"].length <= 5)
+      return(k===0 || k===1 || (k>7 && k<10) || k===46 || (k >= 48 && k <= 57));
+    else if(event.target["value"].length === 6)
+      return(k===0 || k===8 || k===127)
     else
       event.preventDefault()
   }
