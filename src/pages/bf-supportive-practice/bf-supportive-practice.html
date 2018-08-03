@@ -44,7 +44,8 @@
 
           <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfBfsp" placeholder="hh:mm"
             [(ngModel)]="bfsp.timeOfBFSP" (keypress)="_numberKeyPress($event);
-            _formatTime($event, bfsp)" (ionBlur)="validateTime(bfsp.timeOfBFSP, bfsp)"></ion-input>
+            _formatTime($event, bfsp)" onpaste="return false"
+            (ionBlur)="validateTime(bfsp.timeOfBFSP, bfsp)"></ion-input>
         </ion-col>
 
         <ion-col col col-sm-10 col-md-6 col-lg-4>

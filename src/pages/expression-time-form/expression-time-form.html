@@ -13,7 +13,7 @@
 <ion-content padding>
   <ion-grid>
     <!-- heading part -->
-    <ion-row style=" margin-bottom: 50px;">
+    <ion-row style=" margin-bottom: 30px;">
       <ion-col col-6 col-sm-4>
         <ion-item>
           <ion-label stacked>Baby ID</ion-label>
@@ -33,6 +33,7 @@
       </ion-col>
     </ion-row>
 
+    <p margin>Note: EBM volume field to be filled in ml (0-300)</p>
     <div *ngFor="let item of bFExpressions | orderByTimeExpressionFormAsc; let i=index" margin class="form-border-box">
       <ion-row>
         <ion-col col-3 col-sm-2 col-md-2 col-lg-1>
@@ -46,7 +47,8 @@
 
           <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfExpressions" placeholder="hh:mm"
             [(ngModel)]="item.timeOfExpression" (keypress)="_numberKeyPress($event);
-              _formatTime($event, item)" (ionBlur)="validateTime(item.timeOfExpression, item)"></ion-input>
+              _formatTime($event, item)" onpaste="return false"
+              (ionBlur)="validateTime(item.timeOfExpression, item)"></ion-input>
 
           <!-- <ion-datetime *ngIf="isWeb" [disabled]="!dateOfExpressions" [(ngModel)]="item.timeOfExpression"
             [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"
@@ -76,9 +78,9 @@
         </ion-col>
 
         <ion-col col-8 col-sm-4 col-md-4 col-lg-2>
-          <ion-label color="black" stacked>EBM (in ml,range 0-300)</ion-label>
+          <ion-label color="black" stacked>EBM</ion-label>
           <ion-input type="tel" [disabled]="!item.methodOfExpression || item.methodOfExpression === 43" 
-            [pattern]="onlyNumberRegex" [(ngModel)]="item.volOfMilkExpressedFromLR" maxlength="3"
+            [(ngModel)]="item.volOfMilkExpressedFromLR" maxlength="3"
             (keypress)="omit_aplha_special_char($event)" onpaste="return false"></ion-input>
         </ion-col>
 

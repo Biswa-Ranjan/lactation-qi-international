@@ -11,6 +11,7 @@ import { OrderByTimeExpressionFromPipe } from '../../pipes/order-by-time-express
 import { MessageProvider } from '../message/message';
 import { OrderByTimePipe } from '../../pipes/order-by-time/order-by-time';
 import { BfPostDischargeServiceProvider } from '../bf-post-discharge-service/bf-post-discharge-service';
+import { SaveExpressionBfProvider } from '../save-expression-bf/save-expression-bf';
 
 /**
  * This service will be used for computation and DB operations related to
@@ -38,7 +39,8 @@ export class SinglePatientSummaryServiceProvider {
   pppPatientList: IPatient[] = [];
   constructor(public http: HttpClient, private datePipe: DatePipe,private storage: Storage,
     private feedExpressionService: FeedExpressionServiceProvider, private decimal: DecimalPipe,
-    private messageService: MessageProvider, public bfpdService: BfPostDischargeServiceProvider) {
+    private messageService: MessageProvider, public bfpdService: BfPostDischargeServiceProvider,
+    private bfExpressionService: SaveExpressionBfProvider) {
   }
 
   /**
@@ -831,34 +833,46 @@ export class SinglePatientSummaryServiceProvider {
     }
 
       //checking if time in hour and time in minute are present then only display the time
+    await this.bfExpressionService.getTimeTillFirstExpression(babyDetails.babyCode, babyDetails.deliveryDate, babyDetails.deliveryTime)
+      .then(timeTillFirstExpression => {
+        this.babyBasicDetails.timeTillFirstExpression = timeTillFirstExpression
+      }, error => this.messageService.showErrorToast(error))
+      .catch(error => this.messageService.showErrorToast(error))
+
     let tempTimeTillFirstExpHrs = ''
     let tempTimeTillFirstExpMin = ''
-    if(babyDetails.timeTillFirstExpressionInHour != null && babyDetails.timeTillFirstExpressionInHour != '')
-      tempTimeTillFirstExpHrs = babyDetails.timeTillFirstExpressionInHour
 
-    if(babyDetails.timeTillFirstExpressionInMinute != null && babyDetails.timeTillFirstExpressionInMinute != '')
-      tempTimeTillFirstExpMin = babyDetails.timeTillFirstExpressionInMinute
+    if(this.babyBasicDetails.timeTillFirstExpression != null) {
+      let tempTimeTillFirstExp = this.babyBasicDetails.timeTillFirstExpression.split(':')
+      tempTimeTillFirstExpHrs = tempTimeTillFirstExp[0]
+      tempTimeTillFirstExpMin = tempTimeTillFirstExp[1]
 
-    this.babyBasicDetails.timeTillFirstExpression = tempTimeTillFirstExpHrs != '' ||
-      tempTimeTillFirstExpMin != '' ? tempTimeTillFirstExpHrs + ':' + tempTimeTillFirstExpMin : ''
-
-
-    if(!this.isVulnerableStatus)
-      if(Number(tempTimeTillFirstExpHrs) > 0 && Number(tempTimeTillFirstExpHrs) < 7){
-        if(Number(tempTimeTillFirstExpHrs) === 6 && Number(tempTimeTillFirstExpMin) > 0)
+      if(!this.isVulnerableStatus) {
+        if(Number(tempTimeTillFirstExpHrs) > 0 && Number(tempTimeTillFirstExpHrs) < 7){
+          if(Number(tempTimeTillFirstExpHrs) === 6 && Number(tempTimeTillFirstExpMin) > 0)
+            this.isVulnerableStatus = true;
+        }else if(Number(tempTimeTillFirstExpHrs) > 6)
           this.isVulnerableStatus = true;
-      }else if(Number(tempTimeTillFirstExpHrs) > 6)
-        this.isVulnerableStatus = true;
-
-
-    let timeInHrs = Number(this.babyBasicDetails.timeTillFirstExpression.split(':')[0])
-    let timeInMinutes = Number(this.babyBasicDetails.timeTillFirstExpression.split(':')[1])
-    if(timeInHrs > 0 && timeInHrs < 7){
-      if(timeInHrs === 6 && timeInMinutes > 0)
-      this.isVulnerableStatus = true;
+      }
     }
-    else if(timeInHrs > 6)
-    this.isVulnerableStatus = true;
+    // if(babyDetails.timeTillFirstExpressionInHour != null && babyDetails.timeTillFirstExpressionInHour != '')
+    //   tempTimeTillFirstExpHrs = babyDetails.timeTillFirstExpressionInHour
+
+    // if(babyDetails.timeTillFirstExpressionInMinute != null && babyDetails.timeTillFirstExpressionInMinute != '')
+    //   tempTimeTillFirstExpMin = babyDetails.timeTillFirstExpressionInMinute
+
+    // this.babyBasicDetails.timeTillFirstExpression = tempTimeTillFirstExpHrs != '' ||
+    //   tempTimeTillFirstExpMin != '' ? tempTimeTillFirstExpHrs + ':' + tempTimeTillFirstExpMin : ''
+
+
+    // let timeInHrs = Number(this.babyBasicDetails.timeTillFirstExpression.split(':')[0])
+    // let timeInMinutes = Number(this.babyBasicDetails.timeTillFirstExpression.split(':')[1])
+    // if(timeInHrs > 0 && timeInHrs < 7){
+    //   if(timeInHrs === 6 && timeInMinutes > 0)
+    //     this.isVulnerableStatus = true;
+    // }
+    // else if(timeInHrs > 6)
+    //   this.isVulnerableStatus = true;
 
     this.typeDetails = typeDetails
 

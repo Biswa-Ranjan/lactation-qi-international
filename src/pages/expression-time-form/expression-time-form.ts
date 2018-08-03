@@ -145,7 +145,7 @@ export class ExpressionTimeFormPage {
         this.messageService.showErrorToast(ConstantProvider.messages.enterDateOfExpression);
       }else if(bfExpression.timeOfExpression === null) {
         this.messageService.showErrorToast(ConstantProvider.messages.enterTimeOfExpression);
-      }else if(!this.validateDurationOfExpression(bfExpression)) {
+      }else if(!this.validateEBM(bfExpression)) {
         this.messageService.showErrorToast(ConstantProvider.messages.volumeOfMilkExpressedFromBreast);
       }else {
         // bfExpression.dateOfExpression = this.datePipe.transform(this.dateOfExpressions.concat(), 'dd-MM-yyyy')
@@ -186,7 +186,7 @@ export class ExpressionTimeFormPage {
  *
  * @memberof ExpressionTimeFormPage
  */
-  validateDurationOfExpression(bfExpression: IBFExpression) {
+  validateEBM(bfExpression: IBFExpression) {
     if(bfExpression.volOfMilkExpressedFromLR == null) {
       return true;
     }else if(bfExpression.volOfMilkExpressedFromLR.toString() === ''){
@@ -341,7 +341,7 @@ export class ExpressionTimeFormPage {
           bfExpression.dateOfExpression = date
         }
 
-        if(bfExpression.timeOfExpression != null && this.validateDurationOfExpression(bfExpression)) {
+        if(bfExpression.timeOfExpression != null && this.validateEBM(bfExpression)) {
           finalExpressions.push(bfExpression)
         }
       });
@@ -434,7 +434,12 @@ export class ExpressionTimeFormPage {
   omit_aplha_special_char(event) {
     var k;
     k = event.charCode;  //k = event.keyCode;  (Both can be used)
-    return(k === 0 || (k >= 48 && k <= 57));
+    if(event.target["value"].length <= 5)
+      return(k===0 || k===1 || (k>7 && k<10) || k===46 || (k >= 48 && k <= 57));
+    else if(event.target["value"].length === 6)
+      return(k===0 || k===8 || k===127)
+    else
+      event.preventDefault()
   }
 
   validateDate(selectedDate: string) {

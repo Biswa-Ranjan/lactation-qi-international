@@ -126,8 +126,8 @@ export class AddPatientPage implements OnInit{
     this.patientForm.controls.gestational_age.setValue(null)
     this.patientForm.controls.intent_provide_milk.setValue(null)
     this.patientForm.controls.hm_lactation.setValue(null)
-    this.patientForm.controls.first_exp_time_in_hour.setValue(null)
-    this.patientForm.controls.first_exp_time_in_minute.setValue(null)
+    // this.patientForm.controls.first_exp_time_in_hour.setValue(null)
+    // this.patientForm.controls.first_exp_time_in_minute.setValue(null)
     this.patientForm.controls.inpatient_outpatient.setValue("")
     this.patientForm.controls.admission_date.setValue(null)
     this.patientForm.controls.baby_admitted.setValue(null)
@@ -274,8 +274,8 @@ export class AddPatientPage implements OnInit{
       gestational_age: new FormControl(null),
       intent_provide_milk: new FormControl(null),
       hm_lactation: new FormControl(null),
-      first_exp_time_in_hour: new FormControl(null,[Validators.pattern(this.numberRegex)]),
-      first_exp_time_in_minute: new FormControl(null,[Validators.max(59)]),
+      // first_exp_time_in_hour: new FormControl(null,[Validators.pattern(this.numberRegex)]),
+      // first_exp_time_in_minute: new FormControl(null,[Validators.max(59)]),
       inpatient_outpatient: new FormControl(null),
       admission_date: new FormControl(null),
       baby_admitted: new FormControl(null),
@@ -286,15 +286,9 @@ export class AddPatientPage implements OnInit{
 
     }
 
-    /**
-     * This method will take only nummber input for the respective field.
-     *
-     * @author Jagat Bandhu
-     * @since 1.0.0
-     */
-     onlyNumberKey(event) {
-       return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57;
-      }
+    // onlyNumberKey(event) {
+    //   return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57;
+    // }
 
     /**
      * This method will make visible the Admission Date field based on the input of inpatient outpatient.
@@ -432,8 +426,8 @@ export class AddPatientPage implements OnInit{
               gestationalAgeInWeek: this.patientForm.controls.gestational_age.value==null?null:parseInt(this.patientForm.controls.gestational_age.value),
               mothersPrenatalIntent: this.patientForm.controls.intent_provide_milk.value,
               parentsKnowledgeOnHmAndLactation: this.patientForm.controls.hm_lactation.value,
-              timeTillFirstExpressionInHour: this.patientForm.controls.first_exp_time_in_hour.value,
-              timeTillFirstExpressionInMinute: this.patientForm.controls.first_exp_time_in_minute.value,
+              // timeTillFirstExpressionInHour: this.patientForm.controls.first_exp_time_in_hour.value,
+              // timeTillFirstExpressionInMinute: this.patientForm.controls.first_exp_time_in_minute.value,
               inpatientOrOutPatient: this.patientForm.controls.inpatient_outpatient.value,
               admissionDateForOutdoorPatients: this.patientForm.controls.admission_date.value,
               babyAdmittedTo: this.patientForm.controls.baby_admitted.value,
@@ -502,8 +496,8 @@ export class AddPatientPage implements OnInit{
         gestational_age: new FormControl(this.patient.gestationalAgeInWeek),
         intent_provide_milk: new FormControl(this.patient.mothersPrenatalIntent),
         hm_lactation: new FormControl(this.patient.parentsKnowledgeOnHmAndLactation),
-        first_exp_time_in_hour: new FormControl(this.patient.timeTillFirstExpressionInHour,[Validators.pattern(this.numberRegex)]),
-        first_exp_time_in_minute: new FormControl(this.patient.timeTillFirstExpressionInMinute,[Validators.max(59)]),
+        // first_exp_time_in_hour: new FormControl(this.patient.timeTillFirstExpressionInHour,[Validators.pattern(this.numberRegex)]),
+        // first_exp_time_in_minute: new FormControl(this.patient.timeTillFirstExpressionInMinute,[Validators.max(59)]),
         inpatient_outpatient: new FormControl(this.patient.inpatientOrOutPatient),
         admission_date: new FormControl(this.patient.admissionDateForOutdoorPatients == null?null: this.patient.admissionDateForOutdoorPatients),
         baby_admitted: new FormControl(this.patient.babyAdmittedTo),

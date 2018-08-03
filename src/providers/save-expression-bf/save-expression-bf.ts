@@ -6,6 +6,7 @@ import { DatePipe } from '@angular/common';
 import { PppServiceProvider } from '../ppp-service/ppp-service';
 import { UtilServiceProvider } from '../util-service/util-service';
 import { LactationProvider } from '../lactation/lactation';
+import { OrderByTimeExpressionFormAscPipe } from '../../pipes/order-by-time-expression-form-asc/order-by-time-expression-form-asc';
 
 /**
  *
@@ -258,5 +259,50 @@ export class SaveExpressionBfProvider {
     dbExpressions.push(...expressionsToBeSaved)
 
     return dbExpressions
+  }
+
+  getTimeTillFirstExpression(babyCode: string, deliveryDate: string, deliveryTime: string): Promise<any> {
+    let promise = new Promise((resolve, reject) => {
+      this.storage.get(ConstantProvider.dbKeyNames.bfExpressions)
+        .then(data => {
+          if(data) {
+            let bfExpressions = (data as IBFExpression[]).filter(d => d.babyCode === babyCode)
+            if(bfExpressions.length > 0) {
+              bfExpressions = new OrderByTimeExpressionFormAscPipe().transform(bfExpressions)
+
+              let splitDeliveryDate = deliveryDate.split('-')
+              let splitDeliveryTime = deliveryTime.split(':')
+              let deliveryDateTime = new Date(+splitDeliveryDate[2], +splitDeliveryDate[1]-1, 
+                +splitDeliveryDate[0], +splitDeliveryTime[0], +splitDeliveryTime[1])
+
+              let splitDateOfExpression = bfExpressions[0].dateOfExpression.split('-')
+              let splitTimeOfExpression = bfExpressions[0].timeOfExpression.split(':')
+              let dateTimeOfExpression = new Date(+splitDateOfExpression[2], +splitDateOfExpression[1]-1, 
+                +splitDateOfExpression[0], +splitTimeOfExpression[0], +splitTimeOfExpression[1])
+              
+              let noOfDay = dateTimeOfExpression.getTime() - deliveryDateTime.getTime()
+              let minutes = ((noOfDay / (1000*60)) % 60);
+              let hours   = parseInt((noOfDay / (1000*60*60)).toString());
+
+              let timeTillFirstExpression = null
+              if(hours.toString.length === 1)
+                timeTillFirstExpression = '0' + hours
+              else
+                timeTillFirstExpression = hours
+
+              if(minutes.toString().length === 1)
+                timeTillFirstExpression += ':0' + minutes
+              else
+                timeTillFirstExpression += ':' + minutes
+
+              resolve(timeTillFirstExpression)
+            }else
+              resolve(null)
+          }else
+            resolve(null)
+        }, error => reject())
+        .catch( error => reject())
+    })
+    return promise
   }
 }

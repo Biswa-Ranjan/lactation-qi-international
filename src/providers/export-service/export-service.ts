@@ -209,7 +209,7 @@ export class ExportServiceProvider {
     row.push('Gestational age in weeks')
     row.push("Mother's prenatal intent to provide milk")
     row.push("Parent's knowledge on human milk and lactation")
-    row.push('Time till first expression in hours')
+    // row.push('Time till first expression in hours')
     row.push('Inpatient/Outpatient')
     row.push('Admission date (Outpatient)')
     row.push('Baby is admitted to')
@@ -248,7 +248,7 @@ export class ExportServiceProvider {
         row.push(patient.gestationalAgeInWeek ? patient.gestationalAgeInWeek : '')
         row.push(patient.mothersPrenatalIntent ? this.utilService.getTypeDetailName(patient.mothersPrenatalIntent) : '')
         row.push(patient.parentsKnowledgeOnHmAndLactation ? this.utilService.getTypeDetailName(patient.parentsKnowledgeOnHmAndLactation): '')
-        row.push(patient.timeTillFirstExpressionInHour ? patient.timeTillFirstExpressionInHour + ":" + patient.timeTillFirstExpressionInMinute : '')
+        // row.push(patient.timeTillFirstExpressionInHour ? patient.timeTillFirstExpressionInHour + ":" + patient.timeTillFirstExpressionInMinute : '')
         row.push(patient.inpatientOrOutPatient ? this.utilService.getTypeDetailName(patient.inpatientOrOutPatient) : '')
         row.push(patient.admissionDateForOutdoorPatients ? patient.admissionDateForOutdoorPatients : '')
         row.push(patient.babyAdmittedTo ? (babyAdmittedToFromDb.filter(d => d.id === 

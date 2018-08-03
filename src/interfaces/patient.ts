@@ -14,8 +14,8 @@ interface IPatient{
     gestationalAgeInWeek: number;
     mothersPrenatalIntent: number;
     parentsKnowledgeOnHmAndLactation: number;
-    timeTillFirstExpressionInHour: string;
-    timeTillFirstExpressionInMinute: string;
+    // timeTillFirstExpressionInHour: string;
+    // timeTillFirstExpressionInMinute: string;
     inpatientOrOutPatient: number;
     admissionDateForOutdoorPatients: string;
     babyAdmittedTo: number;
