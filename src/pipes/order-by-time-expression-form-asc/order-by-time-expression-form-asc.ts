@@ -16,22 +16,27 @@ export class OrderByTimeExpressionFormAscPipe implements PipeTransform {
     //checking whether the list which has been passed is not empty
     if(expressionForm != undefined && expressionForm != null && expressionForm.length > 0){
 
-      let date = expressionForm[0].dateOfExpression
+      // let date = expressionForm[0].dateOfExpression
       expressionForm.sort((a: IBFExpression, b: IBFExpression) => {
-        if(date != null && a.timeOfExpression && b.timeOfExpression) {
-          let day = parseInt(date.split('-')[0])
-          let month = parseInt(date.split('-')[1])
-          let year = parseInt(date.split('-')[2])
+        if(a.dateOfExpression && b.dateOfExpression && a.timeOfExpression && b.timeOfExpression) {
+          let dateA = a.dateOfExpression.split('-')
+          let dateB = b.dateOfExpression.split('-')
+          let timeA = a.timeOfExpression.split(':')
+          let timeB = b.timeOfExpression.split(':')
 
-          let hourOfA = parseInt(a.timeOfExpression.split(':')[0])
-          let minuteOfA = parseInt(a.timeOfExpression.split(':')[1])
+          // let day = parseInt(dateA[0])
+          // let month = parseInt(dateA[1])
+          // let year = parseInt(dateA[2])
 
-          let hourOfB = parseInt(b.timeOfExpression.split(':')[0])
-          let minuteOfB = parseInt(b.timeOfExpression.split(':')[1])
+          // let hourOfA = parseInt(a.timeOfExpression.split(':')[0])
+          // let minuteOfA = parseInt(a.timeOfExpression.split(':')[1])
+
+          // let hourOfB = parseInt(b.timeOfExpression.split(':')[0])
+          // let minuteOfB = parseInt(b.timeOfExpression.split(':')[1])
 
           // passing year, month, day, hourOfA and minuteOfA to Date()
-          let dateOfA: Date = new Date(year, month, day, hourOfA, minuteOfA)
-          let dateOfB: Date = new Date(year, month, day, hourOfB, minuteOfB)
+          let dateOfA: Date = new Date(+dateA[0], +dateA[1] + 1, +dateA[2], +timeA[0], +timeA[1])
+          let dateOfB: Date = new Date(+dateB[0], +dateB[1] + 1, +dateB[2], +timeB[0], +timeB[1])
 
           //comparing both the dates.
           if (dateOfA > dateOfB) {

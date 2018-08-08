@@ -285,7 +285,7 @@ export class SaveExpressionBfProvider {
               let hours   = parseInt((noOfDay / (1000*60*60)).toString());
 
               let timeTillFirstExpression = null
-              if(hours.toString.length === 1)
+              if(hours.toString().length === 1)
                 timeTillFirstExpression = '0' + hours
               else
                 timeTillFirstExpression = hours

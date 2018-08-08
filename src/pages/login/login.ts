@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, Platform, MenuController } from 'ionic-angular';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { UserServiceProvider } from '../../providers/user-service/user-service';
 import { MessageProvider } from '../../providers/message/message';
@@ -34,7 +34,8 @@ export class LoginPage {
     private events: Events,
     private appVersion: AppVersion,
     private platform: Platform,
-    private storage: Storage) {
+    private storage: Storage,
+    public menuCtrl: MenuController) {
 
     this.platform.ready().then((readySource) => {
       if (this.platform.is('android') && this.platform.is('cordova')) {
@@ -169,5 +170,27 @@ export class LoginPage {
     if (event.keyCode == 13) {
       this.login();
     }
+  }
+
+  /**
+   * Fired when entering a page, after it becomes the active page
+   * disable the swipe for the side menu
+   *
+   * @author Naseem Akhtar
+   * @since 1.0.0
+   */
+  ionViewDidEnter() {
+    this.menuCtrl.swipeEnable(false)
+  }
+
+  /**
+   * Fired when you leave a page, before it stops being the active one
+   * enable the swipe for the side menu
+   *
+   * @author Naseem Akhtar
+   * @since 1.0.0
+   */
+  ionViewWillLeave() {
+    this.menuCtrl.swipeEnable(true)
   }
 }

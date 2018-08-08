@@ -96,7 +96,7 @@
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Delivery Method</ion-label>
-        <ion-select formControlName="delivery_method">
+        <ion-select formControlName="delivery_method" interface="popover">
           <ion-option *ngFor="let item of deliveryMethods" [value]="item.id">{{item.name}}</ion-option>
         </ion-select>
       </ion-item>
@@ -118,7 +118,7 @@
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Mother's prenatal intent to provide milk</ion-label>
-        <ion-select formControlName="intent_provide_milk">
+        <ion-select formControlName="intent_provide_milk"  interface="popover">
           <ion-option *ngFor="let item of motherPrenatalMilk" [value]="item.id">{{item.name}}</ion-option>
         </ion-select>
       </ion-item>
@@ -126,7 +126,7 @@
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Parent's knowledge on human milk and lactation</ion-label>
-        <ion-select formControlName="hm_lactation">
+        <ion-select formControlName="hm_lactation"  interface="popover">
           <ion-option *ngFor="let item of hmLactation" [value]="item.id">{{item.name}}</ion-option>
         </ion-select>
       </ion-item>
@@ -158,7 +158,7 @@
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Inpatient/Outpatient</ion-label>
-        <ion-select formControlName="inpatient_outpatient" (ionChange)="outpatientAdmission()">
+        <ion-select formControlName="inpatient_outpatient" (ionChange)="outpatientAdmission()" interface="popover">
           <ion-option *ngFor="let item of inpatientOutpatient" [value]="item.id">{{item.name}}</ion-option>
         </ion-select>
       </ion-item>
@@ -175,7 +175,7 @@
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Baby is admitted to</ion-label>
-        <ion-select formControlName="baby_admitted" (ionChange)="babyAdmitedTo()">
+        <ion-select formControlName="baby_admitted" (ionChange)="babyAdmitedTo()" interface="popover">
           <ion-option *ngFor="let item of babyAdmittedTo" [value]="item.id">{{item.name}}</ion-option>
         </ion-select>
       </ion-item>
