@@ -121,8 +121,12 @@
           </ion-select>
         </ion-col>
 
-        <ion-col col-3 col-sm-2 col-md-1 col-lg-1 class="save_margin">
-            <button padding ion-button block small (click)="validateExpression(feedExpression)">{{feedExpression.createdDate === null ? 'Save' : 'Update'}}</button>
+        <ion-col col-3 col-sm-2 col-md-1 col-lg-1 class="delete_margin">
+            <button padding ion-button icon-only clear large (click)="validateExpression(feedExpression)">
+              <ion-icon name="document" color="danger" *ngIf="!feedExpression.createdDate"></ion-icon>
+              <ion-icon name="create" color="danger" *ngIf="feedExpression.createdDate"></ion-icon>
+              <!-- {{feedExpression.createdDate === null ? 'Save' : 'Update'}} -->
+            </button>
         </ion-col>
   
         <ion-col col-3 col-sm-2 col-md-1 col-lg-1 class="delete_margin" text-center>
