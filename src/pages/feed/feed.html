@@ -12,7 +12,7 @@
 <ion-content padding>
   <ion-grid>
     <!-- heading part -->
-    <ion-row style=" margin-bottom: 30px;">
+    <ion-row>
 
       <ion-col col-6 col-sm-4>
         <ion-item>
@@ -41,110 +41,202 @@
 
     </ion-row>
 
-    <p margin>Note: OMM, DHM, Formula, Animal Milk, Other volume fields to be filled in ml (0-300)</p>
-    <div *ngFor="let feedExpression of feedExpressions | orderByTimeAsc; let i=index"  margin class="form-border-box">
-      <ion-row>
-
+    <p>Note: OMM, DHM, Formula, Animal Milk, Other volume fields to be filled in ml (0-300)</p>
+      <!-- style="position: sticky; top: -16px; left: 0; right: 0; z-index: 9999; > -->
+      <ion-row class="form-border-box" style="background: #556d5f; color: white; height: 4vh;"
+        *ngIf="!hideTableHeader">
         <ion-col col-3 col-sm-2 col-md-2 col-lg-1>
-          <ion-label color="black" stacked>Time
+          <h5>Time</h5>
+          <!-- <ion-label color="white">Time
             <span class="text-color"> *</span>
-          </ion-label>
-
-          <ion-input *ngIf="!isWeb" [disabled]="!dateOfFeed" [readonly]="true" placeholder="hh:mm"
-            [(ngModel)]="feedExpression.timeOfFeed" (ionFocus)="timePickerDialog(feedExpression)"
-              [ngModelOptions]="{standalone: true}"></ion-input>
-
-          <ion-input *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfFeed" placeholder="hh:mm" 
-            [(ngModel)]="feedExpression.timeOfFeed" (keypress)="_numberKeyPress($event);
-              _formatTime($event, feedExpression)" onpaste="return false"
-              (ionBlur)="validateTime(feedExpression.timeOfFeed, feedExpression)"></ion-input>
-
-          <!-- <ion-datetime *ngIf="isWeb" [disabled]="!dateOfFeed" [(ngModel)]="feedExpression.timeOfFeed"
-            [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"
-            (ionChange)="validateTime(feedExpression.timeOfFeed, feedExpression)"></ion-datetime> -->
+          </ion-label> -->
         </ion-col>
 
         <ion-col col-6 col-sm-4 col-md-4 col-lg-2>
-          <ion-label color="black" stacked>Method</ion-label>
-          <ion-select [(ngModel)]="feedExpression.methodOfFeed" [ngModelOptions]="{standalone: true}" 
-            (ionChange)="validateVolumeFields(feedExpression)" [selectOptions]="methodConfig">
-            <ion-option text-wrap *ngFor="let feedingMethod of feedingMethods" [value]="feedingMethod.id" text-wrap>{{feedingMethod.name}}</ion-option>
-          </ion-select>
+            <h5>Method</h5>
+          <!-- <ion-label color="white">Method</ion-label> -->
         </ion-col>
 
         <!-- Volume OMM -->
         <ion-col col-3 col-sm-3 col-md-2 col-lg-1>
-          <ion-label color="black" stacked>OMM</ion-label>
-          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.ommVolume"
-            [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
-            feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+          <h5>OMM</h5>
+          <!-- <ion-label color="white">OMM</ion-label> -->
         </ion-col>
 
         <!-- Volume DHM -->
         <ion-col col-3 col-sm-3 col-md-2 col-lg-1>
-          <ion-label color="black" stacked>DHM</ion-label>
-          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.dhmVolume"
-            [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
-            feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+          <h5>DHM</h5>
+          <!-- <ion-label color="white">DHM</ion-label> -->
         </ion-col>
 
         <!-- Volume Formula -->
         <ion-col col-3 col-sm-4 col-md-2 col-lg-1>
-          <ion-label color="black" stacked>Formula</ion-label>
-          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.formulaVolume"
-            [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
-            feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+          <h5>Formula</h5>
+          <!-- <ion-label color="white">Formula</ion-label> -->
         </ion-col>
 
         <!-- Volume Animal Milk -->
-        <ion-col col-3 col-sm-4 col-md-2 col-lg-1>
-          <ion-label color="black" stacked>Animal Milk</ion-label>
-          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.animalMilkVolume"
-            [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
-            feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+        <ion-col col-3 col-sm-4 col-md-3 col-lg-1 
+          positionV="top" arrow>
+          <h5>Animal Milk</h5>
+          <!-- <ion-label>Animal Milk</ion-label> -->
         </ion-col>
 
         <!-- Volume Other -->
-        <ion-col col-3 col-sm-4 col-md-2 col-lg-1>
-          <ion-label color="black" stacked>Other</ion-label>
-          <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" [(ngModel)]="feedExpression.otherVolume"
-            [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
-            feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+        <ion-col col-3 col-sm-4 col-md-3 col-lg-1>
+          <h5>Other</h5>
+          <!-- <ion-label>Other</ion-label> -->
         </ion-col>
 
         <ion-col col-6 col-sm-6 col-md-6 col-lg-2>
-          <ion-label color="black" stacked>Location</ion-label>
-          <ion-select [(ngModel)]="feedExpression.locationOfFeeding" [ngModelOptions]="{standalone: true}"
-            [selectOptions]="locationConfig">
-            <ion-option text-wrap *ngFor="let locationOfFeeding of locationOfFeedings" 
-              [value]="locationOfFeeding.id" text-wrap>{{locationOfFeeding.name}}</ion-option>
-          </ion-select>
+          <h5>Location</h5>
+          <!-- <ion-label>Location</ion-label> -->
         </ion-col>
 
-        <ion-col col-3 col-sm-2 col-md-1 col-lg-1 class="delete_margin">
-            <button padding ion-button icon-only clear large (click)="validateExpression(feedExpression)">
-              <ion-icon name="document" color="danger" *ngIf="!feedExpression.createdDate"></ion-icon>
-              <ion-icon name="create" color="danger" *ngIf="feedExpression.createdDate"></ion-icon>
-              <!-- {{feedExpression.createdDate === null ? 'Save' : 'Update'}} -->
-            </button>
+        <!-- <ion-col col-3 col-sm-2 col-md-2 col-lg-1 class="save_margin">
+        </ion-col> -->
+
+        <ion-col col-3 col-sm-2 col-md-2 col-lg-1 class="delete_margin" text-center>
         </ion-col>
   
-        <ion-col col-3 col-sm-2 col-md-1 col-lg-1 class="delete_margin" text-center>
-          <button [disabled]="feedExpression.createdDate === null" ion-button icon-only clear large (click)="delete(feedExpression)">
-            <ion-icon name="trash" color="danger"></ion-icon>
-          </button>
+        <ion-col col-3 col-sm-2 col-md-2 col-lg-1 class="delete_margin" text-center>
         </ion-col>
 
       </ion-row>
+
+    <div style="width: 100%; height: 50vh; overflow-y: auto;">
+        <ion-row *ngFor="let feedExpression of feedExpressions | orderByTimeAsc; let i=index" 
+          class="form-border-box">
+
+          <ion-col col-3 col-sm-2 col-md-2 col-lg-1>
+            <!-- <ion-label color="black" stacked>Time
+              <span class="text-color"> *</span>
+            </ion-label> -->
+
+            <ion-input *ngIf="!isWeb" [disabled]="!dateOfFeed" [readonly]="true" placeholder="hh:mm"
+              [(ngModel)]="feedExpression.timeOfFeed" (ionFocus)="timePickerDialog(feedExpression)"
+                [ngModelOptions]="{standalone: true}"></ion-input>
+
+            <ion-input id="{{'time' + (i+1)}}" *ngIf="isWeb" type="tel" maxlength="5" [disabled]="!dateOfFeed" 
+            placeholder="hh:mm" (ionBlur)="validateTime(feedExpression.timeOfFeed, feedExpression)"
+            [(ngModel)]="feedExpression.timeOfFeed" onpaste="return false"
+            (keypress)="_numberKeyPress($event, i); _formatTime($event, feedExpression)"></ion-input>
+
+            <!-- <ion-datetime *ngIf="isWeb" [disabled]="!dateOfFeed" [(ngModel)]="feedExpression.timeOfFeed"
+              [ngModelOptions]="{standalone: true}" displayFormat="HH:mm"
+              (ionChange)="validateTime(feedExpression.timeOfFeed, feedExpression)"></ion-datetime> -->
+          </ion-col>
+
+          <ion-col col-6 col-sm-4 col-md-4 col-lg-2>
+            <!-- <ion-label color="black" stacked>Method</ion-label> -->
+            <ion-select [(ngModel)]="feedExpression.methodOfFeed" [ngModelOptions]="{standalone: true}"  placeholder="Method"
+              (ionChange)="validateVolumeFields(feedExpression)" [selectOptions]="methodConfig" interface="popover">
+              <ion-option text-wrap *ngFor="let feedingMethod of feedingMethods" [value]="feedingMethod.id" text-wrap>{{feedingMethod.name}}</ion-option>
+            </ion-select>
+          </ion-col>
+
+          <!-- Volume OMM -->
+          <ion-col col-3 col-sm-3 col-md-2 col-lg-1 tooltip="OMM" event="hover" positionV="top" arrow>
+            <!-- <ion-label color="black" stacked>OMM</ion-label> -->
+            <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" 
+              [(ngModel)]="feedExpression.ommVolume" placeholder="OMM"
+              [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
+              feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+          </ion-col>
+
+          <!-- Volume DHM -->
+          <ion-col col-3 col-sm-3 col-md-2 col-lg-1 tooltip="DHM" event="hover" positionV="top" arrow>
+            <!-- <ion-label color="black" stacked>DHM</ion-label> -->
+            <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" 
+              [(ngModel)]="feedExpression.dhmVolume" placeholder="DHM"
+              [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
+              feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+          </ion-col>
+
+          <!-- Volume Formula -->
+          <ion-col col-3 col-sm-4 col-md-2 col-lg-1 tooltip="Formula" event="hover" positionV="top" arrow>
+            <!-- <ion-label color="black" stacked>Formula</ion-label> -->
+            <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" 
+              [(ngModel)]="feedExpression.formulaVolume" placeholder="Formula"
+              [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
+              feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+          </ion-col>
+
+          <!-- Volume Animal Milk -->
+          <ion-col col-3 col-sm-4 col-md-3 col-lg-1 tooltip="Animal Milk" event="hover" positionV="top" arrow>
+            <!-- <ion-label color="black" stacked>Animal Milk</ion-label> -->
+            <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" 
+              [(ngModel)]="feedExpression.animalMilkVolume" placeholder="Animal Milk"
+              [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
+              feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+          </ion-col>
+
+          <!-- Volume Other -->
+          <ion-col col-3 col-sm-4 col-md-3 col-lg-1 tooltip="Other" event="hover" positionV="top" arrow>
+            <!-- <ion-label color="black" stacked>Other</ion-label> -->
+            <ion-input type="tel" (keypress)="_threeDigitWithDecimalRestriction($event)" 
+              [(ngModel)]="feedExpression.otherVolume" placeholder="Other"
+              [ngModelOptions]="{standalone: true}" [disabled]="!feedExpression.methodOfFeed || 
+              feedExpression.methodOfFeed === 61 || feedExpression.methodOfFeed === 66"></ion-input>
+          </ion-col>
+
+          <ion-col col-6 col-sm-6 col-md-6 col-lg-2 tooltip="Loaction" event="hover" positionV="top" arrow>
+            <!-- <ion-label color="black" stacked>Location</ion-label> -->
+            <ion-select [(ngModel)]="feedExpression.locationOfFeeding" 
+              [ngModelOptions]="{standalone: true}" placeholder="Location"
+              [selectOptions]="locationConfig" interface="popover">
+              <ion-option text-wrap *ngFor="let locationOfFeeding of locationOfFeedings" 
+                [value]="locationOfFeeding.id" text-wrap>{{locationOfFeeding.name}}</ion-option>
+            </ion-select>
+          </ion-col>
+
+          <!-- <ion-col col-3 col-sm-2 col-md-2 col-lg-1>
+            <button padding  ion-button block small (click)="validateExpression(feedExpression)">
+              {{feedExpression.createdDate === null ? 'Save' : 'Update'}}
+            </button>
+          </ion-col> -->
+
+          <ion-col col-3 col-sm-2 col-md-2 col-lg-1 text-center>
+            <button padding [disabled]="feedExpression.createdDate === null" tooltip="Create Copy" event="hover" 
+            positionV="top" arrow (click)="copyAndInsertNew(feedExpression, i+1)"
+            ion-button icon-only clear>
+              <ion-icon name="copy" color="danger"></ion-icon>
+            </button>
+          </ion-col>
+    
+          <ion-col col-3 col-sm-2 col-md-2 col-lg-1 text-center>
+            <button [disabled]="feedExpression.createdDate === null" ion-button icon-only clear
+            (click)="delete(feedExpression)" tooltip="Delete" event="hover" positionV="top" arrow padding>
+              <ion-icon name="trash" color="danger"></ion-icon>
+            </button>
+          </ion-col>
+
+        </ion-row>
+      <!-- </div> -->
     </div>
 
   </ion-grid>
+
+  <ion-fab right bottom>
+    <button ion-fab mini (click)="newExpression()" tooltip="New Entry" event="hover" positionV="top">
+      <ion-icon name="create"></ion-icon>
+    </button>
+    <button ion-fab mini (click)="saveAllFeeds()" tooltip="Save / Update All" event="hover" positionV="top">
+      <ion-icon name="document"></ion-icon>
+    </button>
+    <!-- <ion-fab-list side="left">
+      <button ion-fab><ion-icon name="logo-facebook"></ion-icon></button>
+      <button ion-fab><ion-icon name="logo-twitter"></ion-icon></button>
+      <button ion-fab><ion-icon name="logo-vimeo"></ion-icon></button>
+      <button ion-fab><ion-icon name="logo-googleplus"></ion-icon></button>
+    </ion-fab-list> -->
+  </ion-fab>
 
 </ion-content>
 
 <ion-footer ion-row align-center>
   <ion-col>
-    <button ion-button block (click)="newExpression()">New Expression</button>
+    <button ion-button block (click)="newExpression()">New Entry</button>
   </ion-col>
   <ion-col>
     <button ion-button block (click)="saveAllFeeds()">Save / Update All</button>

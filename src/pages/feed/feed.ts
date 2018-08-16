@@ -1,6 +1,6 @@
 import { FeedExpressionServiceProvider } from './../../providers/feed-expression-service/feed-expression-service';
-import { Component } from '@angular/core';
-import { IonicPage, NavParams, ModalController } from 'ionic-angular';
+import { Component, HostListener } from '@angular/core';
+import { IonicPage, NavParams, ModalController, Platform } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message/message';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { DatePicker } from '@ionic-native/date-picker';
@@ -48,13 +48,15 @@ export class FeedPage {
     title: 'Location'
   }
   hasError: boolean = false
+  hideTableHeader: boolean = false
 
   constructor(private feedExpressionService: FeedExpressionServiceProvider,
     private messageService: MessageProvider, private navParams: NavParams,
     private datePicker: DatePicker,
     private datePipe: DatePipe,private lactationPlatform: LactationProvider,
     private datePickerProvider: DatePickerProvider,
-    public modalCtrl: ModalController) {}
+    public modalCtrl: ModalController,
+    private platform: Platform) {}
 
   /**
    * @author Naseem Akhtar (naseem@sdrc.co.in)
@@ -555,4 +557,34 @@ export class FeedPage {
     else
       event.preventDefault()
   }
+
+  /**
+   * @author Naseem Akhtar
+   * This method will be used to copy selected record and insert replica
+   * of the selected record. Time will be made blank.
+   */
+
+  async copyAndInsertNew(feedExpression: IFeed, index: number) {
+    let copiedRecord = await this.feedExpressionService.getNewFeedExpressionEntry(this.babyCode, this.dateOfFeed)
+    copiedRecord.animalMilkVolume = feedExpression.animalMilkVolume
+    copiedRecord.dateOfFeed = feedExpression.dateOfFeed
+    copiedRecord.dhmVolume = feedExpression.dhmVolume
+    copiedRecord.formulaVolume = feedExpression.formulaVolume
+    copiedRecord.locationOfFeeding = feedExpression.locationOfFeeding
+    copiedRecord.methodOfFeed = feedExpression.methodOfFeed
+    copiedRecord.ommVolume = feedExpression.ommVolume
+    copiedRecord.otherVolume = feedExpression.otherVolume
+
+    this.feedExpressions.splice(index, 0, copiedRecord)
+  }
+
+  @HostListener('window:resize') 
+    onresize($event) {
+      console.log(this.platform.width())
+      if(this.platform.width() < 1007)
+        this.hideTableHeader = true
+      else
+        this.hideTableHeader = false
+    }
+
 }

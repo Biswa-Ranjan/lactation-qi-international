@@ -39,6 +39,8 @@ import { Device } from '@ionic-native/device';
 import { LactationProvider } from '../providers/lactation/lactation';
 import { DatePickerModule } from 'ionic2-date-picker';
 import { SettingsServiceProvider } from '../providers/settings-service/settings-service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -70,7 +72,8 @@ import { SettingsServiceProvider } from '../providers/settings-service/settings-
       }),
     IonicStorageModule.forRoot(),
     HttpClientModule,
-    PapaParseModule
+    PapaParseModule,
+    BrowserAnimationsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
