@@ -1,12 +1,13 @@
 import { FeedExpressionServiceProvider } from './../../providers/feed-expression-service/feed-expression-service';
 import { Component, HostListener } from '@angular/core';
-import { IonicPage, NavParams, ModalController, Platform } from 'ionic-angular';
+import { IonicPage, NavParams, ModalController, Platform, AlertController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message/message';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { DatePicker } from '@ionic-native/date-picker';
 import { DatePipe } from '@angular/common';
 import { LactationProvider } from '../../providers/lactation/lactation';
 import { DatePickerOption, DatePickerProvider } from 'ionic2-date-picker';
+import { filter } from 'rxjs/operators';
 
 
 /**
@@ -49,6 +50,8 @@ export class FeedPage {
   }
   hasError: boolean = false
   hideTableHeader: boolean = false
+  filterBy: string = null
+  isFilterActive: boolean = false
 
   constructor(private feedExpressionService: FeedExpressionServiceProvider,
     private messageService: MessageProvider, private navParams: NavParams,
@@ -56,7 +59,8 @@ export class FeedPage {
     private datePipe: DatePipe,private lactationPlatform: LactationProvider,
     private datePickerProvider: DatePickerProvider,
     public modalCtrl: ModalController,
-    private platform: Platform) {}
+    private platform: Platform,
+    private alertCtrl: AlertController) {}
 
   /**
    * @author Naseem Akhtar (naseem@sdrc.co.in)
@@ -586,5 +590,36 @@ export class FeedPage {
       else
         this.hideTableHeader = false
     }
+
+  /**
+   * @author Naseem Akhtar (naseem@sdrc.co.in)
+   * This method will help in filtering the records by 'Method of feed'
+   */
+  filterRecords() {
+    let alert = this.alertCtrl.create({enableBackdropDismiss:false});
+    alert.setTitle('Filter By');
+    this.feedingMethods.forEach( d => {
+      alert.addInput({
+        type: 'radio',
+        label: d.name,
+        value: d.id.toString()
+      });
+    })
+    alert.addButton('Cancel');
+    alert.addButton({
+      text: 'OK',
+      handler: data => {
+        console.log(data)
+        this.filterBy = data
+        this.isFilterActive = true
+      }
+    });
+    alert.present();
+  }
+
+  resetFilter() {
+    this.filterBy = null
+    this.isFilterActive = false
+  }
 
 }

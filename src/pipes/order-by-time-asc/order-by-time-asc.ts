@@ -11,7 +11,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class OrderByTimeAscPipe implements PipeTransform {
   
   //this method take the list of date and time and transfer with respect to time
-  transform(feedExpressions: IFeed[], ...args): IFeed[] {
+  transform(feedExpressions: IFeed[], filterBy: string): IFeed[] {
 
     //checking whether the list which has been passed is not empty
     if(feedExpressions != undefined && feedExpressions != null && feedExpressions.length > 0) {
@@ -43,7 +43,11 @@ export class OrderByTimeAscPipe implements PipeTransform {
           }
         }
       });
-      return feedExpressions
+
+      if(filterBy != null)
+        return feedExpressions.filter(d => d.methodOfFeed === +filterBy)
+      else
+        return feedExpressions
     }
     return feedExpressions
   }

@@ -345,7 +345,7 @@ export class FeedExpressionServiceProvider {
               || d.methodOfFeed === ConstantProvider.typeDetailsIds.enteralOnly
               || d.methodOfFeed === ConstantProvider.typeDetailsIds.enteralOral)
 
-          feedData = new OrderByTimeAscPipe().transform(feedData);
+          feedData = new OrderByTimeAscPipe().transform(feedData, null);
 
           if(feedData.length > 0) {
             let dateOfFeed;

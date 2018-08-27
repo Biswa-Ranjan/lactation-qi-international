@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { Component, HostListener } from '@angular/core';
+import { IonicPage, NavController, NavParams, ModalController, Platform } from 'ionic-angular';
 import { AddNewExpressionBfServiceProvider } from '../../providers/add-new-expression-bf-service/add-new-expression-bf-service';
 import { MessageProvider } from '../../providers/message/message';
 import { SaveExpressionBfProvider } from '../../providers/save-expression-bf/save-expression-bf';
@@ -50,6 +50,9 @@ export class ExpressionTimeFormPage {
   }
   dateOfExpressionFlag: boolean = false
   hasError: boolean = false
+  hideTableHeader: boolean = false
+  filterBy: string = null
+  isFilterActive: boolean = false
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private addNewExpressionBfService: AddNewExpressionBfServiceProvider,
@@ -58,7 +61,8 @@ export class ExpressionTimeFormPage {
     private expressionBFdateService: BFExpressionDateListProvider,
     private datePipe: DatePipe, private datePicker: DatePicker,
     private datePickerProvider: DatePickerProvider,
-    public modalCtrl: ModalController) {
+    public modalCtrl: ModalController,
+    public platform: Platform) {
   }
 
   /**
@@ -451,4 +455,60 @@ export class ExpressionTimeFormPage {
     else
       return true
   }
+
+  /**
+   * @author Naseem Akhtar
+   * This method will be used to copy selected record and insert replica
+   * of the selected record. Time will be made blank.
+   */
+
+  async copyAndInsertNew(bfExpression: IBFExpression, index: number) {
+    let copiedRecord = await this.expressionBFdateService.getNewBfExpressionEntry(this.babyCode, this.dateOfExpressions)
+    copiedRecord.locationOfExpression = bfExpression.locationOfExpression
+    copiedRecord.methodOfExpression = bfExpression.methodOfExpression
+    copiedRecord.methodOfExpressionOthers = bfExpression.methodOfExpressionOthers
+    copiedRecord.volOfMilkExpressedFromLR = bfExpression.volOfMilkExpressedFromLR
+
+    this.bFExpressions.splice(index, 0, copiedRecord)
+  }
+
+  @HostListener('window:resize') 
+    onresize($event) {
+      console.log(this.platform.width())
+      if(this.platform.width() < 1007)
+        this.hideTableHeader = true
+      else
+        this.hideTableHeader = false
+    }
+
+  /**
+   * @author Naseem Akhtar (naseem@sdrc.co.in)
+   * This method will help in filtering the records by 'Method of feed'
+   */
+  // filterRecords() {
+  //   let alert = this.alertCtrl.create({enableBackdropDismiss:false});
+  //   alert.setTitle('Filter By');
+  //   this.feedingMethods.forEach( d => {
+  //     alert.addInput({
+  //       type: 'radio',
+  //       label: d.name,
+  //       value: d.id.toString()
+  //     });
+  //   })
+  //   alert.addButton('Cancel');
+  //   alert.addButton({
+  //     text: 'OK',
+  //     handler: data => {
+  //       console.log(data)
+  //       this.filterBy = data
+  //       this.isFilterActive = true
+  //     }
+  //   });
+  //   alert.present();
+  // }
+
+  // resetFilter() {
+  //   this.filterBy = null
+  //   this.isFilterActive = false
+  // }
 }
