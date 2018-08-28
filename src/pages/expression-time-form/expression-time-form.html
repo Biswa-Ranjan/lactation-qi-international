@@ -47,7 +47,7 @@
     <ion-row class="form-border-box" style="background: #556d5f; color: white; height: 4vh;"
       *ngIf="!hideTableHeader">
       <ion-col col-3 col-sm-2 col-md-2 col-lg-1>
-        <h5>Time</h5>
+        <h5>Time<span class="text-color"> *</span></h5>
       </ion-col>
 
       <ion-col col-9 col-sm-6 col-md-5 col-lg-2>
@@ -100,7 +100,7 @@
           <!-- <ion-label color="black" stacked>Expression Method</ion-label> -->
           <ion-select [(ngModel)]="item.methodOfExpression" [ngModelOptions]="{standalone: true}"
             (ionChange)="checkVolumeOfMilkExpressed(item)" [selectOptions]="methodOfExpressionConfig"
-            placeholder="Expression Method">
+            placeholder="Expression Method" interface="popover">
             <ion-option *ngFor="let bfExpMethod of bfExpressionMethods" text-wrap [value]="bfExpMethod.id">{{bfExpMethod.name}}</ion-option>
           </ion-select>
         </ion-col>
@@ -114,8 +114,10 @@
         <ion-col col-12 col-sm-8 col-md-4 col-lg-3>
           <!-- <ion-label color="black" stacked>Location</ion-label> -->
           <ion-select [(ngModel)]="item.locationOfExpression" [ngModelOptions]="{standalone: true}"
-            [selectOptions]="locationWhereExpressionOccuredConfig" placeholder="Location">
-            <ion-option *ngFor="let locOfExpMethod of locationOfexpressionMethods" text-wrap [value]="locOfExpMethod.id">{{locOfExpMethod.name}}</ion-option>
+          [selectOptions]="locationWhereExpressionOccuredConfig" placeholder="Location" 
+          interface="popover">
+            <ion-option *ngFor="let locOfExpMethod of locationOfexpressionMethods" text-wrap 
+            [value]="locOfExpMethod.id">{{locOfExpMethod.name}}</ion-option>
           </ion-select>
         </ion-col>
 

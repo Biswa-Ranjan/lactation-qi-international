@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { Component, HostListener } from '@angular/core';
+import { IonicPage, NavController, NavParams, ModalController, Platform } from 'ionic-angular';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { BfSupportivePracticeServiceProvider } from '../../providers/bf-supportive-practice-service/bf-supportive-practice-service';
@@ -51,6 +51,7 @@ export class BfSupportivePracticePage {
   }
   dateOfBfspFlag: boolean = false
   hasError: boolean = false
+  hideTableHeader: boolean = false
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -61,7 +62,8 @@ export class BfSupportivePracticePage {
     private datePicker: DatePicker,
     private lactationPlatform: LactationProvider,
     private datePickerProvider: DatePickerProvider,
-    public modalCtrl: ModalController) {}
+    public modalCtrl: ModalController,
+    public platform: Platform) {}
 
   /**
    * @author Naseem Akhtar (naseem@sdrc.co.in)
@@ -416,6 +418,30 @@ export class BfSupportivePracticePage {
     else
       return true
   }
+
+  /**
+   * @author Naseem Akhtar
+   * This method will be used to copy selected record and insert replica
+   * of the selected record. Time will be made blank.
+   */
+
+  async copyAndInsertNew(feedExpression: IBFSP, index: number) {
+    let copiedRecord = await this.bfspService.getNewBfspEntry(this.babyCode, this.dateOfBfsp)
+    copiedRecord.bfspDuration = feedExpression.bfspDuration
+    copiedRecord.bfspPerformed = feedExpression.bfspPerformed
+    copiedRecord.personWhoPerformedBFSP = feedExpression.personWhoPerformedBFSP
+
+    this.bfspList.splice(index, 0, copiedRecord)
+  }
+
+  @HostListener('window:resize') 
+    onresize($event) {
+      console.log(this.platform.width())
+      if(this.platform.width() < 1007)
+        this.hideTableHeader = true
+      else
+        this.hideTableHeader = false
+    }
 
 }
 
