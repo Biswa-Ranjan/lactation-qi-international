@@ -268,7 +268,7 @@ export class SaveExpressionBfProvider {
           if(data) {
             let bfExpressions = (data as IBFExpression[]).filter(d => d.babyCode === babyCode)
             if(bfExpressions.length > 0) {
-              bfExpressions = new OrderByTimeExpressionFormAscPipe().transform(bfExpressions)
+              bfExpressions = new OrderByTimeExpressionFormAscPipe().transform(bfExpressions, null)
 
               let splitDeliveryDate = deliveryDate.split('-')
               let splitDeliveryTime = deliveryTime.split(':')

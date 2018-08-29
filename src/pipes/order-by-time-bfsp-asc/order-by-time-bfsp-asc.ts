@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { ConstantProvider } from '../../providers/constant/constant';
 
 /**
  * Generated class for the OrderByTimeBfspAscPipe pipe.
@@ -11,7 +12,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class OrderByTimeBfspAscPipe implements PipeTransform {
   
   //this method take the list of date and time and transfer with respect to time
-  transform(bfsp: IBFSP[], ...args): IBFSP[] {
+  transform(bfsp: IBFSP[], filterBy: string): IBFSP[] {
 
     //checking whether the list which has been passed is not empty
     if(bfsp != undefined && bfsp != null && bfsp.length > 0){
@@ -43,7 +44,15 @@ export class OrderByTimeBfspAscPipe implements PipeTransform {
           }
         }
       });
-      return bfsp
+
+      if(filterBy) {
+        let x = filterBy.split('^')
+        if(+x[1] === ConstantProvider.PersonWhoPerformedBSFPTypeId.personWhoPerformedBSFPTypeId)
+          return bfsp.filter(d => d.personWhoPerformedBFSP === +x[0])
+        else
+          return bfsp.filter(d => d.bfspPerformed === +x[0])
+      }else
+        return bfsp
     }
     return bfsp
   }

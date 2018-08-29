@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, Platform } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, Platform, AlertController } from 'ionic-angular';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { BfSupportivePracticeServiceProvider } from '../../providers/bf-supportive-practice-service/bf-supportive-practice-service';
@@ -52,6 +52,8 @@ export class BfSupportivePracticePage {
   dateOfBfspFlag: boolean = false
   hasError: boolean = false
   hideTableHeader: boolean = false
+  filterBy: string = null
+  isFilterActive: boolean = false
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -63,7 +65,8 @@ export class BfSupportivePracticePage {
     private lactationPlatform: LactationProvider,
     private datePickerProvider: DatePickerProvider,
     public modalCtrl: ModalController,
-    public platform: Platform) {}
+    public platform: Platform,
+    public alertCtrl: AlertController) {}
 
   /**
    * @author Naseem Akhtar (naseem@sdrc.co.in)
@@ -442,6 +445,44 @@ export class BfSupportivePracticePage {
       else
         this.hideTableHeader = false
     }
+
+  /**
+   * @author Naseem Akhtar (naseem@sdrc.co.in)
+   * This method will help in filtering the records by 'Method of feed'
+   */
+  filterRecords() {
+    let alert = this.alertCtrl.create({enableBackdropDismiss:false})
+    alert.setTitle('Filter By')
+    this.bfSupportivePracticePerformedList.forEach(d => {
+      alert.addInput({
+        type: 'radio',
+        label: d.name,
+        value: d.id.toString() + '^' + d.typeId.toString()
+      });
+    })
+    this.personWhoPerformedBSFPList.forEach(d => {
+      alert.addInput({
+        type: 'radio',
+        label: d.name,
+        value: d.id.toString() + '^' + d.typeId.toString()
+      });
+    })
+    alert.addButton('Cancel');
+    alert.addButton({
+      text: 'OK',
+      handler: data => {
+        console.log(data)
+        this.filterBy = data
+        this.isFilterActive = true
+      }
+    });
+    alert.present();
+  }
+
+  resetFilter() {
+    this.filterBy = null
+    this.isFilterActive = false
+  }
 
 }
 

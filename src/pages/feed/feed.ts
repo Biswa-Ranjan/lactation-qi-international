@@ -7,8 +7,6 @@ import { DatePicker } from '@ionic-native/date-picker';
 import { DatePipe } from '@angular/common';
 import { LactationProvider } from '../../providers/lactation/lactation';
 import { DatePickerOption, DatePickerProvider } from 'ionic2-date-picker';
-import { filter } from 'rxjs/operators';
-
 
 /**
  * This is the feed component(page)
@@ -597,7 +595,7 @@ export class FeedPage {
    */
   filterRecords() {
     let alert = this.alertCtrl.create({enableBackdropDismiss:false});
-    alert.setTitle('Filter By');
+    alert.setTitle('Filter By')
     this.feedingMethods.forEach( d => {
       alert.addInput({
         type: 'radio',

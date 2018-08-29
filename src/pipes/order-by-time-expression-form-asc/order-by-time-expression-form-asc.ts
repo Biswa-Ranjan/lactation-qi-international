@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { ConstantProvider } from '../../providers/constant/constant';
 
 /**
  * Generated class for the OrderByTimeExpressionFormAscPipe pipe.
@@ -11,7 +12,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class OrderByTimeExpressionFormAscPipe implements PipeTransform {
 
   //this method take the list of date and time and transfer with respect to time
-  transform(expressionForm: IBFExpression[], ...args): IBFExpression[] {
+  transform(expressionForm: IBFExpression[], filterBy: string): IBFExpression[] {
 
     //checking whether the list which has been passed is not empty
     if(expressionForm != undefined && expressionForm != null && expressionForm.length > 0){
@@ -48,7 +49,15 @@ export class OrderByTimeExpressionFormAscPipe implements PipeTransform {
           }
         }
       });
-      return expressionForm
+
+      if(filterBy) {
+        let x = filterBy.split('^')
+        if(+x[1] === ConstantProvider.MethodOfExpressionBfTypeId.methodOfExpressionBfTypeId)
+          return expressionForm.filter(d => d.methodOfExpression === +x[0])
+        else
+          return expressionForm.filter(d => d.locationOfExpression === +x[0])
+      }else
+        return expressionForm
     }
     return expressionForm
   }

@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, Platform } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, Platform, AlertController } from 'ionic-angular';
 import { AddNewExpressionBfServiceProvider } from '../../providers/add-new-expression-bf-service/add-new-expression-bf-service';
 import { MessageProvider } from '../../providers/message/message';
 import { SaveExpressionBfProvider } from '../../providers/save-expression-bf/save-expression-bf';
@@ -62,7 +62,8 @@ export class ExpressionTimeFormPage {
     private datePipe: DatePipe, private datePicker: DatePicker,
     private datePickerProvider: DatePickerProvider,
     public modalCtrl: ModalController,
-    public platform: Platform) {
+    public platform: Platform,
+    public alertCtrl: AlertController) {
   }
 
   /**
@@ -485,30 +486,50 @@ export class ExpressionTimeFormPage {
    * @author Naseem Akhtar (naseem@sdrc.co.in)
    * This method will help in filtering the records by 'Method of feed'
    */
-  // filterRecords() {
-  //   let alert = this.alertCtrl.create({enableBackdropDismiss:false});
-  //   alert.setTitle('Filter By');
-  //   this.feedingMethods.forEach( d => {
-  //     alert.addInput({
-  //       type: 'radio',
-  //       label: d.name,
-  //       value: d.id.toString()
-  //     });
-  //   })
-  //   alert.addButton('Cancel');
-  //   alert.addButton({
-  //     text: 'OK',
-  //     handler: data => {
-  //       console.log(data)
-  //       this.filterBy = data
-  //       this.isFilterActive = true
-  //     }
-  //   });
-  //   alert.present();
-  // }
+  filterRecords() {
+    let alert = this.alertCtrl.create({enableBackdropDismiss:false});
+    alert.setTitle('Filter By');
 
-  // resetFilter() {
-  //   this.filterBy = null
-  //   this.isFilterActive = false
-  // }
+    // alert.addInput({
+    //   type: 'text',
+    //   placeholder: 'Expression Method',
+    // })
+
+    this.bfExpressionMethods.forEach(d => {
+      alert.addInput({
+        type: 'radio',
+        label: d.name,
+        value: d.id.toString() + '^' + d.typeId.toString()
+      });
+    })
+
+    // alert.addInput({
+    //   type: 'text',
+    //   placeholder: 'Location'
+    // })
+
+    this.locationOfexpressionMethods.forEach(d => {
+      alert.addInput({
+        type: 'radio',
+        label: d.name,
+        value: d.id.toString() + '^' + d.typeId.toString()
+      });
+    })
+
+    alert.addButton('Cancel');
+    alert.addButton({
+      text: 'OK',
+      handler: data => {
+        console.log(data)
+        this.filterBy = data
+        this.isFilterActive = true
+      }
+    });
+    alert.present();
+  }
+
+  resetFilter() {
+    this.filterBy = null
+    this.isFilterActive = false
+  }
 }
