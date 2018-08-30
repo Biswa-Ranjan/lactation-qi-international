@@ -42,7 +42,7 @@ export class OrderByTimeExpressionFormAscPipe implements PipeTransform {
           //comparing both the dates.
           if (dateOfA > dateOfB) {
             return 1;
-          } else if (a < b) {
+          } else if (dateOfA < dateOfB) {
             return -1;
           } else {
             return 0;
