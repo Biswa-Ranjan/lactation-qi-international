@@ -6,5 +6,6 @@
  */
 interface Config{
     isLoggedIn: boolean,
-    latestAppVersionName: string
+    latestAppVersionName: string,
+    readonly version: string
 }

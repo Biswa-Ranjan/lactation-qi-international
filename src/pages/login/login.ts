@@ -1,9 +1,9 @@
+import { ConfigImpl } from './../../class/ConfigImpl';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, Platform, MenuController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, MenuController } from 'ionic-angular';
 import { ConstantProvider } from '../../providers/constant/constant';
 import { UserServiceProvider } from '../../providers/user-service/user-service';
 import { MessageProvider } from '../../providers/message/message';
-import { AppVersion } from '@ionic-native/app-version';
 import { Storage } from '@ionic/storage';
 
 /**
@@ -26,25 +26,15 @@ export class LoginPage {
   showPass: boolean = false;
   babyAdmittedToNameList = ["Level 3 NICU/High Dependency", "Level 2 SNCU/Low Dependency", "Level 1 NICU", "Step-down unit","KMC unit", "Maternity ward"];
   babyAdmissionList = []
+  version: string
 
   constructor(public navCtrl: NavController,
     public  navParams: NavParams,
     private userService: UserServiceProvider,
     private messageService: MessageProvider,
-    private events: Events,
-    private appVersion: AppVersion,
-    private platform: Platform,
+    private events: Events,        
     private storage: Storage,
     public menuCtrl: MenuController) {
-
-    this.platform.ready().then((readySource) => {
-      if (this.platform.is('android') && this.platform.is('cordova')) {
-        this.appVersion.getVersionNumber()
-          .then(data => {
-            this.appVersionNumber = data
-          })
-      }
-    });
     
   }
 
@@ -60,6 +50,18 @@ export class LoginPage {
       password: ''
     }
     this.setDataForBabyAdmittedToField()
+
+
+    //setting version
+    let config: ConfigImpl = {
+      version: '2.2.0',
+      latestAppVersionName: '',
+      isLoggedIn: null
+    }
+
+    this.appVersionNumber = config.version
+
+    
   }
   
   /**

@@ -26,7 +26,6 @@ import { BfspDateListServiceProvider } from '../providers/bfsp-date-list-service
 import { BfPostDischargeMenuServiceProvider } from '../providers/bf-post-discharge-menu-service/bf-post-discharge-menu-service';
 import { BfPostDischargeServiceProvider } from '../providers/bf-post-discharge-service/bf-post-discharge-service';
 import { BFExpressionDateListProvider } from '../providers/bf-expression-date-list-service/bf-expression-date-list-service';
-import { AppVersion } from '@ionic-native/app-version';
 import { SearchPipe } from '../pipes/search/search';
 import { SortPatientPipe } from '../pipes/sort-patient/sort-patient';
 import { ExportServiceProvider } from '../providers/export-service/export-service';
@@ -101,7 +100,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BfspDateListServiceProvider,
     BfPostDischargeMenuServiceProvider,
     BfPostDischargeServiceProvider,
-    AppVersion,
     SearchPipe,
     SortPatientPipe,
     ExportServiceProvider,
