@@ -256,4 +256,6 @@ static areaLevels: IAreaLevel ={
 
   static noOfRecordsByDefault: number = 8;
 
+  static expressionAutoPopulateDateMaxNumber: number = 14
+
 }

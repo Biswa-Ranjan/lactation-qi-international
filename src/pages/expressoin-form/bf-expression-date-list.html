@@ -10,14 +10,25 @@
 <ion-content padding scrollbar-y-auto>
   <h3 class="form-page-header">Baby ID - {{babyCode}}</h3>
   <ion-card *ngFor="let date of expBfDateListData | orderByDateAsc; let i = index">
-    <ion-card-content (click)='dateSelected(date)'>
+    <ion-card-content (click)='dateSelected(i)'>
       <ion-row>
+        <ion-col col-5>
+          <ion-item>
+            Day: {{i}}
+          </ion-item>
+        </ion-col>
+        <ion-col col-4>
+          <ion-item>
+            {{date}}
+          </ion-item>
+        </ion-col>
         <ion-col>
-          <div>Day: {{i}}</div>
+          <ion-item>
+            <ion-label>No expression occured</ion-label>
+            <ion-checkbox (ionChange)="noExpressionOccured(i)"></ion-checkbox>
+          </ion-item>
         </ion-col>
-        <ion-col text-right>
-          <div>{{date}}</div>
-        </ion-col>
+
       </ion-row>
     </ion-card-content>
   </ion-card>

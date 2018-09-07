@@ -154,6 +154,7 @@ export class BFExpressionDateListProvider {
    * @param {Date} dischargeDate Discharge date of the patient
    * @returns {string[]} Array of dates 
    * @memberof BFExpressionDateListProvider
+   * @since 2.3.0
    */
   getDateList(deliveryDate: string, dischargeDate: string): string[] {
 

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { MessageProvider } from '../../providers/message/message';
 import { BFExpressionDateListProvider } from '../../providers/bf-expression-date-list-service/bf-expression-date-list-service';
+import { ConstantProvider } from '../../providers/constant/constant';
 
 /**
  * @author Naseem Akhtar (naseem@sdrc.co.in)
@@ -25,7 +26,7 @@ export class BFExpressionDateListPage {
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     private bfExpressionDateListService: BFExpressionDateListProvider,
-    private messageService: MessageProvider) {
+    private messageService: MessageProvider, private alertCtrl: AlertController) {
   }
 
   /**
@@ -55,16 +56,15 @@ export class BFExpressionDateListPage {
    * @param date The selected date
    * @since 0.0.1
    */
-  dateSelected(date: string){
-    let dataForBFEntryPage: IDataForBFEntryPage = {
-      babyCode: this.babyCode,
-      selectedDate: date,
-      isNewExpression: false,
-      deliveryDate: this.navParams.data.deliveryDate,
-      deliveryTime: this.navParams.data.deliveryTime,
-      dischargeDate: this.navParams.data.dischargeDate
+  dateSelected(index: number){
+
+    let date: string = this.expBfDateListData[index]
+    if(index > ConstantProvider.expressionAutoPopulateDateMaxNumber){
+      this.showAfterMaxDayAccessAlert(date, index)
+    }else{
+      this.goToNextPage(date, false)
     }
-    this.navCtrl.push('ExpressionTimeFormPage', {dataForBFEntryPage: dataForBFEntryPage})
+    
   }
 
 /**
@@ -75,15 +75,72 @@ export class BFExpressionDateListPage {
  * @since 0.0.1
  */
   newExpression(){
+    this.goToNextPage(null, true)
+  }
+
+
+  /**
+   * This method is going to decide what will happen if user will check or uncheck the 
+   * no expression occured checkbox
+   * 
+   * @author Ratikanta
+   * @param {number} index
+   * @memberof BFExpressionDateListPage
+   * @since 2.3.0
+   */
+  noExpressionOccured(index: number){
+    alert(index)
+  }
+
+  /**
+   * This method will take the control to next page which is expression details of selected date
+   * @author Ratikanta
+   * @param {string} date the selected date for which we will se the expression details
+   * @param {boolean} isNewExpression if it is a new expression, the value will be true otherwise false
+   * @memberof BFExpressionDateListPage
+   * @since 2.3.0
+   */
+  goToNextPage(date: string, isNewExpression: boolean){
     let dataForBFEntryPage: IDataForBFEntryPage = {
       babyCode: this.babyCode,
-      selectedDate: null,
-      isNewExpression: true,
+      selectedDate: date,
+      isNewExpression: isNewExpression,
       deliveryDate: this.navParams.data.deliveryDate,
       deliveryTime: this.navParams.data.deliveryTime,
       dischargeDate: this.navParams.data.dischargeDate
     }
     this.navCtrl.push('ExpressionTimeFormPage', {dataForBFEntryPage: dataForBFEntryPage})
+  }
+
+  /**
+   * This method will show a confirm alert whether user wants to do data entry after certain days of 
+   * delivery date
+   * @author Ratikanta
+   * @param {string} date the selected date for which we will se the expression details
+   * @param {number} dayNumber The day to which the user selected for data entry
+   * @memberof BFExpressionDateListPage
+   * @since 2.3.0
+   */
+  showAfterMaxDayAccessAlert(date: string, dayNumber: number){
+    const confirm = this.alertCtrl.create(
+      
+      {
+        title: 'Warning!',
+        message: 'You ahve selected day ' + dayNumber + ', please make sure discharge date is correct.',
+        buttons: 
+        [
+          {
+            text: 'Ok',
+            handler: ()=>{
+              this.goToNextPage(date, false)         
+            }
+          }
+        ]
+
+      }
+    )
+
+    confirm.present()
   }
 
 }
