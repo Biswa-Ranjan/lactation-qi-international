@@ -148,4 +148,26 @@ export class MessageProvider {
       });
       confirm.present();
     }
+
+
+   /**This method will show alert modal with one button i.e 'OK'
+   *
+   * @author Ratikanta
+   * @param message
+   */
+  showErrorAlert(message: string){
+    
+      let confirm = this.alertCtrl.create({
+        enableBackdropDismiss: false,
+        title: "Error!",
+        message: message,
+        buttons: [
+          {
+            text: 'Ok'            
+          }
+        ]
+      });
+      confirm.present();
+    
+  } 
 }

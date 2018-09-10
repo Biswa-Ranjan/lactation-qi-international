@@ -750,6 +750,13 @@ export class AddPatientPage implements OnInit{
     }
   }
 
+  /**
+   *This method will show date picker for web browser and do the processing after user 
+   selet date
+   * @author jagat
+   * @param {string} type
+   * @memberof AddPatientPage
+   */
   showCalendar(type: string) {
     let datePickerOption: DatePickerOption = {
       minimumDate: this.minDate, // minimum date selectable
@@ -813,18 +820,8 @@ export class AddPatientPage implements OnInit{
           this.patientForm.controls.admission_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
         break;
         case ConstantProvider.datePickerType.dischargeDate:
-          this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(date,"dd-MM-yyyy"))
-          if(this.patientForm.controls.admission_date.value) {
-            let splitAdmissionDate = this.patientForm.controls.admission_date.value.split('-')
-            let tempAdmissionDate = new Date(splitAdmissionDate[2], splitAdmissionDate[1]-1, splitAdmissionDate[0])
-            let splitDischargeDate = this.patientForm.controls.discharge_date.value.split('-')
-            let tempDischargeDate = new Date(splitDischargeDate[2], splitDischargeDate[1]-1, splitDischargeDate[0])
-            if(tempDischargeDate < tempAdmissionDate) {
-              this.patientForm.controls.admission_date.setValue(null)
-              this.messageService.showErrorToast('Admission date for outdoor patients cannot be greater than discharge date')
-            }
-          }
-        break;
+          this.validateDischargeDateForWeb(date)          
+          break;
       }
     });
   }
@@ -858,15 +855,36 @@ export class AddPatientPage implements OnInit{
    * @since 0.0.1
    * @param event
    */
-  // omit_aplha_special_char(event) {
-  //   var k;
-  //   k = event.charCode;  //k = event.keyCode;  (Both can be used)
-  //   return(k >= 48 && k <= 57);
-  // }
-
   _preventManualEntry(event) {
     event.preventDefault()
   }
 
 
+  /**
+   * This method is going to validate the discharge date
+   * @author Ratikanta
+   * @param {Date} dischargeDate
+   * @memberof AddPatientPage
+   */
+  async validateDischargeDateForWeb(dischargeDate: Date){
+    try{
+      if(this.forEdit){
+        await this.addNewPatientService.validateDischargeDate(dischargeDate, this.navParams.get('babyCode'))
+      }
+      this.patientForm.controls.discharge_date.setValue(this.datePipe.transform(dischargeDate,"dd-MM-yyyy"))
+      if(this.patientForm.controls.admission_date.value) {
+        let splitAdmissionDate = this.patientForm.controls.admission_date.value.split('-')
+        let tempAdmissionDate = new Date(splitAdmissionDate[2], splitAdmissionDate[1]-1, splitAdmissionDate[0])
+        let splitDischargeDate = this.patientForm.controls.discharge_date.value.split('-')
+        let tempDischargeDate = new Date(splitDischargeDate[2], splitDischargeDate[1]-1, splitDischargeDate[0])
+        if(tempDischargeDate < tempAdmissionDate) {
+          this.patientForm.controls.admission_date.setValue(null)
+          this.messageService.showErrorToast('Admission date for outdoor patients cannot be greater than discharge date')
+        }
+      }
+    }catch(err){
+      this.messageService.showErrorAlert(err)
+    }
+    
+  }
 }

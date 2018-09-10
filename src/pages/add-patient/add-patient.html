@@ -33,15 +33,6 @@
         Please enter baby id
       </p>
     </div>
-    <!-- <div class="form-group">
-      <ion-item>
-        <ion-label color="black" stacked>Baby ID provided by hospital</ion-label>
-        <ion-input type="text" formControlName="hospital_baby_id"></ion-input>
-      </ion-item>
-      <p class="error" *ngIf="patientForm.controls.hospital_baby_id.invalid  && (patientForm.controls.hospital_baby_id.dirty || patientForm.controls.hospital_baby_id.touched) && resetStatus">
-        Please enter a valid Baby ID provided by hospital
-      </p>
-    </div> -->
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Baby of (mother's name)</ion-label>
@@ -130,31 +121,7 @@
           <ion-option *ngFor="let item of hmLactation" [value]="item.id">{{item.name}}</ion-option>
         </ion-select>
       </ion-item>
-    </div>
-    <!-- <div class="form-group">
-      <ion-label color="black" stacked padding-left>Time till first expression in hours</ion-label>
-      <ion-grid>
-        <ion-row>
-          <ion-col width-50>
-            <ion-item>
-              <ion-label>hh:</ion-label>
-              <ion-input type="tel" (keypress)="onlyNumberKey($event)" placeholder="hh" maxlength="2" 
-                formControlName="first_exp_time_in_hour" onpaste="return false"></ion-input>
-            </ion-item>
-          </ion-col>
-          <ion-col width-50>
-            <ion-item>
-              <ion-label>mm:</ion-label>
-              <ion-input type="tel" (keypress)="onlyNumberKey($event)" placeholder="mm" maxlength="2" 
-                formControlName="first_exp_time_in_minute" onpaste="return false"></ion-input>
-            </ion-item>
-            <p class="error" *ngIf="patientForm.controls.first_exp_time_in_minute.invalid  && (patientForm.controls.first_exp_time_in_minute.dirty || patientForm.controls.first_exp_time_in_minute.touched)">
-              Please enter minute below 60
-            </p>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </div> -->
+    </div>    
     <div class="form-group">
       <ion-item>
         <ion-label color="black" stacked>Inpatient/Outpatient</ion-label>

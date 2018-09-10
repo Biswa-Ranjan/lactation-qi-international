@@ -368,4 +368,51 @@ export class AddNewPatientServiceProvider {
     });
     return promise;
   }
+
+
+  /**
+   * This method is going to validate the discharge date. If there would be any records after discharge date,
+   * we are not going to accept that.
+   * @author Ratikanta
+   * @param {Date} dischargeDate Discharge date given by the user.
+   * @param {string} babyCode baby id of the patient
+   * @memberof AddNewPatientServiceProvider
+   */
+  async validateDischargeDate(dischargeDate: Date, babyCode: string){
+
+    //checking in bf expressions
+    let bfExpressions: IBFExpression[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions)).filter(d => d.babyCode === babyCode)
+    
+                                                  
+    for(let i = 0; i < bfExpressions.length;i++){
+      let expressionDate: Date = new Date(bfExpressions[i].dateOfExpression.split('-')[1] + "-"+bfExpressions[i].dateOfExpression.split('-')[0]+"-"+ bfExpressions[i].dateOfExpression.split('-')[2])
+      if(expressionDate > dischargeDate){
+        throw new Error("Breast feed expression present after the discharge date. Please review and change the discharge date accordingly or delete expreession above discharge date.")
+      }
+    }
+
+
+    //checking in supportive practice
+    let bfsps: IBFSP[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfsps)).filter(d => d.babyCode === babyCode)
+    
+                                                  
+    for(let i = 0; i < bfsps.length;i++){
+      let expressionDate: Date = new Date(bfsps[i].dateOfBFSP.split('-')[1] + "-" + bfsps[i].dateOfBFSP.split('-')[0]+"-"+ bfsps[i].dateOfBFSP.split('-')[2])
+      if(expressionDate > dischargeDate){
+        throw new Error("Breast feed supportive practive expression present after the discharge date. Please review and change the discharge date accordingly or delete expreession above discharge date.")
+      }
+    }
+
+    //Checking in log feed
+    let feeds: IFeed[] = (await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions)).filter(d => d.babyCode === babyCode)
+    
+                                                  
+    for(let i = 0; i < feeds.length;i++){
+      let expressionDate: Date = new Date(feeds[i].dateOfFeed.split('-')[1] + "-" + feeds[i].dateOfFeed.split('-')[0]+"-"+ feeds[i].dateOfFeed.split('-')[2])
+      if(expressionDate > dischargeDate){
+        throw new Error("Log feed expression present after the discharge date. Please review and change the discharge date accordingly or delete expreession above discharge date.")
+      }
+    }
+
+  }
 }
