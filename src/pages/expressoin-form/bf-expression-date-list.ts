@@ -89,7 +89,7 @@ export class BFExpressionDateListPage {
    * @since 2.3.0
    */
   noExpressionOccured(index: number){
-    alert(index)
+    alert("under construction")
   }
 
   /**
@@ -126,7 +126,7 @@ export class BFExpressionDateListPage {
       
       {
         title: 'Warning!',
-        message: 'You ahve selected day ' + dayNumber + ', please make sure discharge date is correct.',
+        message: 'You have selected day ' + dayNumber + ', please make sure discharge date is correct.',
         buttons: 
         [
           {

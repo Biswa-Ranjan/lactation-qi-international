@@ -156,7 +156,7 @@ export class BFExpressionDateListProvider {
    * @memberof BFExpressionDateListProvider
    * @since 2.3.0
    */
-  getDateList(deliveryDate: string, dischargeDate: string): string[] {
+  private getDateList(deliveryDate: string, dischargeDate: string): string[] {
 
     let dateList: string[] = []
     let today: string = this.datePipe.transform(new Date(), 'dd-MM-yyyy')
