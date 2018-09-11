@@ -475,7 +475,6 @@ export class ExpressionTimeFormPage {
 
   @HostListener('window:resize') 
     onresize($event) {
-      console.log(this.platform.width())
       if(this.platform.width() < 1007)
         this.hideTableHeader = true
       else
@@ -520,7 +519,6 @@ export class ExpressionTimeFormPage {
     alert.addButton({
       text: 'OK',
       handler: data => {
-        console.log(data)
         this.filterBy = data
         this.isFilterActive = true
       }

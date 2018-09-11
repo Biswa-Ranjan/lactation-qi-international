@@ -582,7 +582,6 @@ export class FeedPage {
 
   @HostListener('window:resize') 
     onresize($event) {
-      console.log(this.platform.width())
       if(this.platform.width() < 1007)
         this.hideTableHeader = true
       else
@@ -607,7 +606,6 @@ export class FeedPage {
     alert.addButton({
       text: 'OK',
       handler: data => {
-        console.log(data)
         this.filterBy = data
         this.isFilterActive = true
       }

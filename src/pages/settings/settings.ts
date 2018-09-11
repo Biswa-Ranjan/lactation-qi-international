@@ -47,7 +47,6 @@ export class SettingsPage {
       this.isRecordFound = true
       this.babyAdmissionList = []
     }
-    // console.log(this.isRecordFound)
   }
 
 
@@ -168,7 +167,6 @@ export class SettingsPage {
         label: "label goes here",
         value: itemName,
         handler: (data) => {
-          //console.log("xxyz"+data) 
 
 
         }

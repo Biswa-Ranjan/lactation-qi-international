@@ -40,14 +40,51 @@ export class BFExpressionDateListProvider {
    */
   async getExpressionBFDateListData(babyCode: string) {
 
+    let dateLists: IDateList[] = [];
+
     try {
-      let patient: IPatient = (await this.storage.get(ConstantProvider.dbKeyNames.patients) as IPatient[])
-                                .filter(d => d.babyCode === babyCode)[0]  
-                                                              
-      return this.getDateList(patient.deliveryDate, patient.dischargeDate)
+
+
+      let patient: IPatient = (await this.storage.get(ConstantProvider.dbKeyNames.patients) as IPatient[]).filter(d => d.babyCode === babyCode)[0];  
+      let onlyDateList: string[] = this.getDateList(patient.deliveryDate, patient.dischargeDate) 
+
+
+      //Can not do database call inside for loop so, doint it above the for loop
+      let bfExpressions: IBFExpression[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions) as IBFExpression[])
+      
+      //We have to check for null, because when there is no epression record, database returns null
+      if(bfExpressions != null){
+        bfExpressions = bfExpressions.filter(d => d.babyCode === patient.babyCode) 
+      }
+
+      for(let i = 0; i < onlyDateList.length;i++){
+
+        //checking expression in this particular date
+        
+        let noExpressionOccured: boolean = false
+        let bfExpressionsLocal: IBFExpression[] = []
+        if(bfExpressions != null){
+          bfExpressionsLocal = bfExpressions.filter(d => d.dateOfExpression === onlyDateList[i])
+          if(bfExpressionsLocal.length === 1){
+            noExpressionOccured = bfExpressionsLocal[0].noExpressionOccured
+          }
+          //There is no else part to this if, because if we have multiple expression in a date, noExpressionOccured can not be true
+
+        }
+        
+        let dateList: IDateList = {
+          date: onlyDateList[i],
+          noExpressionOccured: noExpressionOccured
+        }        
+
+        dateLists.push(dateList)
+
+      }
+
+      return dateLists
 
     } catch (err) {
-      return err.message
+      throw new Error ("Error while fetching data: " + err.message)
     }
   }
 
@@ -97,14 +134,6 @@ export class BFExpressionDateListProvider {
   appendNewRecordAndReturn(data: IBFExpression[], babyCode: string, count: number, date ? : string): IBFExpression[] {
 
     //The blank feed object
-
-    // if(data != null){
-    //   (data as IBFExpression[]).splice(0, 0, bf)
-    // }else{
-    //   data = [];
-    //   data.push(bf)
-    // }
-
     if (data === null) {
       data = []
     } else {
@@ -112,7 +141,6 @@ export class BFExpressionDateListProvider {
         data.push(this.getNewBfExpressionEntry(babyCode, date))
       }
     }
-    // data.push(this.getNewBfExpressionEntry(babyCode, date))
 
     return data
   }
@@ -132,7 +160,8 @@ export class BFExpressionDateListProvider {
       createdDate: null,
       updatedDate: null,
       uuidNumber: null,
-      methodOfExpressionOthers: null
+      methodOfExpressionOthers: null,
+      noExpressionOccured: false
     }
 
     return bf;
@@ -175,5 +204,73 @@ export class BFExpressionDateListProvider {
       dateList.push(this.datePipe.transform(endDate, 'dd-MM-yyyy'))    
     
     return dateList
+  }
+
+  /**
+   *This method will get executed when user try to check/ uncheck no expression occured for the day
+   * @author Ratikanta
+   * @param {IDateList} dateList
+   * @param {string} babyCode
+   * @memberof BFExpressionDateListProvider
+   */
+  async noExpressionOccured(dateList: IDateList, babyCode: string){
+
+    if(dateList.noExpressionOccured){
+      
+
+      //Will try to set no expression false
+      let bfExpressions: IBFExpression[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions) as IBFExpression[]).filter(d => d.babyCode === babyCode && d.dateOfExpression === dateList.date && d.noExpressionOccured === true)
+      if(bfExpressions.length != 1){
+        //Was not seleted before
+        return {result: false, value: true, message: 'It was not no expression occured before.'}                
+      }else{
+        bfExpressions = (await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions) as IBFExpression[]).filter(d => d.id != bfExpressions[0].id)
+        await this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
+        return {result: true, value: null,message: ''}
+      }
+
+      
+
+    } else {
+      
+      
+      //Will try to set no expression true
+      let bfExpressions: IBFExpression[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions) as IBFExpression[])
+      if(bfExpressions != null){
+        bfExpressions = bfExpressions.filter(d => d.babyCode === babyCode && d.dateOfExpression === dateList.date)
+      }
+      if(bfExpressions === undefined || bfExpressions == null || (bfExpressions != null && bfExpressions.length < 1)){
+
+        //Why bfExpressions < 1? when the length is 1 or greater, it can not come to this place
+
+        let bfExpression:IBFExpression = this.getNewBfExpressionEntry(babyCode, dateList.date)
+        bfExpression.id = this.getNewBfExpressionId(babyCode)
+        bfExpression.noExpressionOccured = true
+        let bfExpressions: IBFExpression[] = await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions)
+        bfExpressions = bfExpressions == null?[]:bfExpressions          
+        bfExpressions.push(bfExpression)
+        await this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
+        return {result: true, value: null,message: ''}
+      } 
+      else{
+        return {result: false, value: false, message: 'Can not put No expression occured, expression already exists for this date.'}        
+      }
+
+    }
+    
+  }
+
+
+  /**
+   * This method is going to give us a new BF expression id
+   *
+   * @param {string} babyCode This is the baby code for which we are creating the bf expression id
+   * @returns {string} The new bf expression id
+   * @memberof BFExpressionDateListProvider
+   * @author Ratikanta
+   * @since 2.3.0
+   */
+  getNewBfExpressionId(babyCode: string): string{
+    return babyCode + "bfid" + this.datePipe.transform(new Date(), 'ddMMyyyyHHmmssSSS');
   }
 }

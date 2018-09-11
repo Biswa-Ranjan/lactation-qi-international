@@ -159,7 +159,7 @@ export class MessageProvider {
     
       let confirm = this.alertCtrl.create({
         enableBackdropDismiss: false,
-        title: "Error!",
+        title: "Error",
         message: message,
         buttons: [
           {

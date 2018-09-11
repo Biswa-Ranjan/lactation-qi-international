@@ -438,8 +438,7 @@ export class BfSupportivePracticePage {
   }
 
   @HostListener('window:resize') 
-    onresize($event) {
-      console.log(this.platform.width())
+    onresize($event) {      
       if(this.platform.width() < 1007)
         this.hideTableHeader = true
       else

@@ -20,7 +20,7 @@ export class BfSupportivePracticeDateListPage {
 
   babyCode:string;
   items: any;
-  bfspDateListData: string[] = [];
+  bfspDateListData: IDateList[] = [];
   dataForBfspPage: IDataForBfspPage
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
@@ -35,14 +35,7 @@ export class BfSupportivePracticeDateListPage {
    */
   ionViewWillEnter(){
     this.babyCode = this.navParams.data.babyCode;
-    //Getting date list
-    this.bfspDateListService.getBFSPDateList(this.babyCode)
-      .then(data => {
-        this.bfspDateListData = data;
-      })
-      .catch(err => {
-        this.messageService.showErrorToast(err)
-      })
+    this.getDateList()
 
     this.dataForBfspPage = {
       babyCode: this.navParams.data.babyCode,
@@ -54,6 +47,22 @@ export class BfSupportivePracticeDateListPage {
     }
   }
 
+  /**
+   * This method is going to get the date list array
+   * @author Ratikanta 
+   * @memberof BfSupportivePracticeDateListPage
+   */
+  getDateList(){
+    //Getting date list
+    this.bfspDateListService.getBFSPDateList(this.babyCode)
+      .then(data => {
+        this.bfspDateListData = data;
+      })
+      .catch(err => {
+        this.messageService.showErrorToast(err)
+      })
+  }
+
 
   /**
    * This is going to send us to entry page with selected date and baby id
@@ -63,12 +72,17 @@ export class BfSupportivePracticeDateListPage {
    * @since 0.0.1
    */
   dateSelected(index: number) {
-    let date: string = this.bfspDateListData[index]
-    if(index > ConstantProvider.expressionAutoPopulateDateMaxNumber){
-      this.showAfterMaxDayAccessAlert(date, index)
-    }else{
-      this.goToNextPage(date, false)
-    }    
+
+    if(!this.bfspDateListData[index].noExpressionOccured){
+      let date: string = this.bfspDateListData[index].date
+      if(index > ConstantProvider.expressionAutoPopulateDateMaxNumber){
+        this.showAfterMaxDayAccessAlert(date, index)
+      }else{
+        this.goToNextPage(date, false)
+      }    
+    } else {      
+      this.messageService.showErrorToast("No supportive practice occured in this day, please uncheck to enter supportive practice.")
+    }
   };
 
   /**
@@ -91,8 +105,22 @@ export class BfSupportivePracticeDateListPage {
    * @memberof BfSupportivePracticeDateListPage
    * @since 2.3.0
    */
-  noExpressionOccured(index: number){
-    alert("under construction")
+  async noExpressionOccured(index: number){
+    this.messageService.showLoader("Please wait...")
+    try{
+      
+      let data = await this.bfspDateListService.noExpressionOccured(this.bfspDateListData[index], this.babyCode) 
+      await this.getDateList()
+      this.messageService.stopLoader()
+      if(!data.result){
+        this.bfspDateListData[index].noExpressionOccured = data.value
+        this.messageService.showErrorAlert(data.message)
+      }
+        
+    }catch(err){
+      this.messageService.stopLoader()
+      this.messageService.showErrorAlert(err)
+    }
   }
 
 
@@ -109,7 +137,7 @@ export class BfSupportivePracticeDateListPage {
     const confirm = this.alertCtrl.create(
       
       {
-        title: 'Warning!',
+        title: 'Warning',
         message: 'You have selected day ' + dayNumber + ', please make sure discharge date is correct.',
         buttons: 
         [

@@ -23,4 +23,5 @@ interface IFeed{
     createdDate: string;
     updatedDate: string;
     uuidNumber: string;
+    noExpressionOccured: boolean
 }

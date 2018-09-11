@@ -111,32 +111,7 @@ export class SaveExpressionBfProvider {
     });
     return promise;
   }
-   /**
-   * This method will check whether we have the record with given baby id, date and time.
-   * If all the attribute value will match, this will splice that record and append incoming record.
-   * Because it has come for an update.
-   *
-   * If record does not match, this will just push the input record with existing once
-   *
-   * @author Subhadarshani
-   * @since 0.0.1
-   * @param bfExpressions All the existing bf expressions
-   * @param bfExpression incoming bf expression
-   * @returns IBFExpression[] modified bf expressions
-   * @author - Naseem Akhtar
-   */
-  private validateNewEntryAndUpdate(bfExpressions: IBFExpression[], bfExpression: IBFExpression, index: number): IBFExpression[]{
-
-    if(index < 0) {
-      bfExpression.id = this.getNewBfExpressionId(bfExpression.babyCode);
-    }else {
-      bfExpressions.splice(index, 1);
-    }
-
-    bfExpressions.push(bfExpression)
-    return bfExpressions;
-
-  }
+   
 
   /**
    * This method will delete a expression

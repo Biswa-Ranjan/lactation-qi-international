@@ -26,7 +26,6 @@ export class LactationProvider {
   private platform: LactationPlatform
 
   constructor(public http: HttpClient) {
-    console.log('Hello LactationProvider Provider');
   }
 
   setAppVersionName(appVersionName: string){

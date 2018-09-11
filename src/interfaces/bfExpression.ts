@@ -20,4 +20,5 @@ interface IBFExpression{
     createdDate: string;
     updatedDate: string;
     uuidNumber: string;
+    noExpressionOccured: boolean
 }

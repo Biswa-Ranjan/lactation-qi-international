@@ -156,33 +156,6 @@ export class FeedExpressionServiceProvider {
   }
 
   /**
-   * This method will check whether we have the record with given baby id, date and time.
-   * If all the attribute value will match, this will splice that record and append incoming record.
-   * Because it has come for an update.
-   *
-   * If record does not match, this will just push the input record with existing once
-   *
-   * @author Ratikanta
-   * @since 0.0.1
-   * @param feedExpressions All the existing feed expressions
-   * @param feedExpression incoming feed expression
-   * @returns IFeed[] modified feed expressions
-   * @author - Naseem Akhtar
-   */
-  private validateNewEntryAndUpdate(feedExpressions: IFeed[], feedExpression: IFeed, index: number): IFeed[]{
-
-    if(index < 0) {
-      feedExpression.id = this.getNewFeedExpressionId(feedExpression.babyCode);
-    }else {
-      feedExpressions.splice(index, 1);
-    }
-
-    feedExpressions.push(feedExpression)
-    return feedExpressions;
-
-  }
-
-  /**
    * This method is going to fetch data from feed expression key by baby code and date
    * @param babyCode The baby code for which we will fetch data
    * @param date The date for which we will fetch data
@@ -547,6 +520,14 @@ export class FeedExpressionServiceProvider {
     return feedExpressions
   }
 
+  /**
+   *
+   * @author Ratikanta
+   * @param {string} babyCode
+   * @param {string} date
+   * @returns
+   * @memberof FeedExpressionServiceProvider
+   */
   async getNewFeedExpressionEntry(babyCode: string, date: string) {
     //The blank feed object
     let feed: IFeed = {
@@ -567,7 +548,8 @@ export class FeedExpressionServiceProvider {
       syncFailureMessage: null,
       createdDate: null,
       updatedDate: null,
-      uuidNumber: null
+      uuidNumber: null,
+      noExpressionOccured: false
     }
 
     await setTimeout( () => feed.id = this.getNewFeedExpressionId(babyCode))

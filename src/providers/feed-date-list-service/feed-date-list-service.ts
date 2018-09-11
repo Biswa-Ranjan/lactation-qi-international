@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { DatePipe } from '@angular/common';
 import { ConstantProvider } from '../constant/constant';
+import { UserServiceProvider } from '../user-service/user-service';
 
 
 /**
@@ -12,7 +13,7 @@ import { ConstantProvider } from '../constant/constant';
 @Injectable()
 export class FeedDateListServiceProvider {
 
-  constructor(private storage: Storage, private datePipe: DatePipe) {}
+  constructor(private storage: Storage, private datePipe: DatePipe, private userService: UserServiceProvider) {}
 
   /**
    * This method will give us all the dates in string array format of which feed expression we have.
@@ -23,14 +24,48 @@ export class FeedDateListServiceProvider {
    */
   async getFeedDateListData(babyCode: string) {
 
+    let dateLists: IDateList[] = [];
     try {
-      let patient: IPatient = (await this.storage.get(ConstantProvider.dbKeyNames.patients) as IPatient[])
-                                .filter(d => d.babyCode === babyCode)[0]  
+      let patient: IPatient = (await this.storage.get(ConstantProvider.dbKeyNames.patients) as IPatient[]).filter(d => d.babyCode === babyCode)[0]  
+      let onlyDateList: string[] = this.getDateList(patient.deliveryDate, patient.dischargeDate)
+
+      //Can not do database call inside for loop so, doint it above the for loop
+      let feeds: IFeed[] = (await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions) as IFeed[])
+      
+      //We have to check for null, because when there is no epression record, database returns null
+      if(feeds != null){
+        feeds = feeds.filter(d => d.babyCode === patient.babyCode) 
+      }
+
+      for(let i = 0; i < onlyDateList.length;i++){
+
+        //checking expression in this particular date
+
+        let noExpressionOccured: boolean = false
+        let feedsLocal: IFeed[] = []
+
+        if(feeds != null){
+          feedsLocal = feeds.filter(d => d.dateOfFeed === onlyDateList[i])
+          if(feedsLocal.length === 1){
+            noExpressionOccured = feedsLocal[0].noExpressionOccured
+          }
+          //There is no else part to this if, because if we have multiple expression in a date, noExpressionOccured can not be true
+        }
+        
+        
+        let dateList: IDateList = {
+          date: onlyDateList[i],
+          noExpressionOccured: noExpressionOccured
+        }
+
+        dateLists.push(dateList)
+
+      }
                                                               
-      return this.getDateList(patient.deliveryDate, patient.dischargeDate)
+      return dateLists
 
     } catch (err) {
-      return err.message
+      throw new Error ("Error while fetching data: " + err.message)
     }
     
   }
@@ -63,6 +98,90 @@ export class FeedDateListServiceProvider {
       dateList.push(this.datePipe.transform(endDate, 'dd-MM-yyyy'))    
     
     return dateList
+  }
+
+
+  /**
+   *This method will get executed when user try to check/ uncheck no expression occured for the day
+   * @author Ratikanta
+   * @param {IDateList} dateList
+   * @param {string} babyCode
+   * @memberof BFExpressionDateListProvider
+   */
+  async noExpressionOccured(dateList: IDateList, babyCode: string){
+
+    if(dateList.noExpressionOccured){
+
+      //Will try to set no expression false
+      let feeds: IFeed[] = (await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions) as IFeed[]).filter(d => d.babyCode === babyCode && d.dateOfFeed === dateList.date && d.noExpressionOccured === true)
+      if(feeds.length != 1){
+        //Was not seleted before
+        return {result: false, value: true, message: 'It was not no expression occured before.'}                
+      }else{
+        feeds = (await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions) as IFeed[]).filter(d => d.id != feeds[0].id)
+        await this.storage.set(ConstantProvider.dbKeyNames.feedExpressions, feeds)
+        return {result: true, value: null,message: ''}
+      }
+
+      
+
+    }else{
+      
+      //Will try to set no expression true
+      let feeds: IFeed[] = (await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions) as IFeed[])
+      if(feeds != null){
+        feeds = feeds.filter(d => d.babyCode === babyCode && d.dateOfFeed === dateList.date)
+      }
+      
+      if(feeds === undefined || feeds == null || (feeds != null && feeds.length < 1)){
+
+        //Why bfExpressions < 1? when the length is 1 or greater, it can not come to this place
+        
+        let feed:IFeed = this.getNewFeedExpressionEntry(babyCode, dateList.date)
+        feed.id = this.getNewFeedExpressionId(babyCode)
+        feed.noExpressionOccured = true
+        let feeds: IFeed[] = await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions)
+        feeds = feeds == null?[]:feeds
+        feeds.push(feed)
+        await this.storage.set(ConstantProvider.dbKeyNames.feedExpressions, feeds)
+        return {result: true, value: null,message: ''}
+      }else{
+        return {result: false, value: false, message: 'Can not put No expression occured, expression already exists for this date.'}        
+      }
+
+    }
+    
+  }
+
+  getNewFeedExpressionEntry(babyCode: string, date: string) {
+    //The blank feed object
+    let feed: IFeed = {
+      id: null,
+      babyCode: babyCode,
+      userId: this.userService.getUser().email,
+      babyWeight: null,
+      dateOfFeed: date,
+      dhmVolume: null,
+      formulaVolume: null,
+      animalMilkVolume: null,
+      methodOfFeed: null,
+      ommVolume: null,
+      otherVolume: null,
+      timeOfFeed: null,
+      isSynced: false,
+      locationOfFeeding: null,
+      syncFailureMessage: null,
+      createdDate: null,
+      updatedDate: null,
+      uuidNumber: null,
+      noExpressionOccured: false
+    }
+    
+    return feed
+  }
+
+  getNewFeedExpressionId(babyCode: string): string{
+    return babyCode + "feid" + this.datePipe.transform(new Date(), 'ddMMyyyyHHmmssSSS');
   }
 
 }

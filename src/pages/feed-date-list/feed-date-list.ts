@@ -17,7 +17,7 @@ import { ConstantProvider } from '../../providers/constant/constant';
 })
 export class FeedDateListPage {
 
-  feedDateListData: string[] = [];
+  feedDateListData: IDateList[] = [];
   babyCode:string;
   params: Object;
   paramToExpressionPage: IParamToExpresssionPage;
@@ -36,8 +36,17 @@ export class FeedDateListPage {
     }
 
     this.babyCode = this.paramToExpressionPage.babyCode;
-    
+    this.getDateList()
 
+    
+  }
+
+  /**
+   * This method is going to get the date list array
+   * @author Ratikanta
+   * @memberof FeedDateListPage
+   */
+  getDateList(){
     //Getting date list
     this.feedDateListService.getFeedDateListData(this.paramToExpressionPage.babyCode)
     .then(data=>{
@@ -55,12 +64,16 @@ export class FeedDateListPage {
    * @since 0.0.1
    */
   dateSelected(index: number){
-    let date: string = this.feedDateListData[index]
-    if(index > ConstantProvider.expressionAutoPopulateDateMaxNumber){
-      this.showAfterMaxDayAccessAlert(date, index)
-    }else{
-      this.goToNextPage(date, false)
-    }  
+    if(!this.feedDateListData[index].noExpressionOccured){
+      let date: string = this.feedDateListData[index].date
+      if(index > ConstantProvider.expressionAutoPopulateDateMaxNumber){
+        this.showAfterMaxDayAccessAlert(date, index)
+      }else{
+        this.goToNextPage(date, false)
+      }  
+    } else {      
+      this.messageService.showErrorToast("No expression occured in this day, please uncheck to enter expressions.")
+    }
     
   }
 
@@ -84,8 +97,22 @@ export class FeedDateListPage {
    * @memberof FeedDateListPage
    * @since 2.3.0
    */
-  noExpressionOccured(index: number){
-    alert("under construction")
+  async noExpressionOccured(index: number){
+    this.messageService.showLoader("Please wait...")
+    try{
+      
+      let data = await this.feedDateListService.noExpressionOccured(this.feedDateListData[index], this.babyCode) 
+      await this.getDateList()
+      this.messageService.stopLoader()
+      if(!data.result){
+        this.feedDateListData[index].noExpressionOccured = data.value
+        this.messageService.showErrorAlert(data.message)
+      }
+        
+    }catch(err){
+      this.messageService.showErrorAlert(err)
+      this.messageService.stopLoader()
+    }
   }
 
 
@@ -102,7 +129,7 @@ export class FeedDateListPage {
     const confirm = this.alertCtrl.create(
       
       {
-        title: 'Warning!',
+        title: 'Warning',
         message: 'You have selected day ' + dayNumber + ', please make sure discharge date is correct.',
         buttons: 
         [

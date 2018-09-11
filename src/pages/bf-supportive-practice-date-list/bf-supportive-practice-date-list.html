@@ -15,20 +15,20 @@
   <ion-card *ngFor="let date of bfspDateListData | orderByDateAsc; let i = index">
     <ion-card-content (click)='dateSelected(i)'>
       <ion-row>
-        <ion-col col-5>
+        <ion-col col-4>
           <ion-item>
             Day: {{i}}
           </ion-item>
         </ion-col>
         <ion-col col-4>
           <ion-item>
-            {{date}}
+            {{date.date}}
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
-            <ion-label>No expression occured</ion-label>
-            <ion-checkbox (ionChange)="noExpressionOccured(i)"></ion-checkbox>
+            <ion-label>No supportive practice occured</ion-label>
+            <ion-checkbox [(ngModel)]="date.noExpressionOccured" (ionChange)="noExpressionOccured(i)"></ion-checkbox>
           </ion-item>
         </ion-col>
 

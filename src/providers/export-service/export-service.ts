@@ -58,13 +58,7 @@ export class ExportServiceProvider {
           this.messageService.stopLoader()
         }, 2000)
           
-      }else if(this.lactationService.getPlatform().isAndroid) {
-        // let result = await this.createFolderAndFile()
-        // if (result){
-        //   await this.writeDataToFile()
-        // }else{
-        //   this.messageService.stopLoader()
-        // }
+      }else if(this.lactationService.getPlatform().isAndroid) {        
         this.exportToMobileDevice(fileName)
       }else {
         this.messageService.showOkAlert('Export Error', 'Platform not supported')
@@ -233,7 +227,6 @@ export class ExportServiceProvider {
         row = []
         //Setting all column value
         row.push(this.datePipe.transform(patient.createdDate, 'dd-MM-yyyy'))
-        console.log(patient.createdDate)
         row.push(this.userService.getUser().country)
         row.push(this.userService.getUser().state)
         row.push(this.userService.getUser().district)

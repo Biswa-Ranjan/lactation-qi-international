@@ -20,4 +20,5 @@ interface IBFSP{
     createdDate: string;
     updatedDate: string;
     uuidNumber: string;
+    noExpressionOccured: boolean
 }

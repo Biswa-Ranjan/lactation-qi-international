@@ -74,9 +74,7 @@ export class LoginPage {
   async setDataForBabyAdmittedToField() {
     let data = await this.storage.get(ConstantProvider.dbKeyNames.babyAdmittedTo)
 
-    if (data == null || data == undefined) {
-      // this.settingsService.getDataFromAssetsFolder()
-      //   .subscribe(data => {
+    if (data == null || data == undefined) {      
           let len = 14
           //save new record to local database  
           for (let i = 0; i < this.babyAdmittedToNameList.length; i++) {
@@ -89,12 +87,7 @@ export class LoginPage {
             this.babyAdmissionList.push(obj)
             len = len + 1
           }
-          // console.log(this.babyAdmissionList);
-          await this.storage.set(ConstantProvider.dbKeyNames.babyAdmittedTo, this.babyAdmissionList)
-        // }, err => {
-        //   this.messageService.showErrorToast(err)
-
-        // });
+          await this.storage.set(ConstantProvider.dbKeyNames.babyAdmittedTo, this.babyAdmissionList)        
     }
   }
 

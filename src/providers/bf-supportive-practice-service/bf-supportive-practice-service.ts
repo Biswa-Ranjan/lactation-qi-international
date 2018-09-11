@@ -173,7 +173,7 @@ export class BfSupportivePracticeServiceProvider {
 
   /**
    * This method is going to append a new BfExpression object to existing list
-   *
+   * @author Ratikanta
    * @param {IBFSP[]} data The existing list
    * @param {string} babyCode The unique baby code
    * @param {date} The date of feeding
@@ -195,7 +195,8 @@ export class BfSupportivePracticeServiceProvider {
       syncFailureMessage: null,
       createdDate: null,
       updatedDate: null,
-      uuidNumber: null
+      uuidNumber: null,
+      noExpressionOccured: false
     }
 
     if (data != null) {
@@ -263,31 +264,18 @@ export class BfSupportivePracticeServiceProvider {
     return promise;
   }
 
-
-    /**
-   * This method will check whether we have the record with given baby id, date and time.
-   * If all the attribute value will match, this will splice that record and append incoming record.
-   * Because it has come for an update.
-   *
-   * If record does not match, this will just push the input record with existing once
-   *
+  
+  
+  
+  
+  /**
+   * This method is going to get a new bfsp entry
    * @author Ratikanta
-   * @since 0.0.1
-   * @param feedExpressions All the existing feed expressions
-   * @param feedExpression incoming feed expression
-   * @returns IFeed[] modified feed expressions
+   * @param {string} babyCode
+   * @param {string} date
+   * @returns
+   * @memberof BfSupportivePracticeServiceProvider
    */
-  // private validateNewEntryAndUpdate(bfsps: IBFSP[], bfsp: IBFSP, index: number): IBFSP[] {
-  //   if(index < 0) {
-  //     bfsp.id = this.getNewBfspId(bfsp.babyCode);
-  //   }else {
-  //     bfsps.splice(index, 1);
-  //   }
-
-  //   bfsps.push(bfsp)
-  //   return bfsps;
-  // }
-
   getNewBfspEntry(babyCode:string, date: string) {
     let bfspObject: IBFSP = {
       babyCode: babyCode,
@@ -302,7 +290,8 @@ export class BfSupportivePracticeServiceProvider {
       timeOfBFSP: null,
       updatedDate: null,
       userId: this.userService.getUser().email,
-      uuidNumber: null
+      uuidNumber: null,
+      noExpressionOccured: false
     }
     return bfspObject
   }

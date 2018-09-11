@@ -1,10 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '../../../node_modules/@angular/common';
 
+
 /**
- * Generated class for the OrderByDateAscPipe pipe.
  *
- * See https://angular.io/api/core/Pipe for more info on Angular Pipes.
+ * @author {{Ratikanta}} {{ratikanta@sdrc.co.in}}
+ * @export
+ * @class OrderByDateAscPipe
+ * @implements {PipeTransform}
  */
 @Pipe({
   name: 'orderByDateAsc',
@@ -14,27 +17,33 @@ export class OrderByDateAscPipe implements PipeTransform {
   constructor(private datePipe: DatePipe){}
 
   //this method take the list of date and transfer into descending order
-  transform(dateStringArray: string[], ...args):string[] {
-
-    if(dateStringArray != undefined || dateStringArray != null){
+  transform(dateLists: IDateList[], ...args):IDateList[] {
+  
+   
+    if(dateLists != undefined && dateLists != null && dateLists.length > 0){
 
       //Converting to date format to sort
-      let dateArray: Date[] = [];
-      dateStringArray.forEach(d=>{
+      let dateArray: IDateListDate[] = [];
+      dateLists.forEach(d=>{
         if(d != null) {
-          let day = parseInt(d.split('-')[0])
-          let month = parseInt(d.split('-')[1]) - 1
-          let year = parseInt(d.split('-')[2])
+          let day = parseInt(d.date.split('-')[0])
+          let month = parseInt(d.date.split('-')[1]) - 1
+          let year = parseInt(d.date.split('-')[2])
 
-          dateArray.push(new Date(year, month, day))
+
+
+          dateArray.push({
+            date: new Date(year, month, day),
+            noExpressionOccured: d.noExpressionOccured
+          })
         }
       })
 
       //Arranging the dates in descending order
-      dateArray.sort((a: Date, b: Date) => {
-        if (a > b) {
+      dateArray.sort((a: IDateListDate, b: IDateListDate) => {
+        if (a.date > b.date) {
           return 1;
-        } else if (a < b) {
+        } else if (a.date < b.date) {
           return -1;
         } else {
           return 0;
@@ -42,13 +51,27 @@ export class OrderByDateAscPipe implements PipeTransform {
       });
 
       //converting to dd-MM-yyyy string array format
-      dateStringArray = [];
+      dateLists = [];
       dateArray.forEach(d=>{
-        dateStringArray.push(this.datePipe.transform(d, 'dd-MM-yyyy'))
+        dateLists.push({
+          date: this.datePipe.transform(d.date, 'dd-MM-yyyy'),
+          noExpressionOccured: d.noExpressionOccured 
+        })
       })
 
-      return dateStringArray;
+      return dateLists;
     }
 
   }
+}
+
+/**
+ * This interface is going to help us in swapping data
+ * @author Ratikanta
+ *
+ * @interface IDateListDate
+ */
+interface IDateListDate{
+  date: Date,
+  noExpressionOccured: boolean
 }
