@@ -305,6 +305,9 @@ export class ExportServiceProvider {
     bfExpressions = new OrderByTimeExpressionFromPipe().transform(bfExpressions)
     if (bfExpressions != null) {
 
+      bfExpressions = bfExpressions.filter( d=>d.noExpressionOccured === false)
+
+
       //Looping over bf expressions and setting it in data
       bfExpressions.forEach(bfExpression => {
         row = []
@@ -358,6 +361,9 @@ export class ExportServiceProvider {
     let bfsps: IBFSP[] = await this.storage.get(ConstantProvider.dbKeyNames.bfsps);
     bfsps = new OrderByTimeBfspPipe().transform(bfsps)
     if (bfsps != null) {
+
+      bfsps = bfsps.filter(d=>d.noExpressionOccured === false)
+
 
       //Looping over bfsps and setting it in data
       bfsps.forEach(bfsp => {
@@ -417,6 +423,8 @@ export class ExportServiceProvider {
     let locationOfFeeding: ITypeDetails[] = await this.storage.get(ConstantProvider.dbKeyNames.babyAdmittedTo)
     feedExpressions = new OrderByTimePipe().transform(feedExpressions)
     if (feedExpressions != null) {
+
+      feedExpressions = feedExpressions.filter(d=>d.noExpressionOccured === false)
 
       //Looping over feed expressions and setting it in data
       feedExpressions.forEach(feedExpression => {

@@ -381,7 +381,7 @@ export class AddNewPatientServiceProvider {
   async validateDischargeDate(dischargeDate: Date, babyCode: string){
 
     //checking in bf expressions
-    let bfExpressions: IBFExpression[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions)).filter(d => d.babyCode === babyCode)
+    let bfExpressions: IBFExpression[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions) as IBFExpression[]).filter(d => d.babyCode === babyCode && d.noExpressionOccured === false)
     
                                                   
     for(let i = 0; i < bfExpressions.length;i++){
@@ -393,7 +393,7 @@ export class AddNewPatientServiceProvider {
 
 
     //checking in supportive practice
-    let bfsps: IBFSP[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfsps)).filter(d => d.babyCode === babyCode)
+    let bfsps: IBFSP[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfsps) as IBFSP[]).filter(d => d.babyCode === babyCode && d.noExpressionOccured === false)
     
                                                   
     for(let i = 0; i < bfsps.length;i++){
@@ -404,7 +404,7 @@ export class AddNewPatientServiceProvider {
     }
 
     //Checking in log feed
-    let feeds: IFeed[] = (await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions)).filter(d => d.babyCode === babyCode)
+    let feeds: IFeed[] = (await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions) as IFeed[]).filter(d => d.babyCode === babyCode && d.noExpressionOccured === false)
     
                                                   
     for(let i = 0; i < feeds.length;i++){

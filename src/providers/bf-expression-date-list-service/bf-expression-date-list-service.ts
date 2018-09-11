@@ -102,7 +102,7 @@ export class BFExpressionDateListProvider {
         this.storage.get(ConstantProvider.dbKeyNames.bfExpressions)
           .then(data => {
             if (data != null) {
-              data = (data as IBFExpression[]).filter(d => d.babyCode === babyCode && d.dateOfExpression === date);
+              data = (data as IBFExpression[]).filter(d => d.babyCode === babyCode && d.dateOfExpression === date && d.noExpressionOccured === false);
               if ((data as IBFExpression[]).length > 0) {
                 resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault - data.length, babyCode, date))
               } else {

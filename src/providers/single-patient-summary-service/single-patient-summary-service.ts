@@ -164,6 +164,9 @@ export class SinglePatientSummaryServiceProvider {
 
       // fetching all breastfeed expressions
       let bfExpressions: IBFExpression[] = await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions);
+      if(bfExpressions != null){
+        bfExpressions = bfExpressions.filter(d => d.noExpressionOccured === false)
+      }
       let expressions: IBFExpression[] = [];
       let motherRelatedDataList : IMotherRelatedData[] = [];
 
@@ -395,6 +398,10 @@ export class SinglePatientSummaryServiceProvider {
   async setTogetherData(deliveryDate: any,dischargeDate: any,babyCode: string){
       let dates = await this.getAllDatesTillDate(deliveryDate,dischargeDate);
       let bsfp: IBFSP[] = await this.storage.get(ConstantProvider.dbKeyNames.bfsps);
+
+      if(bsfp != null){
+        bsfp = bsfp.filter(d=>d.noExpressionOccured === false)
+      }
       let bsfpExpression: IBFSP[] = []
       let togetherDataList : ITogetherData[] = [];
       if(bsfp != null && bsfp.length > 0)
@@ -518,6 +525,10 @@ export class SinglePatientSummaryServiceProvider {
   async setInfantRelatedData(deliveryDate: any,dischargeDate: any,babyCode: string,babyWeight: number){
     let dates = await this.getAllDatesTillDate(deliveryDate,dischargeDate);
     let feedData: IFeed[] = await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions);
+
+    if(feedData != null){
+      feedData = feedData.filter(d=>d.noExpressionOccured === false)
+    }
     let feedDataExpression: IFeed[] = [];
     let infantRelatedDataList : IInfantRelated[] = [];
     if(feedData != null && feedData.length > 0)

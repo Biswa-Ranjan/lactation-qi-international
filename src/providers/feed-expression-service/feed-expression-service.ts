@@ -170,7 +170,7 @@ export class FeedExpressionServiceProvider {
         this.storage.get(ConstantProvider.dbKeyNames.feedExpressions)
         .then(data=>{
           if(data != null){
-            data = (data as IFeed[]).filter(d => (d.babyCode === babyCode && d.dateOfFeed === date))
+            data = (data as IFeed[]).filter(d => (d.babyCode === babyCode && d.dateOfFeed === date && d.noExpressionOccured === false))
             if((data as IFeed[]).length > 0) {
               resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault - data.length, babyCode, date))
             }else{
@@ -287,7 +287,7 @@ export class FeedExpressionServiceProvider {
             timeSpentInNICU: null
           }
 
-          let feedData = (data as IFeed[]).filter(d=> d.babyCode === babyCode);
+          let feedData = (data as IFeed[]).filter(d=> d.babyCode === babyCode && d.noExpressionOccured === false);
 
           /**
            * The following block of code is to calculate the no. of days spent in NICU
@@ -385,7 +385,7 @@ export class FeedExpressionServiceProvider {
           let bfCount = 0;
           let hospitalDishcargeStatus = null;
           let feedArray = data === null ? [] : (data as IFeed[]).filter(d => d.babyCode === babyCode
-            && d.methodOfFeed != null)
+            && d.methodOfFeed != null && d.noExpressionOccured === false)
           let partialFlag = false
 
           if(feedArray.length > 0){

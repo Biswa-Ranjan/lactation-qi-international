@@ -147,17 +147,6 @@
       </ion-row>
     </div>
   </ion-grid>
-
-  <ion-fab right bottom>
-    <button ion-fab mini (click)="newExpression()" [disabled]="isFilterActive"
-      tooltip="New Entry" event="hover" positionV="top">
-      <ion-icon name="create"></ion-icon>
-    </button>
-    <button ion-fab mini (click)="saveAllExpressions()" [disabled]="isFilterActive"
-      tooltip="Save / Update All " event="hover" positionV="top">
-      <ion-icon name="document"></ion-icon>
-    </button>
-  </ion-fab>
 </ion-content>
 
 <ion-footer ion-row align-center>

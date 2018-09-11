@@ -39,7 +39,7 @@ export class SaveExpressionBfProvider {
   }
 
   /**
-   * This method will give us all the save the BF expression in local storage.
+   * This method will save the BF expression in local storage.
    * @author Subhadarshani
    * @since 0.0.1
    * @returns Promise<string[]> string array of dates
@@ -59,19 +59,14 @@ export class SaveExpressionBfProvider {
         this.pppServiceProvider.deleteSpsRecord(bfExpression.babyCode)
         if(val != null && val.length > 0) {
           bfExpressions = val;
-          // let index = bfExpressions.findIndex(d=>d.babyCode === bfExpression.babyCode && d.dateOfExpression === bfExpression.dateOfExpression
-          //     && d.timeOfExpression === bfExpression.timeOfExpression)
 
           let index = bfExpressions.findIndex(d=>d.id === bfExpression.id)
 
           if(index < 0) {
-            // index = bfExpressions.findIndex(d=>d.babyCode === bfExpression.babyCode && d.dateOfExpression === existingDate
-            //   && d.timeOfExpression === existingTime);
             bfExpression.id = this.getNewBfExpressionId(bfExpression.babyCode)
             bfExpressions.push(bfExpression)
-            // bfExpressions = this.validateNewEntryAndUpdate(bfExpressions, bfExpression, index)
             this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
-              .then(data=> {
+              .then(()=> {
                 resolve()
               })
               .catch(err=> {
@@ -80,9 +75,8 @@ export class SaveExpressionBfProvider {
           }else {
             if(!newData) {
               bfExpressions.splice(index, 1, bfExpression)
-              // bfExpressions = this.validateNewEntryAndUpdate(bfExpressions, bfExpression, index)
               this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
-              .then(data => {
+              .then(() => {
                 resolve()
               })
               .catch(err=>{
@@ -95,7 +89,7 @@ export class SaveExpressionBfProvider {
           bfExpression.id = this.getNewBfExpressionId(bfExpression.babyCode)
           bfExpressions.push(bfExpression)
           this.storage.set(ConstantProvider.dbKeyNames.bfExpressions, bfExpressions)
-          .then(data=>{
+          .then(()=>{
             resolve()
           })
           .catch(err=>{

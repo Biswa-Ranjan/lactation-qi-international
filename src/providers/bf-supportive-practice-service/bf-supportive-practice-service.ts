@@ -139,7 +139,7 @@ export class BfSupportivePracticeServiceProvider {
       this.storage.get(ConstantProvider.dbKeyNames.bfsps)
         .then(data => {
           if (data != null) {
-            data = (data as IBFSP[]).filter(d => d.babyCode === babyCode && d.dateOfBFSP === date);
+            data = (data as IBFSP[]).filter(d => d.babyCode === babyCode && d.dateOfBFSP === date && d.noExpressionOccured === false);
             if ((data as IBFSP[]).length > 0) {
               resolve(this.defaultDisplayOfEntries(data, ConstantProvider.noOfRecordsByDefault - data.length, babyCode, date))
             } else {
