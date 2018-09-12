@@ -3,4 +3,19 @@ page-add-patient {
         zoom:1.5;
         padding-left: 8px;
     }
+
+}
+.date-picker[_ngcontent-c0] .top-banner[_ngcontent-c0] {
+    padding: 0px !important;
+    min-height: 180px !important;
+    height: 180px !important;
+}
+.date-picker[_ngcontent-c0] .layout-background[_ngcontent-c0] {
+    height: 95% !important;
+}
+.date-picker[_ngcontent-c0] .calendar-item-container[_ngcontent-c0] {
+    width: 100%;
+    padding: 3px;
+    height: 244px !important;
+    min-height: 217px;
 }
