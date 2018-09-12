@@ -381,38 +381,48 @@ export class AddNewPatientServiceProvider {
   async validateDischargeDate(dischargeDate: Date, babyCode: string){
 
     //checking in bf expressions
-    let bfExpressions: IBFExpression[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions) as IBFExpression[]).filter(d => d.babyCode === babyCode && d.noExpressionOccured === false)
+    let bfExpressions: IBFExpression[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfExpressions) as IBFExpression[])
     
-                                                  
-    for(let i = 0; i < bfExpressions.length;i++){
-      let expressionDate: Date = new Date(bfExpressions[i].dateOfExpression.split('-')[1] + "-"+bfExpressions[i].dateOfExpression.split('-')[0]+"-"+ bfExpressions[i].dateOfExpression.split('-')[2])
-      if(expressionDate > dischargeDate){
-        throw new Error("Breast feed expression present after the discharge date. Please review and change the discharge date accordingly or delete expreession above discharge date.")
+    if(bfExpressions != null){
+      bfExpressions = bfExpressions.filter(d => d.babyCode === babyCode && d.noExpressionOccured === false)
+      for(let i = 0; i < bfExpressions.length;i++){
+        let expressionDate: Date = new Date(bfExpressions[i].dateOfExpression.split('-')[1] + "-"+bfExpressions[i].dateOfExpression.split('-')[0]+"-"+ bfExpressions[i].dateOfExpression.split('-')[2])
+        if(expressionDate > dischargeDate){
+          throw new Error("Breast feed expression present after the discharge date. Please review and change the discharge date accordingly or delete expreession above discharge date.")
+        }
       }
     }
+
+                                                  
+    
 
 
     //checking in supportive practice
-    let bfsps: IBFSP[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfsps) as IBFSP[]).filter(d => d.babyCode === babyCode && d.noExpressionOccured === false)
-    
-                                                  
-    for(let i = 0; i < bfsps.length;i++){
-      let expressionDate: Date = new Date(bfsps[i].dateOfBFSP.split('-')[1] + "-" + bfsps[i].dateOfBFSP.split('-')[0]+"-"+ bfsps[i].dateOfBFSP.split('-')[2])
-      if(expressionDate > dischargeDate){
-        throw new Error("Breast feed supportive practive expression present after the discharge date. Please review and change the discharge date accordingly or delete expreession above discharge date.")
+    let bfsps: IBFSP[] = (await this.storage.get(ConstantProvider.dbKeyNames.bfsps) as IBFSP[])
+
+    if(bfsps != null){
+      bfsps = bfsps.filter(d => d.babyCode === babyCode && d.noExpressionOccured === false)
+      for(let i = 0; i < bfsps.length;i++){
+        let expressionDate: Date = new Date(bfsps[i].dateOfBFSP.split('-')[1] + "-" + bfsps[i].dateOfBFSP.split('-')[0]+"-"+ bfsps[i].dateOfBFSP.split('-')[2])
+        if(expressionDate > dischargeDate){
+          throw new Error("Breast feed supportive practive expression present after the discharge date. Please review and change the discharge date accordingly or delete expreession above discharge date.")
+        }
       }
     }
+                                                  
+    
 
     //Checking in log feed
-    let feeds: IFeed[] = (await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions) as IFeed[]).filter(d => d.babyCode === babyCode && d.noExpressionOccured === false)
+    let feeds: IFeed[] = (await this.storage.get(ConstantProvider.dbKeyNames.feedExpressions) as IFeed[])
     
-                                                  
-    for(let i = 0; i < feeds.length;i++){
-      let expressionDate: Date = new Date(feeds[i].dateOfFeed.split('-')[1] + "-" + feeds[i].dateOfFeed.split('-')[0]+"-"+ feeds[i].dateOfFeed.split('-')[2])
-      if(expressionDate > dischargeDate){
-        throw new Error("Log feed expression present after the discharge date. Please review and change the discharge date accordingly or delete expreession above discharge date.")
+    if(feeds != null){
+      feeds = feeds.filter(d => d.babyCode === babyCode && d.noExpressionOccured === false)
+      for(let i = 0; i < feeds.length;i++){
+        let expressionDate: Date = new Date(feeds[i].dateOfFeed.split('-')[1] + "-" + feeds[i].dateOfFeed.split('-')[0]+"-"+ feeds[i].dateOfFeed.split('-')[2])
+        if(expressionDate > dischargeDate){
+          throw new Error("Log feed expression present after the discharge date. Please review and change the discharge date accordingly or delete expreession above discharge date.")
+        }
       }
     }
-
   }
 }
